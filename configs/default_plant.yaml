@@ -1,0 +1,33 @@
+# Default Plant Baseline Configuration - V0.1
+plant_name: "Biomass Pyrolysis Plant V0.1"
+version: "0.1.0"
+
+feedstock:
+  name: "olive_pomace"
+  feed_rate_kg_h: 100.0
+  moisture_pct: 15.0
+  particle_size_mm: 2.0
+
+drying:
+  target_moisture_pct: 8.0
+  dryer_temperature_c: 105.0
+  ambient_temperature_c: 25.0
+  thermal_efficiency: 0.75
+  specific_electrical_consumption_kwh_tonne: 15.0
+
+reactor:
+  temperature_c: 500.0
+  heating_rate_c_min: 10.0
+  residence_time_min: 20.0
+  inlet_temperature_c: 105.0
+  reaction_enthalpy_kj_kg: 300.0
+  heat_loss_fraction: 0.08
+  carrier_gas_flow_kg_h: 0.0
+
+separation:
+  cyclone_efficiency: 0.985
+  condenser_efficiency: 0.960
+  condenser_exit_temp_c: 35.0
+  cooling_water_inlet_c: 20.0
+  cooling_water_outlet_c: 32.0
+  auxiliary_power_kw: 1.5

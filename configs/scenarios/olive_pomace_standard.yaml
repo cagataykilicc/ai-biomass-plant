@@ -1,0 +1,17 @@
+# Scenario: Olive Pomace Intermediate Pyrolysis Standard
+scenario_name: "Olive Pomace Standard Conversion"
+
+feedstock:
+  name: "olive_pomace"
+  feed_rate_kg_h: 100.0
+  moisture_pct: 15.0
+  particle_size_mm: 2.0
+
+drying:
+  target_moisture_pct: 8.0
+  dryer_temperature_c: 105.0
+
+reactor:
+  temperature_c: 500.0
+  heating_rate_c_min: 10.0
+  residence_time_min: 20.0

@@ -1,0 +1,17 @@
+# Scenario: Wheat Straw Slow Pyrolysis for Carbon Sequestration Biochar
+scenario_name: "Wheat Straw Biochar Carbon Focus"
+
+feedstock:
+  name: "wheat_straw"
+  feed_rate_kg_h: 150.0
+  moisture_pct: 14.0
+  particle_size_mm: 3.0
+
+drying:
+  target_moisture_pct: 7.0
+  dryer_temperature_c: 105.0
+
+reactor:
+  temperature_c: 400.0        # Lower carbonization temperature
+  heating_rate_c_min: 5.0     # Slow heating rate
+  residence_time_min: 45.0    # Extended solid retention
