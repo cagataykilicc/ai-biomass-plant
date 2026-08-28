@@ -27,12 +27,12 @@ class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-API-Key")
 
     def _is_authorized(self) -> bool:
-        """Validate optional or required API key from environment variable."""
+        """Validate API key from environment variable, failing closed if unset or invalid."""
         required_key = os.environ.get("BIOPLANT_API_KEY") or os.environ.get("API_KEY")
         if not required_key:
-            return True
+            return False
         provided_key = self.headers.get("X-API-Key")
-        return provided_key == required_key
+        return bool(provided_key and provided_key == required_key)
 
     def do_OPTIONS(self) -> None:
         self.send_response(200)
@@ -194,6 +194,13 @@ class DigitalTwinServer:
         self._thread: Optional[threading.Thread] = None
 
     def start(self, blocking: bool = False) -> None:
+        required_key = os.environ.get("BIOPLANT_API_KEY") or os.environ.get("API_KEY")
+        if not required_key:
+            raise RuntimeError(
+                "Failed to start DigitalTwinServer: BIOPLANT_API_KEY (or API_KEY) environment variable "
+                "is not set. The server refuses to start in unauthenticated mode."
+            )
+
         self.server = ThreadingHTTPServer((self.host, self.port), DigitalTwinHTTPHandler)
         if blocking:
             print(f"[*] Digital Twin Server running at http://{self.host}:{self.port}/")

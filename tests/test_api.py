@@ -112,21 +112,41 @@ def test_api_autopilot() -> None:
     assert res_mission["phases_executed_count"] == 6
 
 
+def test_server_refuses_to_start_without_api_key() -> None:
+    """Verify that DigitalTwinServer refuses to start if no API key is configured."""
+    old_key = os.environ.pop("BIOPLANT_API_KEY", None)
+    old_api_key = os.environ.pop("API_KEY", None)
+
+    try:
+        server = DigitalTwinServer(host="127.0.0.1", port=8122)
+        with pytest.raises(RuntimeError, match="BIOPLANT_API_KEY"):
+            server.start(blocking=False)
+    finally:
+        if old_key:
+            os.environ["BIOPLANT_API_KEY"] = old_key
+        if old_api_key:
+            os.environ["API_KEY"] = old_api_key
+
+
 def test_live_http_server_endpoints() -> None:
     """Spin up live ThreadingHTTPServer and execute end-to-end HTTP requests."""
+    os.environ["BIOPLANT_API_KEY"] = "test-live-key"
     server = DigitalTwinServer(host="127.0.0.1", port=8123)
     server.start(blocking=False)
     time.sleep(0.5)
 
+    headers = {"X-API-Key": "test-live-key"}
+
     try:
         # 1. Test GET /api/status
-        with urllib.request.urlopen("http://127.0.0.1:8123/api/status") as response:
+        req_status = urllib.request.Request("http://127.0.0.1:8123/api/status", headers=headers)
+        with urllib.request.urlopen(req_status) as response:
             assert response.status == 200
             data = json.loads(response.read().decode())
             assert data["version"] == "2.0.0"
             assert data["status"] == "ONLINE"
 
-        # 2. Test GET / (HTML frontend)
+        # 2. Test GET / (HTML frontend static asset)
         with urllib.request.urlopen("http://127.0.0.1:8123/") as response:
             assert response.status == 200
             content = response.read().decode()
@@ -137,7 +157,7 @@ def test_live_http_server_endpoints() -> None:
         req = urllib.request.Request(
             "http://127.0.0.1:8123/api/simulate",
             data=json.dumps({"feedstock": "olive_pomace", "reactor_temp_c": 500.0}).encode(),
-            headers={"Content-Type": "application/json"},
+            headers={"Content-Type": "application/json", "X-API-Key": "test-live-key"},
         )
         with urllib.request.urlopen(req) as response:
             assert response.status == 200
@@ -157,7 +177,7 @@ def test_live_http_server_endpoints() -> None:
             req_invalid = urllib.request.Request(
                 "http://127.0.0.1:8123/api/simulate",
                 data=json.dumps({"feed_rate_kg_h": -50.0}).encode(),
-                headers={"Content-Type": "application/json"},
+                headers={"Content-Type": "application/json", "X-API-Key": "test-live-key"},
             )
             urllib.request.urlopen(req_invalid)
             assert False, "Expected 400 Bad Request on negative feed rate"
@@ -167,16 +187,17 @@ def test_live_http_server_endpoints() -> None:
             assert "outside allowed range" in err_data["error"]
 
     finally:
+        if "BIOPLANT_API_KEY" in os.environ:
+            del os.environ["BIOPLANT_API_KEY"]
         server.stop()
 
 
 def test_api_key_authentication() -> None:
     """Verify X-API-Key header authentication when BIOPLANT_API_KEY environment variable is set."""
+    os.environ["BIOPLANT_API_KEY"] = "bioplant-secure-token-123"
     server = DigitalTwinServer(host="127.0.0.1", port=8124)
     server.start(blocking=False)
     time.sleep(0.5)
-
-    os.environ["BIOPLANT_API_KEY"] = "bioplant-secure-token-123"
 
     try:
         # 1. Without header -> 401 Unauthorized

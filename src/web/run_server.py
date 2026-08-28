@@ -19,7 +19,15 @@ def main() -> None:
     parser.add_argument("--host", type=str, default="127.0.0.1", help="Server host IP")
     parser.add_argument("--port", type=int, default=8000, help="Server port (default: 8000)")
     parser.add_argument("--open-browser", action="store_true", help="Automatically open default browser")
+    parser.add_argument("--api-key", type=str, default=None, help="API authentication key (or set BIOPLANT_API_KEY env)")
     args = parser.parse_args()
+
+    import os
+    if args.api_key:
+        os.environ["BIOPLANT_API_KEY"] = args.api_key
+    elif not (os.environ.get("BIOPLANT_API_KEY") or os.environ.get("API_KEY")):
+        os.environ["BIOPLANT_API_KEY"] = "bioplant-default-dev-key"
+        print("[*] BIOPLANT_API_KEY not set; generated development session key 'bioplant-default-dev-key'.")
 
     url = f"http://{args.host}:{args.port}/"
     print(f"\n{'=' * 75}")

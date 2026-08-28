@@ -17,6 +17,24 @@ document.addEventListener('DOMContentLoaded', () => {
   runSimulation();
 });
 
+function getApiKey() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return (
+    urlParams.get('api_key') ||
+    localStorage.getItem('bioplant_api_key') ||
+    window.__BIOPLANT_API_KEY__ ||
+    'bioplant-default-dev-key'
+  );
+}
+
+function apiHeaders(extraHeaders = {}) {
+  return {
+    'Content-Type': 'application/json',
+    'X-API-Key': getApiKey(),
+    ...extraHeaders,
+  };
+}
+
 const tabLoaded = {};
 
 /* Navigation Tab Switching (Optimized & Instant) */
@@ -138,7 +156,7 @@ async function runSimulation() {
   try {
     const res = await fetch('/api/simulate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: apiHeaders(),
       body: JSON.stringify({
         feedstock,
         reactor_temp_c: temp,
@@ -205,7 +223,7 @@ async function runSoftSensors() {
   try {
     const res = await fetch('/api/soft-sensors', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: apiHeaders(),
       body: JSON.stringify({ feedstock, reactor_temp_c: temp, feed_rate_kg_h: feed }),
     });
     const data = await res.json();
@@ -258,7 +276,7 @@ async function runOptimization() {
   try {
     const res = await fetch('/api/optimize', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: apiHeaders(),
       body: JSON.stringify({ feedstock, mode: 'pareto' }),
     });
     const data = await res.json();
@@ -364,7 +382,7 @@ async function runDiagnostics() {
   try {
     const res = await fetch('/api/diagnostics', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: apiHeaders(),
       body: JSON.stringify({ fault_type: faultType, severity }),
     });
     const data = await res.json();
@@ -431,7 +449,7 @@ async function runMaintenance() {
   try {
     const res = await fetch('/api/maintenance', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: apiHeaders(),
       body: JSON.stringify({ operating_hours: hours }),
     });
     const data = await res.json();
@@ -507,7 +525,7 @@ async function runControlSimulation() {
   try {
     const res = await fetch('/api/control', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: apiHeaders(),
       body: JSON.stringify({
         controller: ctrlType,
         setpoint: setpoint,
@@ -630,7 +648,7 @@ async function runEconomics() {
   try {
     const res = await fetch('/api/economics', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: apiHeaders(),
       body: JSON.stringify({
         feedstock,
         reactor_temp_c: temp,
@@ -763,7 +781,7 @@ async function stepAutopilot(reset = false) {
   try {
     const res = await fetch('/api/autopilot/step', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: apiHeaders(),
       body: JSON.stringify({ moisture: moist, fault: fault, reset: reset }),
     });
     const data = await res.json();
@@ -812,7 +830,7 @@ async function runFullMission() {
   try {
     const res = await fetch('/api/autopilot/mission', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: apiHeaders(),
       body: JSON.stringify({ dt: 2.0 }),
     });
     const data = await res.json();

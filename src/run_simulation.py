@@ -272,7 +272,10 @@ def main() -> None:
 
     # Route to web GUI launcher if --web flag passed
     if args.web:
+        import os
         from src.api.server import run_server
+        if not (os.environ.get("BIOPLANT_API_KEY") or os.environ.get("API_KEY")):
+            os.environ["BIOPLANT_API_KEY"] = "bioplant-default-dev-key"
         print(f"[*] Starting Digital Twin Web Platform on http://127.0.0.1:{args.port}/ ...")
         run_server(port=args.port)
         return
