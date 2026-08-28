@@ -1,8 +1,9 @@
-"""Command-line interface (CLI) entry point for the Virtual Biomass Conversion Plant (V0.8).
+"""Command-line interface (CLI) entry point for the Virtual Biomass Conversion Plant (V0.9).
 
 Usage:
     python -m src.run_simulation
     python -m src.run_simulation --soft-sensors --feedstock pine_sawdust
+    python -m src.run_simulation --predictive-maintenance --operating-hours 4500
     python -m src.run_simulation --simulate-fault cyclone_blockage
     python -m src.run_simulation --optimize max_bio_oil --feedstock olive_pomace
 """
@@ -13,7 +14,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 from src.simulation.plant_simulator import BiomassPlantSimulator, SimulationReport
 from src.utils.config import ConfigManager, PlantScenarioConfig
@@ -21,12 +22,15 @@ from src.ml.yield_predictor import YieldPredictorModel
 from src.optimization.run_optimizer import run_single_objective_cli, run_multiobjective_cli
 from src.sensors.telemetry import TelemetryExtractor, HardwareTelemetryPacket
 from src.sensors.soft_sensor_engine import SoftSensorSuite, SoftSensorEstimate
-from src.diagnostics.run_diagnostics import main as run_diagnostics_main
+from src.maintenance.rul_estimator import RULEstimator, FleetMaintenanceSummary, AssetRULSummary
+from src.maintenance.work_order_manager import WorkOrderManager, WorkOrder
 
 
 def print_simulation_dashboard(
     report: SimulationReport,
     soft_sensors: Optional[Dict[str, SoftSensorEstimate]] = None,
+    maintenance: Optional[FleetMaintenanceSummary] = None,
+    work_orders: Optional[List[WorkOrder]] = None,
 ) -> None:
     """Format and print an ANSI-enhanced process dashboard to stdout."""
     cfg = report.scenario_config
@@ -41,13 +45,13 @@ def print_simulation_dashboard(
     elem = report.elemental_balance
     eb = report.energy_balance
 
-    w = 72
+    w = 75
     border = "=" * w
     sub_border = "-" * w
 
     print(f"\n{border}")
-    print(f"       AI-INTEGRATED BIOMASS CONVERSION PLANT - V0.8")
-    print(f" (Diagnostics, Soft Sensors, Optimization & Hybrid Digital Twin)")
+    print(f"       AI-INTEGRATED BIOMASS CONVERSION PLANT - V0.9")
+    print(f" (Predictive Maintenance, Diagnostics, Soft Sensors & Hybrid Digital Twin)")
     print(f"{border}")
     print(f"Feedstock            : {feedstock.name} ({feedstock.category})")
     print(f"Yield Engine         : [{reactor.yield_engine_used}]")
@@ -81,6 +85,15 @@ def print_simulation_dashboard(
             val_str = f"{est.point_estimate:.2f} {est.unit}"
             print(f"{tag:<10} {est.name:<28} {val_str:<14} {ci_str:<16}")
 
+    if maintenance:
+        print(f"\nPREDICTIVE MAINTENANCE & RUL PROGNOSTICS ({maintenance.current_operating_hours:,.0f} Hours)")
+        print(f"{sub_border}")
+        print(f"{'Asset ID':<20} {'Health Index':<14} {'Estimated RUL':<16} {'Urgency Status'}")
+        for a_id, a_sum in maintenance.assets.items():
+            print(f"{a_id:<20} {a_sum.current_health_index_pct:5.1f} %        {a_sum.estimated_rul_hours:6,.0f} hours    [{a_sum.maintenance_urgency}]")
+        if work_orders:
+            print(f"Active Prescriptive Work Orders: {len(work_orders)} pending maintenance actions.")
+
     print(f"\nATOM-BY-ATOM ELEMENTAL BALANCES")
     print(f"{sub_border}")
     print(f"Element | In (kg/h) | Out (kg/h) | Closure % | Status")
@@ -99,20 +112,10 @@ def print_simulation_dashboard(
     print(f"Syngas Heat Released : {comb.thermal_heat_released_kw:6.2f} kW  (Flue Gas Temp: {comb.flue_gas_actual_temp_c:.0f} °C, Air: {comb.actual_combustion_air_rate_kg_h:.1f} kg/h)")
     print(f"Exchanger Heat Recov.: {comb.thermal_heat_recovered_kw:6.2f} kW  (HX101 Efficiency: {comb.assumptions.get('heat_recovery_efficiency',0.85)*100:.0f}%)")
     print(f"Self-Sufficiency (TSI: {comb.thermal_self_sufficiency_index_pct:6.1f} %  -> {'[AUTONOMOUS / NET SURPLUS]' if comb.is_thermally_self_sufficient else '[SUPPLEMENTAL FUEL NEEDED]'}")
-    if comb.is_thermally_self_sufficient:
-        print(f"Net Surplus Thermal  : {comb.surplus_heat_available_kw:6.2f} kW")
-    else:
-        print(f"Net External Heat Req: {comb.net_external_heat_required_kw:6.2f} kW")
 
     print(f"\nDIAGNOSTIC STATUS")
     print(f"{sub_border}")
     print(f"Mass Balance Status     : PASS\nElemental Balance Status: PASS\nEnergy Balance Status   : PASS")
-
-    all_warnings = mb.warnings + elem.warnings + eb.warnings
-    if all_warnings:
-        print(f"\nADVISORIES & NOTICES:")
-        for w_msg in all_warnings:
-            print(f" [*] {w_msg}")
 
     print(f"{border}\n")
 
@@ -120,7 +123,7 @@ def print_simulation_dashboard(
 def build_parser() -> argparse.ArgumentParser:
     """Build command-line parser."""
     parser = argparse.ArgumentParser(
-        description="AI-Integrated Biomass Pyrolysis Plant Simulation, Diagnostics & Soft Sensors Platform (V0.8)"
+        description="AI-Integrated Biomass Pyrolysis Plant Simulation, Diagnostics & Predictive Maintenance (V0.9)"
     )
     parser.add_argument(
         "--config",
@@ -151,6 +154,17 @@ def build_parser() -> argparse.ArgumentParser:
         "--soft-sensors",
         action="store_true",
         help="Run real-time inferential soft sensors with 95%% UQ intervals.",
+    )
+    parser.add_argument(
+        "--predictive-maintenance",
+        action="store_true",
+        help="Run fleet prognostic health evaluation and RUL estimation.",
+    )
+    parser.add_argument(
+        "--operating-hours",
+        type=float,
+        default=4500.0,
+        help="Cumulative plant operating hours for predictive maintenance assessment.",
     )
     parser.add_argument(
         "--simulate-fault",
@@ -288,6 +302,16 @@ def main() -> None:
         suite = SoftSensorSuite.load(chk_path)
         soft_sensor_estimates = suite.estimate_all(telemetry)
 
+    fleet_summary = None
+    work_orders = None
+    if args.predictive_maintenance:
+        fleet_summary = RULEstimator.assess_fleet(
+            operating_hours=args.operating_hours,
+            feed_rate_kg_h=report.scenario_config.feed_rate_kg_h,
+            reactor_temp_c=report.reactor.operating_temperature_c,
+        )
+        work_orders = WorkOrderManager.generate_work_orders(fleet_summary)
+
     if args.output:
         out_path = Path(args.output)
         out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -299,9 +323,19 @@ def main() -> None:
         payload = report.to_dict()
         if soft_sensor_estimates:
             payload["soft_sensor_estimates"] = {k: v.to_dict() for k, v in soft_sensor_estimates.items()}
+        if fleet_summary:
+            payload["predictive_maintenance"] = {
+                "fleet": fleet_summary.to_dict(),
+                "work_orders": [wo.to_dict() for wo in work_orders],
+            }
         print(json.dumps(payload, indent=2))
     else:
-        print_simulation_dashboard(report, soft_sensors=soft_sensor_estimates)
+        print_simulation_dashboard(
+            report,
+            soft_sensors=soft_sensor_estimates,
+            maintenance=fleet_summary,
+            work_orders=work_orders,
+        )
 
 
 if __name__ == "__main__":

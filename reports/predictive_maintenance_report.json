@@ -1,0 +1,213 @@
+{
+  "fleet_summary": {
+    "current_operating_hours": 4500.0,
+    "most_critical_asset_id": "REACTOR_R101_LINER",
+    "minimum_fleet_rul_hours": 2826.0,
+    "assets": {
+      "AUGER_A101": {
+        "asset_id": "AUGER_A101",
+        "asset_name": "Biomass Infeed Auger Screw",
+        "current_operating_hours": 4500.0,
+        "current_health_index_pct": 49.3,
+        "estimated_rul_hours": 4375.7,
+        "rul_95_ci_lower_hours": 3697.0,
+        "rul_95_ci_upper_hours": 5054.4,
+        "maintenance_urgency": "PLANNED_MAINTENANCE",
+        "degradation_state": {
+          "asset_id": "AUGER_A101",
+          "asset_name": "Biomass Infeed Auger Screw",
+          "primary_wear_metric": "Screw Flight Thickness Loss",
+          "current_wear_value": 3.042,
+          "wear_threshold_eol": 6.0,
+          "unit": "mm",
+          "health_index_pct": 49.3
+        }
+      },
+      "REACTOR_R101_LINER": {
+        "asset_id": "REACTOR_R101_LINER",
+        "asset_name": "Pyrolysis Reactor Refractory Liner",
+        "current_operating_hours": 4500.0,
+        "current_health_index_pct": 38.6,
+        "estimated_rul_hours": 2826.0,
+        "rul_95_ci_lower_hours": 2359.9,
+        "rul_95_ci_upper_hours": 3292.1,
+        "maintenance_urgency": "PLANNED_MAINTENANCE",
+        "degradation_state": {
+          "asset_id": "REACTOR_R101_LINER",
+          "asset_name": "Pyrolysis Reactor Refractory Liner",
+          "primary_wear_metric": "Refractory Wall Thickness Loss",
+          "current_wear_value": 24.57,
+          "wear_threshold_eol": 40.0,
+          "unit": "mm",
+          "health_index_pct": 38.6
+        }
+      },
+      "FILTER_F101": {
+        "asset_id": "FILTER_F101",
+        "asset_name": "Syngas Particulate Ceramic Filter",
+        "current_operating_hours": 4500.0,
+        "current_health_index_pct": 48.3,
+        "estimated_rul_hours": 4204.1,
+        "rul_95_ci_lower_hours": 3548.9,
+        "rul_95_ci_upper_hours": 4859.3,
+        "maintenance_urgency": "PLANNED_MAINTENANCE",
+        "degradation_state": {
+          "asset_id": "FILTER_F101",
+          "asset_name": "Syngas Particulate Ceramic Filter",
+          "primary_wear_metric": "Clean Residual Pressure Drop",
+          "current_wear_value": 7.17,
+          "wear_threshold_eol": 12.0,
+          "unit": "kPa",
+          "health_index_pct": 48.3
+        }
+      },
+      "CONDENSER_HX102": {
+        "asset_id": "CONDENSER_HX102",
+        "asset_name": "Bio-Oil Condenser Tube Bundle",
+        "current_operating_hours": 4500.0,
+        "current_health_index_pct": 55.0,
+        "estimated_rul_hours": 5500.0,
+        "rul_95_ci_lower_hours": 4667.0,
+        "rul_95_ci_upper_hours": 6333.0,
+        "maintenance_urgency": "PLANNED_MAINTENANCE",
+        "degradation_state": {
+          "asset_id": "CONDENSER_HX102",
+          "asset_name": "Bio-Oil Condenser Tube Bundle",
+          "primary_wear_metric": "Tube Wall Corrosion Loss",
+          "current_wear_value": 0.675,
+          "wear_threshold_eol": 1.5,
+          "unit": "mm",
+          "health_index_pct": 55.0
+        }
+      }
+    }
+  },
+  "active_work_orders": [
+    {
+      "work_order_id": "WO-AUGER-04500",
+      "asset_id": "AUGER_A101",
+      "asset_name": "Biomass Infeed Auger Screw",
+      "urgency": "PLANNED_MAINTENANCE",
+      "target_operating_hours": 4500.0,
+      "health_index_pct": 49.3,
+      "estimated_rul_hours": 4375.7,
+      "estimated_labor_hours": 12.0,
+      "required_spare_parts": [
+        {
+          "part_no": "A101-FLT-HARDOX",
+          "description": "Hardox 500 Replacement Auger Flight Segment",
+          "qty": 4,
+          "unit_cost_usd": 450.0
+        },
+        {
+          "part_no": "BRG-22218-E",
+          "description": "Spherical Roller Drive Bearing",
+          "qty": 2,
+          "unit_cost_usd": 280.0
+        },
+        {
+          "part_no": "SL-VITON-100",
+          "description": "High-Temp Viton Shaft Seal Kit",
+          "qty": 2,
+          "unit_cost_usd": 95.0
+        }
+      ],
+      "total_parts_cost_usd": 2550.0,
+      "safety_loto_protocol": "LOTO Procedure E-04: Lockout main 480V motor drive breaker; depressurize biomass feed hopper; verify zero mechanical motion.",
+      "scope_of_work": "Decouple drive gearbox; extract auger shaft; gauge flight wear; weld replacement Hardox flight segments; repack bearings and seals."
+    },
+    {
+      "work_order_id": "WO-REACT-04500",
+      "asset_id": "REACTOR_R101_LINER",
+      "asset_name": "Pyrolysis Reactor Refractory Liner",
+      "urgency": "PLANNED_MAINTENANCE",
+      "target_operating_hours": 4500.0,
+      "health_index_pct": 38.6,
+      "estimated_rul_hours": 2826.0,
+      "estimated_labor_hours": 36.0,
+      "required_spare_parts": [
+        {
+          "part_no": "REF-CAST-1600",
+          "description": "High-Alumina Low-Cement Castable Refractory (25kg bag)",
+          "qty": 18,
+          "unit_cost_usd": 85.0
+        },
+        {
+          "part_no": "ANC-SS310-V",
+          "description": "Stainless 310 V-Anchor Fastener Kit",
+          "qty": 50,
+          "unit_cost_usd": 12.0
+        },
+        {
+          "part_no": "GSK-GRAF-R101",
+          "description": "Expanded Graphite Main Flange Gasket Set",
+          "qty": 1,
+          "unit_cost_usd": 620.0
+        }
+      ],
+      "total_parts_cost_usd": 2750.0,
+      "safety_loto_protocol": "LOTO Procedure P-01: Isolate combustor syngas feed; continuous N2 purge until combustible gas < 1.0%; verify vessel temp < 40\u00b0C.",
+      "scope_of_work": "Open reactor main manway; chisel out spalled refractory; weld new 310 anchors; gunite castable refractory; execute 24h dry-out cure."
+    },
+    {
+      "work_order_id": "WO-FILTE-04500",
+      "asset_id": "FILTER_F101",
+      "asset_name": "Syngas Particulate Ceramic Filter",
+      "urgency": "PLANNED_MAINTENANCE",
+      "target_operating_hours": 4500.0,
+      "health_index_pct": 48.3,
+      "estimated_rul_hours": 4204.1,
+      "estimated_labor_hours": 8.0,
+      "required_spare_parts": [
+        {
+          "part_no": "FIL-CER-DIA50",
+          "description": "Silicon Carbide Porous Ceramic Filter Candles (1.5m)",
+          "qty": 12,
+          "unit_cost_usd": 320.0
+        },
+        {
+          "part_no": "GSK-MICA-F101",
+          "description": "Mica/Ceramic High-Temperature Tube Sheet Gasket",
+          "qty": 12,
+          "unit_cost_usd": 45.0
+        }
+      ],
+      "total_parts_cost_usd": 4380.0,
+      "safety_loto_protocol": "LOTO Procedure F-02: Isolate hot syngas line; lock pulse-jet accumulator valves; verify depressurization to 0.0 kPa.",
+      "scope_of_work": "Remove filter vessel top cover; unscrew blinded SiC candles; vacuum vessel hopper; install new candles with fresh mica gaskets; leak test at 50 kPa."
+    },
+    {
+      "work_order_id": "WO-CONDE-04500",
+      "asset_id": "CONDENSER_HX102",
+      "asset_name": "Bio-Oil Condenser Tube Bundle",
+      "urgency": "PLANNED_MAINTENANCE",
+      "target_operating_hours": 4500.0,
+      "health_index_pct": 55.0,
+      "estimated_rul_hours": 5500.0,
+      "estimated_labor_hours": 16.0,
+      "required_spare_parts": [
+        {
+          "part_no": "TUBE-316L-19MM",
+          "description": "SS316L Seamless Condenser Tubes (19mm OD x 2.5m)",
+          "qty": 24,
+          "unit_cost_usd": 110.0
+        },
+        {
+          "part_no": "SOLV-TERP-200L",
+          "description": "Industrial Terpene Bio-Oil Degreasing Solvent Drum",
+          "qty": 2,
+          "unit_cost_usd": 380.0
+        },
+        {
+          "part_no": "GSK-PTFE-HX102",
+          "description": "PTFE Envelope Channel Cover Gasket",
+          "qty": 2,
+          "unit_cost_usd": 210.0
+        }
+      ],
+      "total_parts_cost_usd": 3820.0,
+      "safety_loto_protocol": "LOTO Procedure C-03: Drain and lock cooling water lines; isolate bio-oil collection lines; lock nitrogen purge manifold.",
+      "scope_of_work": "Unbolt channel head covers; circulate terpene solvent wash; ultrasonic thickness testing on tube bundle; plug/roll corroded tubes; hydrostatic test to 6 bar."
+    }
+  ]
+}
