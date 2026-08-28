@@ -1,0 +1,258 @@
+"""REST API business logic and route handlers for Digital Twin simulation, optimization, diagnostics, and maintenance."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Dict, Any, Optional
+
+from src.simulation.plant_simulator import BiomassPlantSimulator
+from src.utils.config import ConfigManager
+from src.data.preprocessing import FeedstockLibrary
+from src.sensors.telemetry import TelemetryExtractor
+from src.sensors.soft_sensor_engine import SoftSensorSuite
+from src.sensors.calibration import SoftSensorCalibrator
+from src.optimization.objectives import OptimizationObjective
+from src.optimization.problem import OptimizationProblem, DecisionBounds
+from src.optimization.optimizer import PlantProcessOptimizer
+from src.optimization.pareto import ParetoOptimizer, ParetoFrontier
+from src.diagnostics.fault_simulator import IndustrialFaultType, FaultInjectionConfig, ProcessFaultSimulator
+from src.diagnostics.run_diagnostics import load_or_train_models
+from src.diagnostics.alarm_manager import AlarmManager
+from src.maintenance.rul_estimator import RULEstimator
+from src.maintenance.work_order_manager import WorkOrderManager
+from src.optimization.decision_maker import TOPSISDecisionMaker
+
+
+class APIRequestHandler:
+    """Dispatches and processes REST API calls for the digital twin platform."""
+
+    _simulator = BiomassPlantSimulator()
+    _detector = None
+    _classifier = None
+    _soft_sensor_suite = None
+
+    @classmethod
+    def _get_soft_sensors(cls) -> SoftSensorSuite:
+        if cls._soft_sensor_suite is None:
+            root = Path(__file__).resolve().parent.parent.parent
+            chk = root / "models" / "checkpoints" / "soft_sensors.joblib"
+            if not chk.is_file():
+                SoftSensorCalibrator().calibrate()
+            cls._soft_sensor_suite = SoftSensorSuite.load(chk)
+        return cls._soft_sensor_suite
+
+    @classmethod
+    def _get_diag_models(cls):
+        if cls._detector is None or cls._classifier is None:
+            det, clf = load_or_train_models()
+            cls._detector = det
+            cls._classifier = clf
+        return cls._detector, cls._classifier
+
+    @classmethod
+    def handle_status(cls) -> Dict[str, Any]:
+        """System status and module availability."""
+        return {
+            "status": "ONLINE",
+            "version": "1.0.0",
+            "modules": {
+                "thermodynamic_flowsheet": "ACTIVE",
+                "ml_yield_surrogate": "ACTIVE",
+                "multiobjective_optimizer": "ACTIVE",
+                "inferential_soft_sensors": "ACTIVE",
+                "fault_anomaly_diagnostics": "ACTIVE",
+                "predictive_maintenance_rul": "ACTIVE",
+            },
+            "available_feedstocks": ["pine_sawdust", "olive_pomace", "wheat_straw", "rice_husk"],
+        }
+
+    @classmethod
+    def handle_feedstocks(cls) -> Dict[str, Any]:
+        """Available feedstock fingerprints and proximate/ultimate properties."""
+        feedstocks = {}
+        lib = FeedstockLibrary()
+        for name in ["pine_sawdust", "olive_pomace", "wheat_straw", "rice_husk"]:
+            fs = lib.load_feedstock(name)
+            feedstocks[name] = {
+                "name": fs.name,
+                "category": fs.category,
+                "moisture_pct": fs.proximate.moisture,
+                "volatile_matter_dry_pct": fs.proximate.volatile_matter,
+                "fixed_carbon_dry_pct": fs.proximate.fixed_carbon,
+                "ash_dry_pct": fs.proximate.ash,
+                "carbon_dry_pct": fs.ultimate.carbon,
+                "hydrogen_dry_pct": fs.ultimate.hydrogen,
+                "oxygen_dry_pct": fs.ultimate.oxygen,
+                "nitrogen_dry_pct": fs.ultimate.nitrogen,
+                "sulfur_dry_pct": fs.ultimate.sulfur,
+                "hhv_dry_mj_kg": round(fs.calculate_hhv_dry(), 2),
+                "lhv_dry_mj_kg": round(fs.calculate_lhv_dry(), 2),
+            }
+        return {"feedstocks": feedstocks}
+
+    @classmethod
+    def handle_simulate(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Run digital twin flowsheet simulation."""
+        fs_name = data.get("feedstock", "pine_sawdust")
+        feed_rate = float(data.get("feed_rate_kg_h", 100.0))
+        temp = float(data.get("reactor_temp_c", 500.0))
+        moisture = float(data.get("moisture_pct", 12.0))
+        heating_rate = float(data.get("heating_rate_c_min", 10.0))
+        residence_time = float(data.get("residence_time_min", 20.0))
+        yield_mode = data.get("yield_mode", "deterministic")
+
+        report = cls._simulator.run_simulation(
+            feedstock_name=fs_name,
+            feed_rate_kg_h=feed_rate,
+            moisture_pct=moisture,
+            reactor_temp_c=temp,
+            heating_rate_c_min=heating_rate,
+            residence_time_min=residence_time,
+            yield_mode="ML_SURROGATE" if yield_mode.lower() == "ml" else "DETERMINISTIC",
+        )
+
+        return {
+            "feedstock": report.feedstock.name,
+            "operating_conditions": {
+                "feed_rate_kg_h": feed_rate,
+                "reactor_temp_c": temp,
+                "moisture_pct": moisture,
+                "heating_rate_c_min": heating_rate,
+                "residence_time_min": residence_time,
+            },
+            "yields_dry": {
+                "biochar_yield_pct": round(report.reactor.yields_dry.biochar_yield * 100, 2),
+                "bio_oil_yield_pct": round(report.reactor.yields_dry.bio_oil_yield * 100, 2),
+                "syngas_yield_pct": round(report.reactor.yields_dry.syngas_yield * 100, 2),
+            },
+            "product_rates_kg_h": {
+                "bio_oil": round(report.separation.recovered_bio_oil_liquid_kg_h, 2),
+                "biochar": round(report.separation.recovered_biochar_kg_h, 2),
+                "syngas": round(report.separation.clean_syngas_kg_h, 2),
+                "dryer_water": round(report.drying.water_evaporated_kg_h, 2),
+            },
+            "energy_and_heat": {
+                "gross_thermal_demand_kw": round(report.energy_balance.gross_thermal_demand_kw, 2),
+                "syngas_heat_released_kw": round(report.combustion.thermal_heat_released_kw, 2),
+                "heat_recovered_kw": round(report.combustion.thermal_heat_recovered_kw, 2),
+                "tsi_pct": round(report.combustion.thermal_self_sufficiency_index_pct, 1),
+                "is_self_sufficient": report.combustion.is_thermally_self_sufficient,
+                "net_surplus_kw": round(report.combustion.surplus_heat_available_kw, 2),
+            },
+            "closures": {
+                "mass_closure_pct": round(report.mass_balance.closure_pct, 2),
+                "carbon_closure_pct": round(report.elemental_balance.closures["C"].closure_pct, 2),
+            },
+        }
+
+    @classmethod
+    def handle_soft_sensors(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Infer unmeasured stream states from telemetry."""
+        fs_name = data.get("feedstock", "pine_sawdust")
+        feed_rate = float(data.get("feed_rate_kg_h", 100.0))
+        temp = float(data.get("reactor_temp_c", 500.0))
+
+        report = cls._simulator.run_simulation(
+            feedstock_name=fs_name,
+            feed_rate_kg_h=feed_rate,
+            reactor_temp_c=temp,
+        )
+        telemetry = TelemetryExtractor.extract_from_report(report, add_sensor_noise=True)
+        suite = cls._get_soft_sensors()
+        estimates = suite.estimate_all(telemetry)
+
+        return {
+            "telemetry": telemetry.to_dict(),
+            "soft_sensors": {k: v.to_dict() for k, v in estimates.items()},
+        }
+
+    @classmethod
+    def handle_optimize(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Solve process optimization."""
+        fs_name = data.get("feedstock", "pine_sawdust")
+        mode = data.get("mode", "pareto")
+
+        if mode == "pareto":
+            opt = ParetoOptimizer(feedstock_name=fs_name)
+            frontier = opt.generate_pareto_frontier(n_candidates=30)
+            ranked = TOPSISDecisionMaker.rank_solutions(frontier, profile_name="balanced_sustainability")
+            top_sol = ranked[0] if ranked else None
+            non_dom = frontier.get_non_dominated_solutions()
+            return {
+                "frontier_size": len(non_dom),
+                "frontier": [s.to_dict() for s in non_dom],
+                "top_solution": top_sol,
+                "topsis_score": top_sol["closeness_score"] if top_sol else None,
+            }
+        else:
+            obj_map = {
+                "max_bio_oil": OptimizationObjective.MAX_BIO_OIL_YIELD,
+                "max_biochar": OptimizationObjective.MAX_BIOCHAR_CARBON,
+                "max_profit": OptimizationObjective.MAX_ECONOMIC_MARGIN,
+                "max_efficiency": OptimizationObjective.MAX_THERMAL_EFFICIENCY,
+            }
+            target_obj = obj_map.get(mode.lower(), OptimizationObjective.MAX_BIO_OIL_YIELD)
+            problem = OptimizationProblem(feedstock_name=fs_name, objective=target_obj, yield_mode="ML_SURROGATE")
+            opt = PlantProcessOptimizer(problem=problem)
+            res = opt.optimize(solver="differential_evolution")
+            return {
+                "objective": mode,
+                "optimal_setpoints": res.optimal_setpoints,
+                "optimal_objective_value": round(res.optimal_objective_value, 2),
+                "success": res.success,
+                "tsi_pct": round(res.key_kpis.get("thermal_self_sufficiency_index_pct", 100.0), 1),
+            }
+
+    @classmethod
+    def handle_diagnostics(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Simulate fault mode and run tri-layer anomaly detector."""
+        f_str = data.get("fault_type", "cyclone_blockage")
+        sev = float(data.get("severity", 0.85))
+
+        f_map = {
+            "none": IndustrialFaultType.NONE,
+            "cyclone_blockage": IndustrialFaultType.CYCLONE_DIPLEG_BLOCKAGE,
+            "condenser_fouling": IndustrialFaultType.CONDENSER_TAR_FOULING,
+            "thermal_runaway": IndustrialFaultType.REACTOR_THERMAL_RUNAWAY,
+            "sensor_drift": IndustrialFaultType.THERMOCOUPLE_SENSOR_DRIFT,
+            "feed_jam": IndustrialFaultType.FEED_AUGER_JAMMING,
+        }
+        fault_type = f_map.get(f_str.lower(), IndustrialFaultType.NONE)
+        fault_cfg = FaultInjectionConfig(fault_type=fault_type, severity=sev)
+
+        sim = ProcessFaultSimulator()
+        report, telemetry = sim.run_faulted_simulation(fault_cfg)
+
+        detector, classifier = cls._get_diag_models()
+        anomaly_res = detector.detect(telemetry, report)
+        diag_res = classifier.diagnose(telemetry, anomaly_res)
+        alarm = AlarmManager.evaluate_alarm(anomaly_res, diag_res)
+
+        return {
+            "fault_injected": fault_type.value,
+            "severity": sev,
+            "telemetry": telemetry.to_dict(),
+            "anomaly_detection": anomaly_res.to_dict(),
+            "fault_diagnosis": diag_res.to_dict(),
+            "alarm": alarm.to_dict(),
+        }
+
+    @classmethod
+    def handle_maintenance(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Evaluate fleet RUL prognostics and work orders."""
+        hours = float(data.get("operating_hours", 4500.0))
+        feed_rate = float(data.get("feed_rate_kg_h", 100.0))
+        temp = float(data.get("reactor_temp_c", 500.0))
+
+        fleet = RULEstimator.assess_fleet(
+            operating_hours=hours,
+            feed_rate_kg_h=feed_rate,
+            reactor_temp_c=temp,
+        )
+        work_orders = WorkOrderManager.generate_work_orders(fleet)
+
+        return {
+            "fleet_summary": fleet.to_dict(),
+            "work_orders": [wo.to_dict() for wo in work_orders],
+        }
