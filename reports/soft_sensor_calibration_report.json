@@ -1,0 +1,58 @@
+{
+  "metadata": {
+    "total_observations": 1000,
+    "train_samples": 800,
+    "test_samples": 200,
+    "checkpoint_path": "C:\\Users\\USER\\.gemini\\antigravity-ide\\scratch\\ai_biomass_plant\\models\\checkpoints\\soft_sensors.joblib"
+  },
+  "sensor_benchmarks": {
+    "SS_101_BIO_OIL_TAN": {
+      "name": "Bio-Oil Total Acid Number",
+      "unit": "mg KOH/g",
+      "r2_score": 0.9528,
+      "rmse": 2.6924,
+      "mae": 1.7714,
+      "prediction_interval_coverage_pct": 93.5
+    },
+    "SS_102_BIO_OIL_WATER": {
+      "name": "Bio-Oil Water Content",
+      "unit": "wt%",
+      "r2_score": 0.9088,
+      "rmse": 1.9356,
+      "mae": 1.2076,
+      "prediction_interval_coverage_pct": 95.0
+    },
+    "SS_103_BIO_OIL_HHV": {
+      "name": "Bio-Oil Higher Heating Value",
+      "unit": "MJ/kg",
+      "r2_score": 0.7221,
+      "rmse": 0.9702,
+      "mae": 0.7345,
+      "prediction_interval_coverage_pct": 95.0
+    },
+    "SS_104_SYNGAS_LHV": {
+      "name": "Clean Syngas Volumetric LHV",
+      "unit": "MJ/Nm\u00b3",
+      "r2_score": 0.9998,
+      "rmse": 0.0316,
+      "mae": 0.0224,
+      "prediction_interval_coverage_pct": 93.0
+    },
+    "SS_105_BIOCHAR_YIELD": {
+      "name": "Biochar Solids Yield",
+      "unit": "wt%",
+      "r2_score": 0.9462,
+      "rmse": 3.4104,
+      "mae": 2.3538,
+      "prediction_interval_coverage_pct": 94.0
+    },
+    "SS_106_TSI": {
+      "name": "Thermal Self-Sufficiency Index",
+      "unit": "%",
+      "r2_score": 0.8712,
+      "rmse": 29.2344,
+      "mae": 22.1627,
+      "prediction_interval_coverage_pct": 87.0
+    }
+  }
+}
