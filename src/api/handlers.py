@@ -256,3 +256,28 @@ class APIRequestHandler:
             "fleet_summary": fleet.to_dict(),
             "work_orders": [wo.to_dict() for wo in work_orders],
         }
+
+    @classmethod
+    def handle_control(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute dynamic closed-loop response simulation (PID / MPC / Open-Loop)."""
+        from src.control.benchmark_control import ControlBenchmarkSuite
+        ctrl_type = data.get("controller", "mpc")
+        setpoint = float(data.get("setpoint", 520.0))
+        moist_disturb = float(data.get("moisture_disturb", 20.0))
+
+        suite = ControlBenchmarkSuite(simulation_duration_sec=3600.0, dt_sec=4.0)
+        states, metrics = suite.run_simulation(
+            controller_type=ctrl_type,
+            setpoint_step_c=setpoint,
+            moisture_disturb_pct=moist_disturb,
+        )
+
+        # Subsample states for efficient JSON transmission (every 2nd point)
+        sub_states = [s.to_dict() for s in states[::2]]
+
+        return {
+            "controller": ctrl_type.upper(),
+            "metrics": metrics.to_dict(),
+            "trajectory_points": len(sub_states),
+            "trajectory": sub_states,
+        }

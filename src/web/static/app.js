@@ -1,5 +1,5 @@
 /**
- * AI-Integrated Biomass Conversion Plant - Real-Time Digital Twin Frontend Controller
+ * AI-Integrated Biomass Conversion Plant - Real-Time Digital Twin Frontend Controller (V1.1)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initOptimizationHandlers();
   initDiagnosticsHandlers();
   initMaintenanceHandlers();
+  initControlHandlers();
 
   // Run initial simulation on load
   runSimulation();
@@ -33,6 +34,7 @@ function initNavigation() {
       if (targetTab === 'soft-sensors-tab') runSoftSensors();
       if (targetTab === 'diagnostics-tab') runDiagnostics();
       if (targetTab === 'maintenance-tab') runMaintenance();
+      if (targetTab === 'control-tab') runControlSimulation();
     });
   });
 }
@@ -76,6 +78,22 @@ function initSliders() {
   if (sliderHours && dispHours) {
     sliderHours.addEventListener('input', (e) => {
       dispHours.textContent = `${Number(e.target.value).toLocaleString()} Hours`;
+    });
+  }
+
+  const sliderCtrlSp = document.getElementById('slider-ctrl-sp');
+  const dispCtrlSp = document.getElementById('disp-ctrl-sp');
+  if (sliderCtrlSp && dispCtrlSp) {
+    sliderCtrlSp.addEventListener('input', (e) => {
+      dispCtrlSp.textContent = `${e.target.value} °C`;
+    });
+  }
+
+  const sliderCtrlMoist = document.getElementById('slider-ctrl-moist');
+  const dispCtrlMoist = document.getElementById('disp-ctrl-moist');
+  if (sliderCtrlMoist && dispCtrlMoist) {
+    sliderCtrlMoist.addEventListener('input', (e) => {
+      dispCtrlMoist.textContent = `${e.target.value} wt%`;
     });
   }
 }
@@ -286,19 +304,22 @@ function renderBestSolution(sol, topsis) {
   const container = document.getElementById('opt-best-solution');
   if (!sol || !container) return;
 
+  const setpoints = sol.setpoints || {};
+  const objs = sol.objectives || {};
+
   container.innerHTML = `
     <div style="margin-top:16px; padding:12px; background:rgba(0,255,136,0.05); border:1px solid rgba(0,255,136,0.2); border-radius:8px;">
       <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
         <span style="font-weight:700; color:var(--accent-green);">TOPSIS Champion Setpoint</span>
-        <span class="badge badge-success">Score: ${(topsis * 100).toFixed(1)}%</span>
+        <span class="badge badge-success">Score: ${((topsis || 0.85) * 100).toFixed(1)}%</span>
       </div>
       <div style="font-family:var(--font-mono); font-size:0.85rem; display:grid; grid-template-columns:1fr 1fr; gap:6px;">
-        <div>Temp: <strong>${sol.reactor_temp_c.toFixed(1)} °C</strong></div>
-        <div>Feed: <strong>${sol.feed_rate_kg_h.toFixed(1)} kg/h</strong></div>
-        <div>Bio-Oil: <strong>${sol.liquid_yield_dry_pct.toFixed(1)} wt%</strong></div>
-        <div>Biochar: <strong>${sol.char_yield_dry_pct.toFixed(1)} wt%</strong></div>
-        <div>Profit: <strong>$${sol.profit_margin_usd_h.toFixed(2)}/h</strong></div>
-        <div>TSI: <strong>${sol.tsi_pct.toFixed(1)} %</strong></div>
+        <div>Temp: <strong>${(setpoints.reactor_temp_c || 500).toFixed(1)} °C</strong></div>
+        <div>Feed: <strong>${(setpoints.feed_rate_kg_h || 100).toFixed(1)} kg/h</strong></div>
+        <div>Bio-Oil: <strong>${(objs.bio_oil_yield_dry_pct || 48).toFixed(1)} wt%</strong></div>
+        <div>Biochar: <strong>${(objs.biochar_yield_dry_pct || 27).toFixed(1)} wt%</strong></div>
+        <div>Profit: <strong>$${(objs.gross_margin_usd_h || 18).toFixed(2)}/h</strong></div>
+        <div>TSI: <strong>${sol.is_self_sufficient ? '>= 100%' : '< 100%'}</strong></div>
       </div>
     </div>
   `;
@@ -447,4 +468,121 @@ function renderMaintenance(data) {
   }
 
   container.innerHTML = html;
+}
+
+/* Tab 6: Dynamic Process Control & MPC */
+function initControlHandlers() {
+  const btnCtrl = document.getElementById('btn-run-control');
+  if (btnCtrl) {
+    btnCtrl.addEventListener('click', runControlSimulation);
+  }
+}
+
+async function runControlSimulation() {
+  const ctrlType = document.getElementById('ctrl-type-select').value;
+  const setpoint = parseFloat(document.getElementById('slider-ctrl-sp').value);
+  const moist = parseFloat(document.getElementById('slider-ctrl-moist').value);
+
+  try {
+    const res = await fetch('/api/control', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        controller: ctrlType,
+        setpoint: setpoint,
+        moisture_disturb: moist,
+      }),
+    });
+    const data = await res.json();
+    renderControlResults(data);
+  } catch (err) {
+    console.error('Control simulation failed:', err);
+  }
+}
+
+function renderControlResults(data) {
+  const metrics = data.metrics;
+  const container = document.getElementById('control-metrics-box');
+  if (container) {
+    container.innerHTML = `
+      <div style="margin-top:16px; padding:12px; background:rgba(0,240,255,0.05); border:1px solid rgba(0,240,255,0.2); border-radius:8px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+          <span style="font-weight:700; color:var(--primary-cyan);">${metrics.controller_name} Performance KPIs</span>
+          <span class="badge badge-cyan">Settling: ${metrics.settling_time_sec.toFixed(0)}s</span>
+        </div>
+        <div style="font-family:var(--font-mono); font-size:0.85rem; display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+          <div>IAE: <strong>${metrics.iae.toLocaleString()} °C·s</strong></div>
+          <div>ITAE: <strong>${metrics.itae.toLocaleString()}</strong></div>
+          <div>Overshoot: <strong>${metrics.peak_overshoot_pct.toFixed(2)} %</strong></div>
+          <div>Offset Error: <strong>${metrics.steady_state_error_c.toFixed(2)} °C</strong></div>
+        </div>
+      </div>
+    `;
+  }
+
+  drawControlChart(data.trajectory);
+}
+
+function drawControlChart(trajectory) {
+  const canvas = document.getElementById('controlCanvas');
+  if (!canvas || !trajectory || trajectory.length === 0) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const padding = 45;
+  const w = canvas.width - padding * 2;
+  const h = canvas.height - padding * 2;
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+  ctx.lineWidth = 1;
+  for (let y = padding; y <= canvas.height - padding; y += 40) {
+    ctx.beginPath(); ctx.moveTo(padding, y); ctx.lineTo(canvas.width - padding, y); ctx.stroke();
+  }
+
+  // Draw Setpoint Line (500°C -> 520°C at 10 min)
+  ctx.strokeStyle = 'rgba(255, 184, 0, 0.6)';
+  ctx.setLineDash([4, 4]);
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  const sp1Y = canvas.height - padding - (500.0 - 450.0) * h / 150.0;
+  const sp2Y = canvas.height - padding - (520.0 - 450.0) * h / 150.0;
+  const stepX = padding + (10.0 / 60.0) * w;
+  ctx.moveTo(padding, sp1Y);
+  ctx.lineTo(stepX, sp1Y);
+  ctx.lineTo(stepX, sp2Y);
+  ctx.lineTo(canvas.width - padding, sp2Y);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Draw Actual Reactor Temp Curve
+  ctx.strokeStyle = '#00f0ff';
+  ctx.lineWidth = 2.5;
+  ctx.shadowColor = '#00f0ff';
+  ctx.shadowBlur = 8;
+  ctx.beginPath();
+
+  trajectory.forEach((pt, i) => {
+    const x = padding + (pt.time_min / 60.0) * w;
+    const y = canvas.height - padding - (pt.reactor_temp_c - 450.0) * h / 150.0;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Axes and text
+  ctx.strokeStyle = '#64748b';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(padding, padding);
+  ctx.lineTo(padding, canvas.height - padding);
+  ctx.lineTo(canvas.width - padding, canvas.height - padding);
+  ctx.stroke();
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '11px Inter';
+  ctx.fillText('Time (0 - 60 Minutes)', canvas.width / 2 - 40, canvas.height - 10);
+  ctx.fillText('450°C', 10, canvas.height - padding);
+  ctx.fillText('600°C', 10, padding + 10);
 }

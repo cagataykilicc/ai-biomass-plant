@@ -78,6 +78,16 @@ def test_api_maintenance() -> None:
     assert res["fleet_summary"]["current_operating_hours"] == 4500.0
 
 
+def test_api_control() -> None:
+    """Verify dynamic closed-loop control REST API."""
+    payload = {"controller": "mpc", "setpoint": 520.0, "moisture_disturb": 18.0}
+    res = APIRequestHandler.handle_control(payload)
+    assert res["controller"] == "MPC"
+    assert "metrics" in res
+    assert "trajectory" in res
+    assert len(res["trajectory"]) > 0
+
+
 def test_live_http_server_endpoints() -> None:
     """Spin up live ThreadingHTTPServer and execute end-to-end HTTP requests."""
     server = DigitalTwinServer(host="127.0.0.1", port=8123)

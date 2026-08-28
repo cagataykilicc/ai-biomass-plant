@@ -76,6 +76,9 @@ class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
             elif path == "/api/maintenance":
                 res = APIRequestHandler.handle_maintenance(data)
                 self._send_json(200, res)
+            elif path == "/api/control":
+                res = APIRequestHandler.handle_control(data)
+                self._send_json(200, res)
             else:
                 self._send_json(404, {"error": f"Endpoint not found: {path}"})
         except Exception as exc:
