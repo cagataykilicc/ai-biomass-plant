@@ -24,6 +24,29 @@ from src.maintenance.work_order_manager import WorkOrderManager
 from src.optimization.decision_maker import TOPSISDecisionMaker
 
 
+def _parse_bounded_float(
+    data: Dict[str, Any],
+    key: str,
+    default: float,
+    min_val: float,
+    max_val: float,
+) -> float:
+    """Parse and validate numeric input bounds, rejecting negative or out-of-range values."""
+    raw = data.get(key, default)
+    if raw is None:
+        raw = default
+    try:
+        val = float(raw)
+    except (ValueError, TypeError):
+        raise ValueError(f"Invalid numeric value for parameter '{key}': {raw}")
+
+    if val < min_val or val > max_val:
+        raise ValueError(
+            f"Parameter '{key}' value {val} is outside allowed range [{min_val}, {max_val}]."
+        )
+    return val
+
+
 class APIRequestHandler:
     """Dispatches and processes REST API calls for the digital twin platform."""
 
@@ -96,13 +119,13 @@ class APIRequestHandler:
 
     @classmethod
     def handle_simulate(cls, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Run digital twin flowsheet simulation."""
+        """Run digital twin flowsheet simulation with input bounds validation."""
         fs_name = data.get("feedstock", "pine_sawdust")
-        feed_rate = float(data.get("feed_rate_kg_h", 100.0))
-        temp = float(data.get("reactor_temp_c", 500.0))
-        moisture = float(data.get("moisture_pct", 12.0))
-        heating_rate = float(data.get("heating_rate_c_min", 10.0))
-        residence_time = float(data.get("residence_time_min", 20.0))
+        feed_rate = _parse_bounded_float(data, "feed_rate_kg_h", 100.0, 0.1, 100000.0)
+        temp = _parse_bounded_float(data, "reactor_temp_c", 500.0, 100.0, 1500.0)
+        moisture = _parse_bounded_float(data, "moisture_pct", 12.0, 0.0, 80.0)
+        heating_rate = _parse_bounded_float(data, "heating_rate_c_min", 10.0, 0.1, 500.0)
+        residence_time = _parse_bounded_float(data, "residence_time_min", 20.0, 0.1, 600.0)
         yield_mode = data.get("yield_mode", "deterministic")
 
         report = cls._simulator.run_simulation(
@@ -153,8 +176,8 @@ class APIRequestHandler:
     def handle_soft_sensors(cls, data: Dict[str, Any]) -> Dict[str, Any]:
         """Infer unmeasured stream states from telemetry."""
         fs_name = data.get("feedstock", "pine_sawdust")
-        feed_rate = float(data.get("feed_rate_kg_h", 100.0))
-        temp = float(data.get("reactor_temp_c", 500.0))
+        feed_rate = _parse_bounded_float(data, "feed_rate_kg_h", 100.0, 0.1, 100000.0)
+        temp = _parse_bounded_float(data, "reactor_temp_c", 500.0, 100.0, 1500.0)
 
         report = cls._simulator.run_simulation(
             feedstock_name=fs_name,
@@ -211,7 +234,7 @@ class APIRequestHandler:
     def handle_diagnostics(cls, data: Dict[str, Any]) -> Dict[str, Any]:
         """Simulate fault mode and run tri-layer anomaly detector."""
         f_str = data.get("fault_type", "cyclone_blockage")
-        sev = float(data.get("severity", 0.85))
+        sev = _parse_bounded_float(data, "severity", 0.85, 0.0, 1.0)
 
         f_map = {
             "none": IndustrialFaultType.NONE,
@@ -244,9 +267,9 @@ class APIRequestHandler:
     @classmethod
     def handle_maintenance(cls, data: Dict[str, Any]) -> Dict[str, Any]:
         """Evaluate fleet RUL prognostics and work orders."""
-        hours = float(data.get("operating_hours", 4500.0))
-        feed_rate = float(data.get("feed_rate_kg_h", 100.0))
-        temp = float(data.get("reactor_temp_c", 500.0))
+        hours = _parse_bounded_float(data, "operating_hours", 4500.0, 0.0, 500000.0)
+        feed_rate = _parse_bounded_float(data, "feed_rate_kg_h", 100.0, 0.1, 100000.0)
+        temp = _parse_bounded_float(data, "reactor_temp_c", 500.0, 100.0, 1500.0)
 
         fleet = RULEstimator.assess_fleet(
             operating_hours=hours,
@@ -265,8 +288,8 @@ class APIRequestHandler:
         """Execute dynamic closed-loop response simulation (PID / MPC / Open-Loop)."""
         from src.control.benchmark_control import ControlBenchmarkSuite
         ctrl_type = data.get("controller", "mpc")
-        setpoint = float(data.get("setpoint", 520.0))
-        moist_disturb = float(data.get("moisture_disturb", 20.0))
+        setpoint = _parse_bounded_float(data, "setpoint", 520.0, 100.0, 1500.0)
+        moist_disturb = _parse_bounded_float(data, "moisture_disturb", 20.0, 0.0, 80.0)
 
         suite = ControlBenchmarkSuite(simulation_duration_sec=3600.0, dt_sec=4.0)
         states, metrics = suite.run_simulation(
@@ -290,11 +313,11 @@ class APIRequestHandler:
         """Execute Techno-Economic Analysis and LCA carbon accounting."""
         from src.economics.run_economics import evaluate_plant_economics_and_lca
         fs_name = data.get("feedstock", "olive_pomace")
-        feed_rate = float(data.get("feed_rate_kg_h", 100.0))
-        temp = float(data.get("reactor_temp_c", 500.0))
-        oil_price = float(data.get("oil_price", 0.65))
-        char_price = float(data.get("char_price", 0.45))
-        corc_price = float(data.get("corc_price", 65.0))
+        feed_rate = _parse_bounded_float(data, "feed_rate_kg_h", 100.0, 0.1, 100000.0)
+        temp = _parse_bounded_float(data, "reactor_temp_c", 500.0, 100.0, 1500.0)
+        oil_price = _parse_bounded_float(data, "oil_price", 0.65, 0.0, 1000.0)
+        char_price = _parse_bounded_float(data, "char_price", 0.45, 0.0, 1000.0)
+        corc_price = _parse_bounded_float(data, "corc_price", 65.0, 0.0, 5000.0)
 
         return evaluate_plant_economics_and_lca(
             feedstock_name=fs_name,
@@ -318,9 +341,9 @@ class APIRequestHandler:
     def handle_autopilot_step(cls, data: Dict[str, Any]) -> Dict[str, Any]:
         """Advance autonomous autopilot by one decision step."""
         agent = cls._get_autopilot()
-        moist = float(data.get("moisture", 12.0))
+        moist = _parse_bounded_float(data, "moisture", 12.0, 0.0, 80.0)
         fault = data.get("fault", "none")
-        sp = float(data.get("setpoint", 500.0))
+        sp = _parse_bounded_float(data, "setpoint", 500.0, 100.0, 1500.0)
         reset_agent = data.get("reset", False)
 
         if reset_agent:
@@ -343,6 +366,6 @@ class APIRequestHandler:
     def handle_autopilot_mission(cls, data: Dict[str, Any]) -> Dict[str, Any]:
         """Execute full autonomous stress test mission."""
         from src.autonomous.stress_test import AutonomousStressTestRunner
-        dt = float(data.get("dt", 2.0))
+        dt = _parse_bounded_float(data, "dt", 2.0, 0.1, 60.0)
         runner = AutonomousStressTestRunner(dt_sec=dt)
         return runner.run_4hour_mission()

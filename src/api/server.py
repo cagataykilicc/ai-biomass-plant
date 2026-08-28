@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import mimetypes
 import os
 import threading
@@ -17,13 +18,21 @@ from src.api.handlers import APIRequestHandler
 class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
     """Handles REST API calls and serves modern static Web GUI assets."""
 
-    server_version = "DigitalTwinHTTP/1.0"
+    server_version = "DigitalTwinHTTP/2.0"
 
     def _set_cors_headers(self, content_type: str = "application/json") -> None:
         self.send_header("Content-Type", content_type)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-API-Key")
+
+    def _is_authorized(self) -> bool:
+        """Validate optional or required API key from environment variable."""
+        required_key = os.environ.get("BIOPLANT_API_KEY") or os.environ.get("API_KEY")
+        if not required_key:
+            return True
+        provided_key = self.headers.get("X-API-Key")
+        return provided_key == required_key
 
     def do_OPTIONS(self) -> None:
         self.send_response(200)
@@ -34,15 +43,31 @@ class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
         parsed_url = urlparse(self.path)
         path = parsed_url.path
 
-        if path == "/api/status":
-            res = APIRequestHandler.handle_status()
-            self._send_json(200, res)
-            return
+        if path.startswith("/api/"):
+            if not self._is_authorized():
+                self._send_json(401, {"error": "Unauthorized: Missing or invalid X-API-Key header.", "endpoint": path})
+                return
 
-        if path == "/api/feedstocks":
-            res = APIRequestHandler.handle_feedstocks()
-            self._send_json(200, res)
-            return
+            try:
+                if path == "/api/status":
+                    res = APIRequestHandler.handle_status()
+                    self._send_json(200, res)
+                    return
+
+                if path == "/api/feedstocks":
+                    res = APIRequestHandler.handle_feedstocks()
+                    self._send_json(200, res)
+                    return
+
+                self._send_json(404, {"error": f"Endpoint not found: {path}", "endpoint": path})
+                return
+            except ValueError as val_err:
+                self._send_json(400, {"error": str(val_err), "endpoint": path})
+                return
+            except Exception as exc:
+                logging.exception("Unhandled server exception in GET %s: %s", path, exc)
+                self._send_json(500, {"error": "Internal server error occurred while processing request.", "endpoint": path})
+                return
 
         # Serve static assets
         self._serve_static_file(path)
@@ -50,6 +75,11 @@ class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
     def do_POST(self) -> None:
         parsed_url = urlparse(self.path)
         path = parsed_url.path
+
+        if path.startswith("/api/"):
+            if not self._is_authorized():
+                self._send_json(401, {"error": "Unauthorized: Missing or invalid X-API-Key header.", "endpoint": path})
+                return
 
         # Read JSON body
         content_len = int(self.headers.get("Content-Length", 0))
@@ -89,9 +119,12 @@ class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
                 res = APIRequestHandler.handle_autopilot_mission(data)
                 self._send_json(200, res)
             else:
-                self._send_json(404, {"error": f"Endpoint not found: {path}"})
+                self._send_json(404, {"error": f"Endpoint not found: {path}", "endpoint": path})
+        except ValueError as val_err:
+            self._send_json(400, {"error": str(val_err), "endpoint": path})
         except Exception as exc:
-            self._send_json(500, {"error": str(exc), "endpoint": path})
+            logging.exception("Unhandled server exception in POST %s: %s", path, exc)
+            self._send_json(500, {"error": "Internal server error occurred while processing request.", "endpoint": path})
 
     def _send_json(self, status_code: int, payload: Dict[str, Any]) -> None:
         raw_bytes = json.dumps(payload, indent=2).encode("utf-8")
@@ -102,19 +135,33 @@ class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
         self.wfile.write(raw_bytes)
 
     def _serve_static_file(self, req_path: str) -> None:
-        static_dir = Path(__file__).resolve().parent.parent / "web" / "static"
+        static_dir = (Path(__file__).resolve().parent.parent / "web" / "static").resolve()
         clean_path = req_path.lstrip("/")
         if not clean_path or clean_path == "":
-            target_file = static_dir / "index.html"
+            target_file = (static_dir / "index.html").resolve()
         else:
-            target_file = static_dir / clean_path
+            target_file = (static_dir / clean_path).resolve()
+
+        # Path traversal security verification
+        try:
+            is_inside = target_file.is_relative_to(static_dir)
+        except AttributeError:
+            is_inside = str(target_file).startswith(str(static_dir))
+
+        if not is_inside:
+            self.send_response(403)
+            self._set_cors_headers("text/plain")
+            self.end_headers()
+            self.wfile.write(b"403 - Forbidden")
+            return
 
         if not target_file.is_file():
             # Fallback to index.html for SPA routing
-            target_file = static_dir / "index.html"
+            target_file = (static_dir / "index.html").resolve()
 
         if not target_file.is_file():
             self.send_response(404)
+            self._set_cors_headers("text/plain")
             self.end_headers()
             self.wfile.write(b"404 - Not Found")
             return

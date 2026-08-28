@@ -1,6 +1,7 @@
 """Integration and automated unit tests for Digital Twin REST API and HTTP server."""
 
 import json
+import os
 import time
 import urllib.request
 import urllib.error
@@ -143,5 +144,64 @@ def test_live_http_server_endpoints() -> None:
             sim_data = json.loads(response.read().decode())
             assert sim_data["feedstock"] == "Olive Pomace"
 
+        # 4. Test Path Traversal Protection (403 Forbidden)
+        try:
+            req_traversal = urllib.request.Request("http://127.0.0.1:8123/../../pyproject.toml")
+            urllib.request.urlopen(req_traversal)
+            assert False, "Expected 403 Forbidden on path traversal attempt"
+        except urllib.error.HTTPError as err:
+            assert err.code == 403
+
+        # 5. Test Input Bounds Validation (400 Bad Request)
+        try:
+            req_invalid = urllib.request.Request(
+                "http://127.0.0.1:8123/api/simulate",
+                data=json.dumps({"feed_rate_kg_h": -50.0}).encode(),
+                headers={"Content-Type": "application/json"},
+            )
+            urllib.request.urlopen(req_invalid)
+            assert False, "Expected 400 Bad Request on negative feed rate"
+        except urllib.error.HTTPError as err:
+            assert err.code == 400
+            err_data = json.loads(err.read().decode())
+            assert "outside allowed range" in err_data["error"]
+
     finally:
+        server.stop()
+
+
+def test_api_key_authentication() -> None:
+    """Verify X-API-Key header authentication when BIOPLANT_API_KEY environment variable is set."""
+    server = DigitalTwinServer(host="127.0.0.1", port=8124)
+    server.start(blocking=False)
+    time.sleep(0.5)
+
+    os.environ["BIOPLANT_API_KEY"] = "bioplant-secure-token-123"
+
+    try:
+        # 1. Without header -> 401 Unauthorized
+        try:
+            urllib.request.urlopen("http://127.0.0.1:8124/api/status")
+            assert False, "Expected 401 Unauthorized when API key is required"
+        except urllib.error.HTTPError as err:
+            assert err.code == 401
+
+        # 2. With invalid header -> 401 Unauthorized
+        try:
+            req_bad = urllib.request.Request("http://127.0.0.1:8124/api/status", headers={"X-API-Key": "wrong-key"})
+            urllib.request.urlopen(req_bad)
+            assert False, "Expected 401 Unauthorized with invalid API key"
+        except urllib.error.HTTPError as err:
+            assert err.code == 401
+
+        # 3. With correct header -> 200 OK
+        req_good = urllib.request.Request("http://127.0.0.1:8124/api/status", headers={"X-API-Key": "bioplant-secure-token-123"})
+        with urllib.request.urlopen(req_good) as response:
+            assert response.status == 200
+            data = json.loads(response.read().decode())
+            assert data["status"] == "ONLINE"
+
+    finally:
+        if "BIOPLANT_API_KEY" in os.environ:
+            del os.environ["BIOPLANT_API_KEY"]
         server.stop()
