@@ -1,16 +1,17 @@
-# AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V0.8)
+# AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V0.9)
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Predictive Maintenance: 95% RUL](https://img.shields.io/badge/PdM-RUL%20Prognostics%20%26%20Work%20Orders-darkgreen.svg)]()
 [![Diagnostics: Tri--Layer FDD](https://img.shields.io/badge/Diagnostics-Tri--Layer%20FDD%20%26%20Alarms-critical.svg)]()
 [![Soft Sensors: 6 Virtual Gauges](https://img.shields.io/badge/Soft%20Sensors-6%20Inferential%20Gauges%20(95%25%20UQ)-blueviolet.svg)]()
 [![Optimization: NSGA--II Pareto & TOPSIS](https://img.shields.io/badge/Optimization-Pareto%20%26%20TOPSIS%20MCDM-blue.svg)]()
 [![Champion ML: Gradient Boosting](https://img.shields.io/badge/Champion%20Model-Gradient%20Boosting%20(R%C2%B2%200.9981)-blueviolet.svg)]()
 [![Physics: 100% Mass Conserved](https://img.shields.io/badge/Physics%20Constraint-Simplex%20Projection%20(100%25)-darkgreen.svg)]()
-[![Tests: 100% Passed](https://img.shields.io/badge/Tests-71%2F71%20Passed-brightgreen.svg)]()
+[![Tests: 100% Passed](https://img.shields.io/badge/Tests-77%2F77%20Passed-brightgreen.svg)]()
 [![Thermal Status: Self--Sufficient](https://img.shields.io/badge/Thermal%20Status-Autonomous%20(TSI%20111.3%25)-darkgreen.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)]()
 
-A modular, first-principles chemical engineering and digital twin platform for biomass thermal conversion, real-time inferential soft sensors, process anomaly detection, equipment fault diagnosis, and automated alarm management.
+A modular, first-principles chemical engineering and digital twin platform for biomass thermal conversion, predictive maintenance (PdM) with 95% Remaining Useful Life (RUL) estimation, real-time inferential soft sensors, process anomaly detection, equipment fault diagnosis, and multiobjective process optimization.
 
 ---
 
@@ -26,59 +27,62 @@ The objective is to develop an industrial-grade digital twin of a commercial bio
 * Syngas burner heat integration & Thermal Self-Sufficiency Index (TSI)
 * Second-Law Exergy analysis and destruction tracking
 * **Multi-Model Machine Learning Benchmarking**: Gradient Boosting Champion ($R^2 = 0.9981$)
-* **Physics-Informed Constraint Projection**: Exact $100.00\%$ mass conservation across solid, liquid, and gas phases
+* **Physics-Informed Constraint Projection**: Exact $100.00\%$ mass conservation
 * **AI-Driven Process Optimization & Pareto Frontier Engine**: SLSQP, Differential Evolution, NSGA-II, and TOPSIS MCDM
-* **Industrial Soft Sensors with 95% UQ**: Real-time inferential estimation of unmeasured lab properties (Bio-oil TAN, Moisture, HHV, Syngas LHV, Char Yield, TSI)
-* **Tri-Layer Anomaly Detection & Fault Diagnosis**: Physical conservation residuals, Isolation Forest, and PCA reconstruction error ($Q$-statistic & Hotelling's $T^2$) diagnosing 5 industrial failure modes with automated safety mitigation protocols
+* **Industrial Soft Sensors with 95% UQ**: Real-time inferential estimation of unmeasured lab stream properties
+* **Tri-Layer Anomaly Detection & Fault Diagnosis**: Isolation Forest, PCA reconstruction error ($Q$ & $T^2$), and NFPA/IEC safety alarms
+* **Predictive Maintenance & RUL Prognostics**: Physics-informed degradation models for infeed augers, refractory liners, particulate filters, and condensers with automated work order generation
 
 ---
 
-## 2. Process Anomaly Detection & Fault Diagnosis (V0.8)
+## 2. Predictive Maintenance & Asset Prognostics (V0.9)
 
 ```text
   +-----------------------------------------------------------------------------------+
-  |                       ONLINE HARDWARE SENSOR TELEMETRY                            |
-  |  TI-101..106 (Temperatures), FI-101..103 (Flows), PI-101 (Bed Differential Pres)  |
+  |                       OPERATING ASSET WEAR & DEGRADATION                          |
+  |  Auger Flight Thinning, Refractory Spalling, Filter Blinding, Condenser Corrosion  |
   +---------------------------------------+-------------------------------------------+
                                           |
                                           v
                +----------------------------------------------------+
-               |         TRI-LAYER ANOMALY DETECTION ENGINE         |
-               |  * Layer 1: Mass/Elemental Conservation Residuals  |
-               |  * Layer 2: Isolation Forest Spatial Outlier Score |
-               |  * Layer 3: PCA Reconstruction Error (SPE Q & T²)  |
+               |         PHYSICS-INFORMED DEGRADATION KINETICS      |
+               |  * Archard Abrasive Wear: dW/dt = f(m, Ash, Vib)   |
+               |  * Refractory Spalling: dD/dt = f(T_bed, N_cycles) |
+               |  * Filter Blinding: dP(t) = dP_0 * (1 + k*t)^1.35  |
+               |  * Acid Corrosion: dC/dt = f(TAN, Moisture)        |
                +--------------------------+-------------------------+
                                           |
                                           v
                +----------------------------------------------------+
-               |      ROOT CAUSE FAULT DIAGNOSTIC CLASSIFIER        |
-               |  * Cyclone C101 Dipleg Blockage (Delta-P Surge)    |
-               |  * Condenser Train HX102 Tar/Wax Fouling           |
-               |  * Pyrolysis Reactor R101 Thermal Excursion        |
-               |  * Instrument Calibration Bias / Sensor Drift      |
-               |  * Feed Auger A101 Jamming & Fuel Starvation       |
+               |      HEALTH INDEX & RUL PROGNOSTICS ENGINE (95% UQ)|
+               |  * Dynamic Health Index HI(t) in [100%, 0%]        |
+               |  * Remaining Useful Life (RUL in Operating Hours)  |
+               |  * Calibrated 95% Confidence Interval [Lo, Hi]     |
+               |  * Fleet Bottleneck Identification                 |
                +--------------------------+-------------------------+
                                           |
                                           v
                +----------------------------------------------------+
-               |       AUTOMATED ALARM MANAGER & SAFETY ACTIONS     |
-               |  * Severity Triage: INFO, WARNING, CRITICAL_ESD    |
-               |  * Automatic Interlocks (N2 Purge, Starve Trip)    |
-               |  * Compliance: NFPA 86, NFPA 652, IEC 61508 SIL-2  |
+               |       PRESCRIPTIVE WORK ORDER & LOTO MANAGER       |
+               |  * Urgency Triage: HEALTHY, PLANNED, URGENT, CRIT  |
+               |  * Spare Parts Bill of Materials (BOM) & Inventory |
+               |  * Estimated Labor Hours & Technician Crew Sizing  |
+               |  * Safety Lockout / Tagout (LOTO) Protocols        |
                +----------------------------------------------------+
 ```
 
 ---
 
-## 3. Industrial Fault Modes & Safety Mitigations
+## 3. Fleet Health & RUL Summary at 4,500 Operating Hours
 
-| Failure Mode | Affected Equipment | Primary Telemetry Signature | Automated Interlock Action | Standard Code |
-| :--- | :---: | :--- | :--- | :--- |
-| **`CYCLONE_DIPLEG_BLOCKAGE`** | **`CYCLONE_C101`** | Bed $\Delta P$ surges ($> 12\text{ kPa}$), char carryover | Trigger automated high-pressure $N_2$ pulse-jet knocker | **NFPA 652** |
-| **`CONDENSER_TAR_FOULING`** | **`CONDENSER_HX102`** | Gas exit temp spikes ($> 50^\circ\text{C}$), high cooling demand | Ramp cooling water pump to $100\%$ duty; prep solvent flush | **TEMA / API 660** |
-| **`REACTOR_THERMAL_RUNAWAY`**| **`REACTOR_R101`** | Core bed temp excursion ($> 650^\circ\text{C}$) | **Trip Emergency Starve**: Cut feed auger, bypass flue, $N_2$ flood | **NFPA 86 / SIL-2** |
-| **`THERMOCOUPLE_SENSOR_DRIFT`**| **`INSTRUMENT_TI103`** | Steady temperature offset bias ($\pm 25^\circ\text{C}$) | Switch temperature control loop to redundant sensor `TI-103B` | **ISA-75** |
-| **`FEED_AUGER_JAMMING`** | **`FEEDER_AUGER_A101`** | Biomass feed collapses ($\dot{m} \rightarrow 0$), $\Delta P$ drops | Execute 3-sec reverse auger cycle; trip motor if torque $> 150\%$ | **CEMA Safety** |
+From `reports/predictive_maintenance_report.json`:
+
+| Asset ID | Component Name | Current Health ($HI\%$) | Physical Wear State | Estimated RUL | 95% Confidence Interval | Urgency Level |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **`AUGER_A101`** | **Biomass Infeed Auger Screw** | $49.3\%$ | $3.04\text{ / }6.0\text{ mm}$ wear | $4,376\text{ h}$ | $[3,697 - 5,054]\text{ h}$ | `PLANNED_MAINTENANCE` |
+| **`REACTOR_R101_LINER`** | **Refractory Bed Liner [BOTTLENECK]** | **$38.6\%$** | $24.57\text{ / }40.0\text{ mm}$ loss | **$2,826\text{ h}$** | **$[2,360 - 3,292]\text{ h}$** | **`PLANNED_MAINTENANCE`** |
+| **`FILTER_F101`** | **Syngas Ceramic Filter** | $48.3\%$ | $7.17\text{ / }12.0\text{ kPa}$ $\Delta P$ | $4,204\text{ h}$ | $[3,549 - 4,859]\text{ h}$ | `PLANNED_MAINTENANCE` |
+| **`CONDENSER_HX102`** | **Condenser Tube Bundle** | $55.0\%$ | $0.68\text{ / }1.5\text{ mm}$ corrosion | $5,500\text{ h}$ | $[4,667 - 6,333]\text{ h}$ | `PLANNED_MAINTENANCE` |
 
 ---
 
@@ -87,26 +91,20 @@ The objective is to develop an industrial-grade digital twin of a commercial bio
 ```text
 ai_biomass_plant/
 │
-├── models/
-│   └── checkpoints/
-│       ├── anomaly_detector.joblib           # Multi-layer anomaly detector (IForest + PCA)
-│       ├── fault_classifier.joblib           # Supervised root-cause diagnostic classifier
-│       ├── soft_sensors.joblib               # 6 Serialized inferential virtual sensors
-│       └── yield_predictor_champion.joblib   # Production champion yield surrogate
-│
 ├── reports/
+│   ├── predictive_maintenance_report.json    # Fleet health, RUL & prescriptive work orders
 │   ├── fault_detection_report.json           # Anomaly scores, root cause & alarm dispatch report
 │   ├── soft_sensor_calibration_report.json   # Soft sensor R², RMSE & 95% UQ coverage
 │   ├── process_optimization_report.json      # Optimal operational setpoints
 │   └── pareto_frontier.json                  # Non-dominated Pareto frontier points
 │
 ├── src/
-│   ├── diagnostics/
-│   │   ├── fault_simulator.py                # 5 Industrial fault injection modes
-│   │   ├── anomaly_detector.py               # Tri-layer anomaly detection (IForest, PCA, Balances)
-│   │   ├── fault_diagnostics.py              # Root cause classifier & equipment attribution
-│   │   ├── alarm_manager.py                  # Alarm priority triage & safety mitigation advice
-│   │   └── run_diagnostics.py                # Diagnostics CLI dashboard
+│   ├── maintenance/
+│   │   ├── degradation_models.py             # Wear trajectory models for 4 critical assets
+│   │   ├── rul_estimator.py                  # Health index & RUL with 95% confidence intervals
+│   │   ├── work_order_manager.py             # Work order generator with BOM & safety LOTO
+│   │   └── run_maintenance.py                # Predictive maintenance CLI dashboard
+│   ├── diagnostics/                          # Fault simulation, anomaly detector & alarms
 │   ├── sensors/                              # Hardware telemetry & 6 Soft Sensors (95% UQ)
 │   ├── optimization/                         # SLSQP, Differential Evolution, Pareto & TOPSIS
 │   ├── ml/                                   # Surrogate models & physics constraints
@@ -115,14 +113,14 @@ ai_biomass_plant/
 │   │   └── plant_simulator.py                # Hybrid simulation engine orchestrator
 │   └── run_simulation.py                     # CLI application entry point
 │
-├── tests/                                    # 71 Automated Unit & Integration Tests
+├── tests/                                    # 77 Automated Unit & Integration Tests
+│   ├── test_degradation_models.py
+│   ├── test_rul_estimator.py
+│   ├── test_work_orders.py
 │   ├── test_fault_simulator.py
 │   ├── test_anomaly_detector.py
 │   ├── test_fault_diagnostics.py
 │   ├── test_alarm_manager.py
-│   ├── test_telemetry.py
-│   ├── test_soft_sensors.py
-│   ├── test_calibration.py
 │   └── ...
 │
 ├── pyproject.toml
@@ -133,27 +131,32 @@ ai_biomass_plant/
 
 ## 5. How to Run the Platform
 
-### A. Run Simulated Fault Diagnostics & Safety Alarm Dispatch
+### A. Run Predictive Maintenance & RUL Dashboard
+```bash
+python -m src.maintenance.run_maintenance --operating-hours 4500
+```
+
+### B. Run Simulation with Integrated Maintenance Health Assessment
+```bash
+python -m src.run_simulation --predictive-maintenance --operating-hours 5200 --feedstock pine_sawdust
+```
+
+### C. Run Fault Diagnostics & Alarm Triage
 ```bash
 python -m src.diagnostics.run_diagnostics --simulate-fault cyclone_blockage --severity 0.85
 ```
 
-### B. Run Thermal Runaway Emergency Simulation
-```bash
-python -m src.diagnostics.run_diagnostics --simulate-fault thermal_runaway --severity 0.90
-```
-
-### C. Run Real-Time Inferential Soft Sensor Dashboard
+### D. Run Real-Time Inferential Soft Sensor Dashboard
 ```bash
 python -m src.sensors.run_soft_sensors --feedstock pine_sawdust --temp 520
 ```
 
-### D. Run Process Optimization & TOPSIS Decision Support
+### E. Run Process Optimization & TOPSIS Decision Support
 ```bash
 python -m src.optimization.run_optimizer --feedstock pine_sawdust --multiobjective
 ```
 
-### E. Run Unit Test Suite
+### F. Run Unit Test Suite
 ```bash
 pytest tests/ -v
 ```
@@ -170,9 +173,9 @@ pytest tests/ -v
 * [x] **V0.6: AI-Driven Multiobjective Process Optimization (Pareto & TOPSIS)** *(Completed)*
 * [x] **V0.7: Soft Sensors for Real-Time State Estimation (95% UQ)** *(Completed)*
 * [x] **V0.8: Process Anomaly & Fault Detection (Autoencoders, Isolation Forests & Alarms)** *(Completed)*
-* [ ] **V0.9: Predictive Maintenance (RUL of Augers, Refractory, Filters)**
-  * Remaining Useful Life (RUL) estimation using degradation trajectory models and survival analysis.
-* [ ] **V1.0: Real-Time Digital Twin Prototype (FastAPI + Streamlit GUI)**
+* [x] **V0.9: Predictive Maintenance (RUL Estimation & Prescriptive Work Orders)** *(Completed)*
+* [ ] **V1.0: Real-Time Digital Twin Prototype (FastAPI Backend + Streamlit Web GUI Dashboard)**
+  * Unified interactive web interface with live flowsheet visualization, real-time PID controls, scenario analysis, and live soft sensor telemetry.
 * [ ] **V1.1: Dynamic Closed-Loop Process Control Simulation (MPC / PID)**
 * [ ] **V1.2: Plant-Level AI Decision Support (Techno-Economic & LCA Carbon Accounting)**
 * [ ] **V2.0: Fully Autonomous AI Biomass Recycling Plant Platform**
