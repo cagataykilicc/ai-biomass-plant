@@ -1,0 +1,127 @@
+{
+  "plant_overview": {
+    "feedstock": "Olive Pomace",
+    "feed_rate_kg_h": 100.0,
+    "annual_biomass_feed_tonnes": 800.0,
+    "reactor_temp_c": 500.0,
+    "operating_hours_yr": 8000.0
+  },
+  "capital_expenditure_capex": {
+    "purchased_equipment_cost_usd": 308000.0,
+    "direct_installation_cost_usd": 154000.0,
+    "indirect_costs_usd": 92400.0,
+    "fixed_capital_investment_usd": 554400.0,
+    "working_capital_usd": 55440.0,
+    "total_capital_investment_usd": 609840.0,
+    "equipment_count": 8,
+    "equipment": [
+      {
+        "equipment_tag": "D-101",
+        "equipment_name": "Rotary Biomass Drum Dryer",
+        "capacity": "100.0 kg/h wet feed",
+        "base_purchased_cost_usd": 45000.0,
+        "bare_module_factor": 3.2,
+        "installed_cost_usd": 144000.0
+      },
+      {
+        "equipment_tag": "A-101",
+        "equipment_name": "Variable-Speed Feed Auger Feeder",
+        "capacity": "100.0 kg/h feed",
+        "base_purchased_cost_usd": 18500.0,
+        "bare_module_factor": 2.8,
+        "installed_cost_usd": 51800.0
+      },
+      {
+        "equipment_tag": "R-101",
+        "equipment_name": "Pyrolysis Reactor & Refractory Liner",
+        "capacity": "100.0 kg/h capacity",
+        "base_purchased_cost_usd": 95000.0,
+        "bare_module_factor": 3.5,
+        "installed_cost_usd": 332500.0
+      },
+      {
+        "equipment_tag": "C-101",
+        "equipment_name": "High-Efficiency Gas Cyclone Separator",
+        "capacity": "45.0 m3/h gas flow",
+        "base_purchased_cost_usd": 22000.0,
+        "bare_module_factor": 2.9,
+        "installed_cost_usd": 63800.0
+      },
+      {
+        "equipment_tag": "HX-102",
+        "equipment_name": "Quench Condenser & Shell-Tube Exchanger",
+        "capacity": "65.0 kW duty",
+        "base_purchased_cost_usd": 38000.0,
+        "bare_module_factor": 3.1,
+        "installed_cost_usd": 117800.0
+      },
+      {
+        "equipment_tag": "B-101",
+        "equipment_name": "Syngas Combustor & Flue Gas Ducting",
+        "capacity": "75.0 kW thermal",
+        "base_purchased_cost_usd": 42000.0,
+        "bare_module_factor": 3.0,
+        "installed_cost_usd": 126000.0
+      },
+      {
+        "equipment_tag": "F-101",
+        "equipment_name": "Ceramic Hot Gas Candle Filter",
+        "capacity": "6.5 m2 area",
+        "base_purchased_cost_usd": 28000.0,
+        "bare_module_factor": 2.7,
+        "installed_cost_usd": 75600.0
+      },
+      {
+        "equipment_tag": "T-101",
+        "equipment_name": "Bio-Oil Stainless Storage Tank (30-day)",
+        "capacity": "25.0 m3 volume",
+        "base_purchased_cost_usd": 19500.0,
+        "bare_module_factor": 2.4,
+        "installed_cost_usd": 46800.0
+      }
+    ]
+  },
+  "operational_expenditure_opex": {
+    "feedstock_cost_usd_yr": 52000.0,
+    "electricity_utility_cost_usd_yr": 33600.0,
+    "labor_and_supervision_usd_yr": 50000.0,
+    "maintenance_and_repairs_usd_yr": 16632.0,
+    "insurance_and_taxes_usd_yr": 8316.0,
+    "consumables_and_waste_usd_yr": 8500.0,
+    "total_opex_usd_yr": 169048.0,
+    "unit_opex_usd_per_tonne_feed": 211.31
+  },
+  "financial_viability_dcf": {
+    "annual_bio_oil_production_kg": 370670.3,
+    "annual_biochar_production_kg": 183216.6,
+    "annual_gross_revenue_usd": 350631.15,
+    "annual_net_cash_flow_usd": 155993.3,
+    "net_present_value_usd": 657833.5,
+    "internal_rate_of_return_pct": 24.88,
+    "discounted_payback_years": 5.12,
+    "levelized_cost_bio_oil_usd_kg": 0.3534,
+    "levelized_cost_bio_oil_usd_mj": 0.0202,
+    "is_financially_viable": true
+  },
+  "life_cycle_assessment_lca": {
+    "scope_emissions": {
+      "scope_1_direct_co2e_kg_yr": 11610.0,
+      "scope_2_electricity_co2e_kg_yr": 106400.0,
+      "scope_3_supply_chain_co2e_kg_yr": 36000.0,
+      "total_gross_emissions_co2e_kg_yr": 154010.0
+    },
+    "sequestration": {
+      "annual_biochar_production_kg": 183216.6,
+      "biochar_carbon_content_pct": 78.0,
+      "permanence_factor_100yr": 0.8,
+      "co2_sequestered_kg_yr": 419199.6,
+      "co2_sequestered_tonnes_yr": 419.2,
+      "corc_credit_price_usd_tonne": 65.0,
+      "annual_carbon_credit_revenue_usd": 27247.97
+    },
+    "net_ghg_balance_co2e_kg_yr": -265189.6,
+    "carbon_intensity_g_co2e_per_mj_bio_oil": -40.88,
+    "net_removal_kg_co2e_per_tonne_feed": 331.49,
+    "is_carbon_negative": true
+  }
+}
