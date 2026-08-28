@@ -210,6 +210,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="Run Techno-Economic Analysis (TEA) and ISO 14040/14044 LCA carbon accounting.",
     )
     parser.add_argument(
+        "--autopilot",
+        action="store_true",
+        help="Run autonomous autopilot supervisory agent simulation.",
+    )
+    parser.add_argument(
+        "--stress-test",
+        action="store_true",
+        help="Execute 4-hour multi-phase autonomous qualification stress test mission.",
+    )
+    parser.add_argument(
         "--feed-rate",
         type=float,
         default=None,
@@ -306,6 +316,15 @@ def main() -> None:
         if args.output:
             sys.argv += ["--output", args.output]
         run_econ()
+        return
+
+    # Route to autonomous autopilot and stress test runner if requested
+    if args.stress_test or args.autopilot:
+        from src.autonomous.run_autopilot import main as run_ap
+        sys.argv = [sys.argv[0], "--mission"]
+        if args.output:
+            sys.argv += ["--output", args.output]
+        run_ap()
         return
 
     # If --optimize flag is provided, route directly to optimization runner

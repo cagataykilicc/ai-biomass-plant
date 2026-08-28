@@ -3,7 +3,7 @@
     "total_observations": 40,
     "n_models_evaluated": 3,
     "champion_model": "extra_trees",
-    "champion_checkpoint_path": "C:\\Users\\USER\\AppData\\Local\\Temp\\pytest-of-USER\\pytest-18\\test_multimodel_benchmark_exec0\\checkpoints\\yield_predictor_champion.joblib"
+    "champion_checkpoint_path": "C:\\Users\\USER\\AppData\\Local\\Temp\\pytest-of-USER\\pytest-21\\test_multimodel_benchmark_exec0\\checkpoints\\yield_predictor_champion.joblib"
   },
   "leaderboard": [
     {
@@ -13,9 +13,9 @@
       "test_rmse_wt_pct": 3.7895,
       "test_mae_wt_pct": 3.0727,
       "unconstrained_closure_error_pct": 0.0013,
-      "latency_us_per_sample": 1833.5,
+      "latency_us_per_sample": 1833.1,
       "composite_score": 0.8056,
-      "checkpoint_path": "C:\\Users\\USER\\AppData\\Local\\Temp\\pytest-of-USER\\pytest-18\\test_multimodel_benchmark_exec0\\checkpoints\\yield_predictor_extra_trees.joblib"
+      "checkpoint_path": "C:\\Users\\USER\\AppData\\Local\\Temp\\pytest-of-USER\\pytest-21\\test_multimodel_benchmark_exec0\\checkpoints\\yield_predictor_extra_trees.joblib"
     },
     {
       "model_type": "random_forest",
@@ -24,9 +24,9 @@
       "test_rmse_wt_pct": 4.6913,
       "test_mae_wt_pct": 3.8622,
       "unconstrained_closure_error_pct": 0.0011,
-      "latency_us_per_sample": 1826.4,
-      "composite_score": 0.7556,
-      "checkpoint_path": "C:\\Users\\USER\\AppData\\Local\\Temp\\pytest-of-USER\\pytest-18\\test_multimodel_benchmark_exec0\\checkpoints\\yield_predictor_random_forest.joblib"
+      "latency_us_per_sample": 1840.4,
+      "composite_score": 0.7555,
+      "checkpoint_path": "C:\\Users\\USER\\AppData\\Local\\Temp\\pytest-of-USER\\pytest-21\\test_multimodel_benchmark_exec0\\checkpoints\\yield_predictor_random_forest.joblib"
     },
     {
       "model_type": "ridge",
@@ -35,9 +35,9 @@
       "test_rmse_wt_pct": 6.2244,
       "test_mae_wt_pct": 5.5447,
       "unconstrained_closure_error_pct": 0.0023,
-      "latency_us_per_sample": 4.1,
+      "latency_us_per_sample": 4.2,
       "composite_score": 0.5165,
-      "checkpoint_path": "C:\\Users\\USER\\AppData\\Local\\Temp\\pytest-of-USER\\pytest-18\\test_multimodel_benchmark_exec0\\checkpoints\\yield_predictor_ridge.joblib"
+      "checkpoint_path": "C:\\Users\\USER\\AppData\\Local\\Temp\\pytest-of-USER\\pytest-21\\test_multimodel_benchmark_exec0\\checkpoints\\yield_predictor_ridge.joblib"
     }
   ],
   "detailed_reports": {
@@ -89,7 +89,7 @@
           "mass_conservation_guaranteed": true
         }
       },
-      "latency_us_per_sample": 1826.4
+      "latency_us_per_sample": 1840.4
     },
     "extra_trees": {
       "cross_validation": {
@@ -139,7 +139,7 @@
           "mass_conservation_guaranteed": true
         }
       },
-      "latency_us_per_sample": 1833.5
+      "latency_us_per_sample": 1833.1
     },
     "ridge": {
       "cross_validation": {
@@ -189,7 +189,7 @@
           "mass_conservation_guaranteed": true
         }
       },
-      "latency_us_per_sample": 4.1
+      "latency_us_per_sample": 4.2
     }
   }
 }
