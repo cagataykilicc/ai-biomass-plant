@@ -17,28 +17,38 @@ document.addEventListener('DOMContentLoaded', () => {
   runSimulation();
 });
 
-/* Navigation Tab Switching */
+const tabLoaded = {};
+
+/* Navigation Tab Switching (Optimized & Instant) */
 function initNavigation() {
   const navBtns = document.querySelectorAll('.nav-btn');
   const tabPanes = document.querySelectorAll('.tab-pane');
 
   navBtns.forEach(btn => {
     btn.addEventListener('click', () => {
+      const targetTab = btn.getAttribute('data-tab');
+      if (!targetTab) return;
+
+      // 1. Instant DOM Switching
       navBtns.forEach(b => b.classList.remove('active'));
       tabPanes.forEach(p => p.classList.remove('active'));
 
       btn.classList.add('active');
-      const targetTab = btn.getAttribute('data-tab');
       const targetPane = document.getElementById(targetTab);
       if (targetPane) targetPane.classList.add('active');
 
-      // Auto-refresh data when clicking specific tabs
-      if (targetTab === 'soft-sensors-tab') runSoftSensors();
-      if (targetTab === 'diagnostics-tab') runDiagnostics();
-      if (targetTab === 'maintenance-tab') runMaintenance();
-      if (targetTab === 'control-tab') runControlSimulation();
-      if (targetTab === 'economics-tab') runEconomics();
-      if (targetTab === 'autopilot-tab') stepAutopilot();
+      // 2. Lazy Load Data on first visit only (Non-blocking)
+      if (!tabLoaded[targetTab]) {
+        tabLoaded[targetTab] = true;
+        setTimeout(() => {
+          if (targetTab === 'soft-sensors-tab') runSoftSensors();
+          else if (targetTab === 'diagnostics-tab') runDiagnostics();
+          else if (targetTab === 'maintenance-tab') runMaintenance();
+          else if (targetTab === 'control-tab') runControlSimulation();
+          else if (targetTab === 'economics-tab') runEconomics();
+          else if (targetTab === 'autopilot-tab') stepAutopilot();
+        }, 10);
+      }
     });
   });
 }

@@ -9,6 +9,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
     .manual-layout {
       display: grid;
       grid-template-columns: 280px 1fr;
@@ -38,7 +41,7 @@
     }
     .lang-btn {
       flex: 1;
-      padding: 6px 12px;
+      padding: 8px 12px;
       border: none;
       background: transparent;
       color: var(--text-muted);
@@ -142,25 +145,25 @@
       </div>
 
       <nav id="sidebar-nav-en">
-        <a href="#overview" class="nav-link">1. System Overview</a>
-        <a href="#quickstart" class="nav-link">2. Quick Start</a>
-        <a href="#modules" class="nav-link">3. 8 Core Modules</a>
-        <a href="#autopilot" class="nav-link">4. Autonomous Autopilot</a>
-        <a href="#api" class="nav-link">5. REST API</a>
-        <a href="#feedstocks" class="nav-link">6. Feedstocks</a>
-        <a href="#safety" class="nav-link">7. Safety & LOTO</a>
-        <a href="#faq" class="nav-link">8. Troubleshooting & FAQ</a>
+        <a href="#en-overview" class="nav-link">1. System Overview</a>
+        <a href="#en-quickstart" class="nav-link">2. Quick Start</a>
+        <a href="#en-modules" class="nav-link">3. 8 Core Modules</a>
+        <a href="#en-autopilot" class="nav-link">4. Autonomous Autopilot</a>
+        <a href="#en-api" class="nav-link">5. REST API</a>
+        <a href="#en-feedstocks" class="nav-link">6. Feedstocks</a>
+        <a href="#en-safety" class="nav-link">7. Safety & LOTO</a>
+        <a href="#en-faq" class="nav-link">8. Troubleshooting & FAQ</a>
       </nav>
 
       <nav id="sidebar-nav-tr" style="display:none;">
-        <a href="#overview" class="nav-link">1. Sistem Genel Bakış</a>
-        <a href="#quickstart" class="nav-link">2. Hızlı Başlangıç</a>
-        <a href="#modules" class="nav-link">3. 8 Temel Modül</a>
-        <a href="#autopilot" class="nav-link">4. Otonom Otopilot</a>
-        <a href="#api" class="nav-link">5. REST API</a>
-        <a href="#feedstocks" class="nav-link">6. Hammaddeler</a>
-        <a href="#safety" class="nav-link">7. Güvenlik ve LOTO</a>
-        <a href="#faq" class="nav-link">8. Sorun Giderme ve SSS</a>
+        <a href="#tr-overview" class="nav-link">1. Sistem Genel Bakış</a>
+        <a href="#tr-quickstart" class="nav-link">2. Hızlı Başlangıç</a>
+        <a href="#tr-modules" class="nav-link">3. 8 Temel Modül</a>
+        <a href="#tr-autopilot" class="nav-link">4. Otonom Otopilot</a>
+        <a href="#tr-api" class="nav-link">5. REST API</a>
+        <a href="#tr-feedstocks" class="nav-link">6. Hammaddeler</a>
+        <a href="#tr-safety" class="nav-link">7. Güvenlik ve LOTO</a>
+        <a href="#tr-faq" class="nav-link">8. Sorun Giderme ve SSS</a>
       </nav>
 
       <div style="margin-top:32px; padding-top:16px; border-top:1px solid var(--border-color);">
@@ -178,7 +181,7 @@
           <p style="color:var(--text-muted); font-size:1.05rem;">Comprehensive User Manual & Technical Reference Guide (Version 2.0.0)</p>
         </div>
 
-        <section id="overview" class="manual-section">
+        <section id="en-overview" class="manual-section">
           <h2>1. System Architecture & Overview</h2>
           <p><strong>BIOPLANT AI</strong> is an industrial digital twin platform combining first-principles chemical engineering, physics-informed machine learning, and autonomous supervisory control for biomass thermochemical conversion.</p>
           
@@ -187,7 +190,7 @@
           </div>
         </section>
 
-        <section id="quickstart" class="manual-section">
+        <section id="en-quickstart" class="manual-section">
           <h2>2. Quick Start & Execution</h2>
           <h3>Starting the Web Platform</h3>
           <p>Run the built-in HTTP server to access the live glassmorphism dashboard:</p>
@@ -195,7 +198,7 @@
           <p>Access the web application at <strong>http://127.0.0.1:8000/</strong>.</p>
         </section>
 
-        <section id="modules" class="manual-section">
+        <section id="en-modules" class="manual-section">
           <h2>3. The 8 Operational Modules</h2>
           <table class="doc-table">
             <thead>
@@ -214,7 +217,7 @@
           </table>
         </section>
 
-        <section id="autopilot" class="manual-section">
+        <section id="en-autopilot" class="manual-section">
           <h2>4. Autonomous Autopilot & Flight Qualification</h2>
           <p>The Autopilot FSM governs autonomous operations across 5 discrete states:</p>
           <ul>
@@ -227,7 +230,7 @@
           <div class="code-block">python -m src.autonomous.run_autopilot --mission</div>
         </section>
 
-        <section id="api" class="manual-section">
+        <section id="en-api" class="manual-section">
           <h2>5. REST API Integration</h2>
           <p>Integrate with external SCADA/MES using JSON REST endpoints:</p>
           <div class="code-block">POST /api/simulate
@@ -241,7 +244,29 @@ Content-Type: application/json
 }</div>
         </section>
 
-        <section id="faq" class="manual-section">
+        <section id="en-feedstocks" class="manual-section">
+          <h2>6. Feedstock Library</h2>
+          <table class="doc-table">
+            <thead>
+              <tr><th>Feedstock</th><th>Ash (wt%)</th><th>Volatiles (wt%)</th><th>Fixed Carbon (wt%)</th><th>HHV (MJ/kg)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Olive Pomace</strong></td><td>4.2</td><td>72.8</td><td>23.0</td><td>20.45</td></tr>
+              <tr><td><strong>Pine Sawdust</strong></td><td>0.8</td><td>82.5</td><td>16.7</td><td>19.82</td></tr>
+              <tr><td><strong>Wheat Straw</strong></td><td>6.8</td><td>75.1</td><td>18.1</td><td>17.65</td></tr>
+              <tr><td><strong>Rice Husk</strong></td><td>16.5</td><td>63.2</td><td>20.3</td><td>15.20</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="en-safety" class="manual-section">
+          <h2>7. Safety Standards, SIL-2 & LOTO</h2>
+          <div class="callout callout-warning">
+            <strong>NFPA 86 & SIL-2 Compliance:</strong> Continuous inert nitrogen purge and automated interlock trip when reactor exceeds $650^\circ\text{C}$.
+          </div>
+        </section>
+
+        <section id="en-faq" class="manual-section">
           <h2>8. Troubleshooting & FAQ</h2>
           <div class="callout callout-warning">
             <strong>Port Conflict:</strong> If port 8000 is occupied, launch on port 8080: <code>python -m src.web.run_server --port 8080</code>.
@@ -256,7 +281,7 @@ Content-Type: application/json
           <p style="color:var(--text-muted); font-size:1.05rem;">Kapsamlı Kullanıcı Kılavuzu ve Teknik Referans Belgesi (Sürüm 2.0.0)</p>
         </div>
 
-        <section class="manual-section">
+        <section id="tr-overview" class="manual-section">
           <h2>1. Sistem Mimarisi ve Genel Bakış</h2>
           <p><strong>BIOPLANT AI</strong>, biyokütle termokimyasal piroliz süreçleri için birinci prensipler kimya mühendisliği, fizik destekli makine öğrenmesi ve otonom süreç yönetimini bir araya getiren endüstriyel bir dijital ikiz platformudur.</p>
           
@@ -265,7 +290,7 @@ Content-Type: application/json
           </div>
         </section>
 
-        <section class="manual-section">
+        <section id="tr-quickstart" class="manual-section">
           <h2>2. Hızlı Başlangıç ve Çalıştırma</h2>
           <h3>Web Platformunu Başlatma</h3>
           <p>Modern koyu cam efektli paneli başlatmak için:</p>
@@ -273,7 +298,7 @@ Content-Type: application/json
           <p>Tarayıcınızdan <strong>http://127.0.0.1:8000/</strong> adresini açın.</p>
         </section>
 
-        <section class="manual-section">
+        <section id="tr-modules" class="manual-section">
           <h2>3. 8 Temel Operasyonel Modül</h2>
           <table class="doc-table">
             <thead>
@@ -292,7 +317,7 @@ Content-Type: application/json
           </table>
         </section>
 
-        <section class="manual-section">
+        <section id="tr-autopilot" class="manual-section">
           <h2>4. Otonom Otopilot ve Görev Yeterliliği</h2>
           <p>Otopilot FSM, tesisi 5 farklı operasyonel durumda yönetir:</p>
           <ul>
@@ -305,7 +330,7 @@ Content-Type: application/json
           <div class="code-block">python -m src.autonomous.run_autopilot --mission</div>
         </section>
 
-        <section class="manual-section">
+        <section id="tr-api" class="manual-section">
           <h2>5. REST API Entegrasyonu</h2>
           <p>Harici SCADA veya MES sistemleri ile JSON API üzerinden haberleşme örneği:</p>
           <div class="code-block">POST /api/simulate
@@ -319,7 +344,29 @@ Content-Type: application/json
 }</div>
         </section>
 
-        <section class="manual-section">
+        <section id="tr-feedstocks" class="manual-section">
+          <h2>6. Biyokütle Hammadde Kataloğu</h2>
+          <table class="doc-table">
+            <thead>
+              <tr><th>Hammadde</th><th>Kül (% kuru)</th><th>Uçucu Madde (%)</th><th>Sabit Karbon (%)</th><th>HHV (MJ/kg)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Zeytin Prinası</strong></td><td>4.2</td><td>72.8</td><td>23.0</td><td>20.45</td></tr>
+              <tr><td><strong>Çam Talaşı</strong></td><td>0.8</td><td>82.5</td><td>16.7</td><td>19.82</td></tr>
+              <tr><td><strong>Buğday Samanı</strong></td><td>6.8</td><td>75.1</td><td>18.1</td><td>17.65</td></tr>
+              <tr><td><strong>Pirinç Kavuzu</strong></td><td>16.5</td><td>63.2</td><td>20.3</td><td>15.20</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="tr-safety" class="manual-section">
+          <h2>7. Güvenlik Standartları, SIL-2 ve LOTO</h2>
+          <div class="callout callout-warning">
+            <strong>NFPA 86 & SIL-2 Uyumluluğu:</strong> Sürekli inert azot süpürmesi ve reaktör sıcaklığı $650^\circ\text{C}$ üzerine çıktığında $250\text{ ms}$ içinde beslemeyi kesen otomatik güvenlik kilidi.
+          </div>
+        </section>
+
+        <section id="tr-faq" class="manual-section">
           <h2>8. Sorun Giderme ve SSS</h2>
           <div class="callout callout-warning">
             <strong>Port Çakışması:</strong> 8000 portu meşgulse farklı bir portla başlatın: <code>python -m src.web.run_server --port 8080</code>.
