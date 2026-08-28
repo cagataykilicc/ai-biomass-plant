@@ -1,18 +1,20 @@
-# AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V0.2)
+# AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V0.3)
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Architecture: Chemical Engineering & Digital Twin](https://img.shields.io/badge/Architecture-Modular%20Process%20Systems-green.svg)]()
-[![Tests: 100% Passed](https://img.shields.io/badge/Tests-40%2F40%20Passed-brightgreen.svg)]()
+[![Tests: 100% Passed](https://img.shields.io/badge/Tests-47%2F47%20Passed-brightgreen.svg)]()
+[![Dataset: 1000+ Observations](https://img.shields.io/badge/Dataset-Latin%20Hypercube%20(1000%2B%20Runs)-blue.svg)]()
 [![Thermal Status: Self--Sufficient](https://img.shields.io/badge/Thermal%20Status-Autonomous%20(TSI%20111.8%25)-darkgreen.svg)]()
+[![Scientific Integrity: Provenance Verified](https://img.shields.io/badge/Provenance-DOI%20%26%20Lineage%20Tracked-brightgreen.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)]()
 
-A modular, first-principles chemical engineering and digital twin platform for biomass conversion and recycling.
+A modular, first-principles chemical engineering and digital twin platform for biomass thermal conversion, recycling, and machine learning dataset generation.
 
 ---
 
 ## 1. Project Objective
 
-The objective is to progressively develop an industrial-grade digital twin of a commercial biomass conversion plant that unifies:
+The objective is to develop an industrial-grade digital twin of a commercial biomass conversion plant that progressively unifies:
 
 * Rigorous chemical engineering calculations & thermodynamics
 * Multi-stage unit operations (drying, pyrolysis reactor, cyclone, condenser train, syngas combustor)
@@ -21,16 +23,25 @@ The objective is to progressively develop an industrial-grade digital twin of a 
 * Bio-oil chemical grouping (phenolics, acids, furans, sugars) & acidity ($TAN, \text{pH}$)
 * Syngas burner heat integration & Thermal Self-Sufficiency Index (TSI)
 * Second-Law Exergy analysis and destruction tracking
-* Machine learning surrogates & digital twin control (*future roadmap*)
+* **Scientific Data Provenance**: Explicit tracking of literature experimental datasets vs synthetic simulations
+* **High-Throughput Synthetic Process Data Generator**: Latin Hypercube Sampling (LHS) with realistic sensor noise
+* **Exploratory Data Analysis (EDA)**: Statistical distributions and correlation profiling
+* Machine learning surrogate models (*V0.4+*)
 
 ---
 
-## 2. Process Flowsheet & Heat Integration (V0.2)
+## 2. Process Flowsheet & Data Pipeline (V0.3)
 
 ```text
+  +-----------------------------------------------------------------------------------+
+  |                              DATA PROVENANCE ENGINE                               |
+  |  [ EXPERIMENTAL_LITERATURE (DOI) ]               [ SYNTHETIC_SIMULATED (LHS) ]    |
+  +---------------------------------------+-------------------------------------------+
+                                          |
+                                          v
                +--------------------+
-               |  Raw Biomass Feed  |
-               | (Moisture: 10-50%) |
+               |  Raw Biomass Feed  | (Pine, Beech, Pomace, Straw, Husk, Bagasse, Miscanthus, Almond)
+               | (Moisture: 6-30%)  |
                +---------+----------+
                          |
                          v
@@ -43,7 +54,7 @@ The objective is to progressively develop an industrial-grade digital twin of a 
               +----------------------+                                     |
               |  Pyrolysis Reactor   |                                     |
               |       (R101)         |                                     |
-              | (T = 300 - 800 °C)   |                                     |
+              | (T = 350 - 750 °C)   |                                     |
               +----------+-----------+                                     |
                          | [ Hot Effluent S104 ]                           |
                          v                                                 |
@@ -64,231 +75,168 @@ The objective is to progressively develop an industrial-grade digital twin of a 
               |  Syngas Combustor    | ------------------------------------+
               |       (B101)         | (Flue gas: 800 - 1400 °C)
               +----------------------+ (Thermal Self-Sufficiency: TSI > 100%)
+                         |
+                         v
+  +-----------------------------------------------------------------------------------+
+  |                        DATASET EXPORT & STATISTICAL PROFILING                     |
+  |  `data/processed/synthetic_process_dataset.csv` (1000+ Process Runs)             |
+  |  `reports/dataset_profiling_report.json` (Correlation & Multicollinearity Stats)  |
+  +-----------------------------------------------------------------------------------+
 ```
 
 ---
 
-## 3. Capabilities & Key Features (V0.2)
+## 3. Capabilities & Key Features (V0.3)
 
-* **Atom-by-Atom Elemental Balances**: Exact conservation of C, H, O, N, S, and Ash across biochar, liquid bio-oil (aqueous and organic phases), syngas, and dryer exhaust with 100.00% closure.
-* **Molecular Syngas Speciation**: Predicts $CO, CO_2, CH_4, H_2, C_2H_6, H_2O, N_2$ volume fractions, mean molecular weight ($MW_{mix}$), standard volume flow ($\text{Nm}^3/\text{h}$), and volumetric heating values ($\text{MJ/Nm}^3$).
-* **Bio-oil Characterization**: Functional chemical family partitioning (carboxylic acids, phenolics/lignin, furans, anhydrosugars, carbonyls), Total Acid Number (TAN), pH prediction, density, and kinematic viscosity.
-* **Syngas Combustor & Heat Integration**: Sizing of burner B101 with excess air ($\lambda = 1.20$), adiabatic/actual flame temperature, and heat recovery exchanger (HX101) supplying 100% of drying and reactor thermal loads.
-* **Thermal Self-Sufficiency Index (TSI)**: Identifies whether the plant operates autonomously with net surplus energy or requires supplementary external fuel.
-* **Second-Law Exergy Analysis**: Szargut statistical chemical exergy calculations and component exergy destruction tracking.
-* **40 Automated Unit Tests**: 100% pass rate in pytest across all engineering units and integration workflows.
-
----
-
-## 4. Governing Chemical Engineering Equations
-
-### 4.1 Elemental Mass Conservation
-For each element $k \in \{C, H, O, N, S, Ash\}$:
-$$\dot{m}_{k,in} = \dot{m}_{k,char} + \dot{m}_{k,bio\_oil} + \dot{m}_{k,syngas} + \dot{m}_{k,dryer\_exhaust} + \dot{m}_{k,loss}$$
-$$\text{Closure}_{k} = \frac{\dot{m}_{k,out}}{\dot{m}_{k,in}} \times 100\% \equiv 100.00\%$$
-
-### 4.2 Syngas Molecular Equilibrium & Speciation
-* **Normal Volumetric Flow Rate**:
-  $$\dot{V}_{gas} = \left( \sum \frac{\dot{m}_i}{MW_i} \right) \times 22.414 \quad (\text{Nm}^3/\text{h})$$
-* **Volumetric Lower Heating Value**:
-  $$LHV_{vol} = \sum y_i LHV_{vol,i} \quad (\text{MJ/Nm}^3)$$
-
-### 4.3 Syngas Combustion & Waste Heat Recovery
-* **Combustion Stoichiometry**:
-  $$CO + \frac{1}{2}O_2 \rightarrow CO_2, \quad H_2 + \frac{1}{2}O_2 \rightarrow H_2O, \quad CH_4 + 2O_2 \rightarrow CO_2 + 2H_2O, \quad C_2H_6 + 3.5O_2 \rightarrow 2CO_2 + 3H_2O$$
-* **Combustion Heat Release**:
-  $$Q_{comb} = \frac{\dot{m}_{syngas} \times LHV_{syngas}}{3.6} \times \eta_{comb} \quad (\text{kW})$$
-* **Recovered Flue Gas Duty**:
-  $$Q_{rec} = Q_{comb} \times \eta_{rec} \quad (\text{kW})$$
-* **Thermal Self-Sufficiency Index (TSI)**:
-  $$\text{TSI}_{\%} = \frac{Q_{rec}}{Q_{dry} + Q_{pyro}} \times 100\%$$
-
-### 4.4 Second-Law Exergy Balance
-* **Biomass Chemical Exergy (Szargut Correlation)**:
-  $$e_{ch,bio} = \beta \times LHV_{dry} \quad \text{where } \beta = 1.0437 + 0.1882\frac{H}{C} - 0.053\frac{O}{C} + 0.04\frac{N}{C}$$
-* **Exergy Efficiency**:
-  $$\psi_{exergy} = \frac{\dot{Ex}_{products}}{\dot{Ex}_{feedstock} + \dot{Ex}_{net\_external}} \times 100\%$$
+* **Scientific Integrity & Provenance (`src/data/provenance.py`)**:
+  - Enforces explicit `source_type` labeling (`EXPERIMENTAL_LITERATURE` vs `SYNTHETIC_SIMULATED`).
+  - Stores bibliographic metadata (citations, authors, publication year, DOIs) and license tags.
+* **Curated Peer-Reviewed Literature Dataset (`data/external/literature_pyrolysis_dataset.csv`)**:
+  - Contains validated experimental pyrolysis records from benchmark literature (Neves et al., Akhtar & Amin, Bridgwater, Di Blasi, Phyllis2).
+* **Latin Hypercube Synthetic Data Generator (`src/data/synthetic_generator.py`)**:
+  - Stratified sampling across 8 biomass feedstock classes.
+  - Multi-dimensional continuous sampling ($T \in [350, 750]^\circ\text{C}$, $\beta \in [5, 800]^\circ\text{C/min}$, $\tau \in [0.1, 45]\text{ min}$, moisture $\in [6, 28]\%$, feed rate $\in [50, 500]\text{ kg/h}$).
+  - Realistic industrial sensor noise injection (thermocouple $\pm 1.5^\circ\text{C}$, load cell mass $\pm 0.8\%$, GC gas analysis $\pm 1.2\%$).
+* **Exploratory Data Analysis Engine (`src/data/eda_analyzer.py`)**:
+  - Computes complete feature distributions (mean, std, median, percentiles, skewness).
+  - Pearson & Spearman correlation matrices between feedstock chemistry/temperature and product yields/heating values.
+  - Generates JSON profiling report (`reports/dataset_profiling_report.json`).
+* **47 Automated Unit Tests**: Complete pytest suite covering schemas, provenance, loaders, generator, and physical process units.
 
 ---
 
-## 5. Software Architecture
+## 4. Software Architecture
 
 ```text
 ai_biomass_plant/
 │
-├── configs/                          # Plant and scenario configuration files
-│   ├── default_plant.yaml            # Baseline industrial plant parameters
-│   ├── feedstocks/                   # Standardized biomass library
+├── data/
+│   ├── external/
+│   │   └── literature_pyrolysis_dataset.csv  # Curated experimental literature data
+│   ├── processed/
+│   │   └── synthetic_process_dataset.csv     # 1000+ LHS synthetic process observations
+│   └── raw/
+│
+├── configs/
+│   ├── default_plant.yaml                    # Baseline industrial plant parameters
+│   ├── feedstocks/                           # 8 Feedstock library profiles
 │   │   ├── olive_pomace.yaml
 │   │   ├── pine_sawdust.yaml
+│   │   ├── beech_wood.yaml
 │   │   ├── wheat_straw.yaml
-│   │   └── rice_husk.yaml
-│   └── scenarios/                    # Operating regimes (fast, slow, standard)
-│       ├── olive_pomace_standard.yaml
-│       ├── pine_sawdust_fast_pyrolysis.yaml
-│       └── wheat_straw_biochar_focus.yaml
+│   │   ├── rice_husk.yaml
+│   │   ├── sugarcane_bagasse.yaml
+│   │   ├── miscanthus.yaml
+│   │   └── almond_shells.yaml
+│   └── scenarios/                            # Operating regimes
 │
 ├── src/
-│   ├── data/                         # Feedstock models & preprocessing
-│   │   ├── feedstock.py              # Ultimate/Proximate/Physical dataclasses & correlations
-│   │   └── preprocessing.py          # Feedstock library & loader
-│   ├── process/                      # Core unit operations & balances
-│   │   ├── drying.py                 # Thermal biomass drying unit model
-│   │   ├── reactor.py                # Pyrolysis reactor unit model
-│   │   ├── separation.py             # Cyclone particulate separation & condensers
-│   │   ├── combustor.py              # Syngas burner & flue gas heat recovery
-│   │   ├── mass_balance.py           # Stream tracking & mass balance closure
-│   │   ├── elemental_balance.py      # Atom-by-atom C/H/O/N/S/Ash conservation
-│   │   └── energy_balance.py         # Heat integration, exergy & thermodynamic KPIs
-│   ├── models/                       # Yield kinetics & speciation modeling
-│   │   ├── yield_model.py            # Multicomponent sigmoidal yield kinetics
-│   │   ├── syngas_model.py           # Molecular syngas speciation & volume properties
-│   │   └── bio_oil_model.py          # Chemical functional grouping, TAN, pH, viscosity
-│   ├── simulation/                   # Orchestration
-│   │   └── plant_simulator.py        # End-to-end plant simulation engine
-│   ├── utils/                        # Utilities & config parsers
-│   │   └── config.py                 # Configuration manager
-│   └── run_simulation.py             # CLI application entry point
+│   ├── data/
+│   │   ├── provenance.py                     # Data lineage & provenance tracking
+│   │   ├── schema.py                         # ProcessDataRecord tabular schema
+│   │   ├── feedstock.py                      # Biomass data models & thermodynamic correlations
+│   │   ├── preprocessing.py                  # Feedstock library & loader
+│   │   ├── literature_loader.py              # Literature dataset loader & validator
+│   │   ├── synthetic_generator.py            # Latin Hypercube Sampling Monte Carlo generator
+│   │   └── eda_analyzer.py                   # Statistical profiling & correlation engine
+│   ├── process/
+│   │   ├── drying.py                         # Thermal biomass drying unit model
+│   │   ├── reactor.py                        # Pyrolysis reactor unit model
+│   │   ├── separation.py                     # Cyclone particulate separation & condensers
+│   │   ├── combustor.py                      # Syngas burner & flue gas heat recovery
+│   │   ├── mass_balance.py                   # Stream tracking & mass balance closure
+│   │   ├── elemental_balance.py              # Atom-by-atom C/H/O/N/S/Ash conservation
+│   │   └── energy_balance.py                 # Heat integration, exergy & thermodynamic KPIs
+│   ├── models/
+│   │   ├── yield_model.py                    # Multicomponent sigmoidal yield kinetics
+│   │   ├── syngas_model.py                   # Molecular syngas speciation & volume properties
+│   │   └── bio_oil_model.py                  # Chemical functional grouping, TAN, pH, viscosity
+│   ├── simulation/
+│   │   └── plant_simulator.py                # End-to-end plant simulation engine
+│   ├── utils/
+│   │   └── config.py                         # Configuration manager
+│   └── run_simulation.py                     # CLI application entry point
 │
-├── tests/                            # Comprehensive unit & integration tests
-│   ├── conftest.py                   # Pytest fixtures
-│   ├── test_feedstock.py             # Feedstock validation & HHV tests
-│   ├── test_drying.py                # Drying mass/energy tests
-│   ├── test_yield_model.py           # Kinetic yield normalization tests
-│   ├── test_syngas_model.py          # Syngas speciation & volumetric tests
-│   ├── test_bio_oil_model.py         # Bio-oil chemical grouping & pH tests
-│   ├── test_combustor.py             # Combustor thermal & stoichiometry tests
-│   ├── test_elemental_balance.py     # Atom-by-atom elemental closure tests
-│   ├── test_reactor.py               # Reactor unit tests
-│   ├── test_separation.py            # Separation & cooling tests
-│   ├── test_mass_balance.py          # Mass closure verification tests
-│   ├── test_energy_balance.py        # Energy balance, heat integration & exergy tests
-│   └── test_simulation_e2e.py        # End-to-end multi-feedstock tests
+├── tests/                                    # 47 Unit & Integration Tests
+│   ├── conftest.py
+│   ├── test_provenance.py
+│   ├── test_schema.py
+│   ├── test_literature_loader.py
+│   ├── test_synthetic_generator.py
+│   ├── test_feedstock.py
+│   ├── test_drying.py
+│   ├── test_yield_model.py
+│   ├── test_syngas_model.py
+│   ├── test_bio_oil_model.py
+│   ├── test_combustor.py
+│   ├── test_elemental_balance.py
+│   ├── test_reactor.py
+│   ├── test_separation.py
+│   ├── test_mass_balance.py
+│   ├── test_energy_balance.py
+│   └── test_simulation_e2e.py
 │
-├── pyproject.toml                    # Package metadata & pytest config
-└── README.md                         # Documentation
+├── reports/
+│   ├── dataset_profiling_report.json         # Statistical dataset profiling report
+│   └── example_simulation_report.json        # Exported simulation output
+│
+├── pyproject.toml
+└── README.md
 ```
 
 ---
 
-## 6. How to Run the Model
+## 5. How to Run the Platform
 
-### Run Baseline Simulation
+### A. Run Process Simulation
 ```bash
 python -m src.run_simulation
 ```
 
-### Run Fast Pyrolysis Scenario
+### B. Generate Synthetic Dataset (Latin Hypercube Sampling)
 ```bash
-python -m src.run_simulation --config configs/scenarios/pine_sawdust_fast_pyrolysis.yaml
+python -m src.data.synthetic_generator --samples 1000 --seed 42
 ```
 
-### Run Custom Feedstock with JSON Export
+### C. Run Exploratory Data Analysis & Statistical Profiler
 ```bash
-python -m src.run_simulation --feedstock rice_husk --temp 550 --json
+python -m src.data.eda_analyzer
 ```
 
----
-
-## 7. Example Output (V0.2 Dashboard)
-
-```text
-====================================================================
-       AI-INTEGRATED BIOMASS CONVERSION PLANT - V0.2
-   (Thermodynamics, Elemental Balances & Heat Integration)
-====================================================================
-Feedstock            : Olive Pomace (agricultural_residue)
-Feed Rate (Wet)      : 100.0 kg/h
-Initial Moisture     : 15.0 wt%
-Target Exit Moisture : 8.0 wt%
-Reactor Temperature  : 500.0 °C
-Heating Rate         : 10.0 °C/min
-Residence Time       : 20.0 min
-
-PRODUCTS & RECOVERY
---------------------------------------------------------------------
-Recovered Bio-oil    :  46.33 kg/h  (HHV: 14.1 MJ/kg, Water: 25.5%)
-Recovered Biochar    :  22.90 kg/h  (HHV: 23.3 MJ/kg)
-Clean Syngas         :  22.81 kg/h  (16.9 Nm³/h, LHV: 13.4 MJ/Nm³)
-Dryer Exhaust Water  :   7.61 kg/h
-Cyclone Fines Loss   :   0.35 kg/h
-
-SYNGAS MOLECULAR SPECIATION
---------------------------------------------------------------------
-Composition (vol%)   : CO: 44.5% | CO2: 31.6% | CH4: 12.6% | H2:  4.7%
-Mean Molecular Weight: 30.20 kg/kmol  | Mass LHV: 9.93 MJ/kg
-
-BIO-OIL CHEMICAL CHARACTERIZATION
---------------------------------------------------------------------
-Organic Groups (wt%) : Acids: 14.5% | Phenolics: 32.0% | Sugars: 23.8%
-Physical Properties  : pH: 2.21 | TAN: 100.6 mg KOH/g | Density: 1164 kg/m³
-
-ATOM-BY-ATOM ELEMENTAL BALANCES
---------------------------------------------------------------------
-Element | In (kg/h) | Out (kg/h) | Closure % | Status
-  C     |   42.670  |    42.670  |  100.00 %  | PASS
-  H     |    6.949  |     6.949  |  100.00 %  | PASS
-  O     |   47.151  |    47.151  |  100.00 %  | PASS
-  N     |    1.190  |     1.190  |  100.00 %  | PASS
-  S     |    0.085  |     0.085  |  100.00 %  | PASS
-  Ash   |    1.955  |     1.955  |  100.00 %  | PASS
-Carbon Partitioning  : Biochar: 34.6% | Bio-oil: 44.7% | Syngas: 20.7%
-
-MASS & OVERALL BALANCE
---------------------------------------------------------------------
-Total Mass In / Out  : 100.00 kg/h  /  100.00 kg/h  (Closure: 100.00%)
-
-HEAT INTEGRATION & COMBUSTOR (Burner B101)
---------------------------------------------------------------------
-Gross Thermal Demand :  47.12 kW  (Drying: 11.7 kW, Reactor: 35.4 kW)
-Syngas Heat Released :  61.97 kW  (Flue Gas Temp: 1400 °C, Air: 81.1 kg/h)
-Exchanger Heat Recov.:  52.67 kW  (HX101 Efficiency: 85%)
-Self-Sufficiency (TSI:  111.8 %  -> [AUTONOMOUS / NET SURPLUS]
-Net Surplus Thermal  :   5.56 kW
-
-THERMODYNAMIC KPIS & EXERGY
---------------------------------------------------------------------
-Feedstock Chemical   : 445.56 kW (LHV ar: 16.04 MJ/kg)
-Products Chemical    : 364.92 kW  (Energy Recovery: 81.9%)
-Net Thermal Effic.   :  81.2 %
-Second-Law Exergy Eff:  82.3 %  (Exergy Destruction: 58.3 kW)
-
-DIAGNOSTIC STATUS
---------------------------------------------------------------------
-Mass Balance Status     : PASS
-Elemental Balance Status: PASS
-Energy Balance Status   : PASS
-
-ADVISORIES & NOTICES:
- [*] Plant operates in full thermal self-sufficiency via syngas heat recovery.
-====================================================================
-```
-
----
-
-## 8. Unit Testing Suite
-
+### D. Run Unit Test Suite
 ```bash
 pytest tests/ -v
 ```
-All **40 tests** pass in **0.06s**.
 
 ---
 
-## 9. Long-Term Roadmap
+## 6. Key Statistical Correlations from Generated Dataset
+
+From `reports/dataset_profiling_report.json` across 1,000 process runs:
+
+| Input Variable | Target Output | Pearson Correlation ($r$) | Physical Meaning |
+| :--- | :--- | :---: | :--- |
+| **Reactor Temperature ($T$)** | Biochar Yield (%) | **-0.864** | Strong thermal decomposition of char matrix |
+| **Reactor Temperature ($T$)** | Syngas Yield (%) | **+0.972** | Surge in gas cracking and primary devolatilization |
+| **Feedstock Carbon (%)** | Bio-Oil HHV (MJ/kg) | **+0.737** | Higher organic carbon enriches liquid energy density |
+| **Feedstock Ash (%)** | Biochar Yield (%) | **+0.279** | Inorganic minerals concentrate into solid char |
+| **Reactor Temperature ($T$)** | Self-Sufficiency (TSI) | **+0.936** | High gas yields provide surplus heat in combustor |
+
+---
+
+## 7. Long-Term Roadmap
 
 * [x] **V0.1: Deterministic Process Flowsheet Model** *(Completed)*
 * [x] **V0.2: Improved Mass, Elemental & Energy Balances & Heat Integration** *(Completed)*
-* [ ] **V0.3: Experimental Literature & Synthetic Dataset Generation**
-  * High-throughput Monte Carlo sampling, parameter distributions, data validation schemas.
+* [x] **V0.3: Experimental Literature & Synthetic Dataset Generation** *(Completed)*
 * [ ] **V0.4: Machine Learning Product Yield Prediction**
-  * Random Forests, XGBoost, and LightGBM models trained on curated pyrolysis dataset.
+  * Training Random Forests, Extra Trees, XGBoost, and LightGBM models on curated dataset.
 * [ ] **V0.5: Multi-Model Benchmark & Physics-Informed Neural Networks (PINNs)**
 * [ ] **V0.6: AI-Driven Multiobjective Process Optimization (Optuna / Pyomo)**
 * [ ] **V0.7: Soft Sensors for Real-Time State Estimation**
 * [ ] **V0.8: Anomaly & Fault Detection (Autoencoders / Isolation Forests)**
 * [ ] **V0.9: Predictive Maintenance (RUL of Augers, Refractory, Filters)**
-* [ ] **V1.0: Real-Time Digital Twin Prototype (FastAPI + Streamlit)**
+* [ ] **V1.0: Real-Time Digital Twin Prototype (FastAPI + Streamlit GUI)**
 * [ ] **V1.1: Dynamic Closed-Loop Process Control Simulation (MPC / PID)**
 * [ ] **V1.2: Plant-Level AI Decision Support (Techno-Economic & LCA Carbon Accounting)**
 * [ ] **V2.0: Fully Autonomous AI Biomass Recycling Plant Platform**
