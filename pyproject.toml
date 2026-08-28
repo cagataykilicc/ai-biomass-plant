@@ -9,7 +9,7 @@ description = "AI-Integrated Biomass Recycling & Conversion Plant Digital Twin P
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [
-    { name = "AI Biomass Engineering Team" }
+    { name = "Çağatay Kılıç", email = "cagataykilic@users.noreply.github.com" }
 ]
 dependencies = [
     "numpy>=1.24.0",

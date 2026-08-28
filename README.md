@@ -1,166 +1,208 @@
-# AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V2.0)
+# 🌿 AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V2.0)
+
+<div align="center">
 
 [![CI](https://github.com/cagataykilicc/ai-biomass-plant/actions/workflows/ci.yml/badge.svg)](https://github.com/cagataykilicc/ai-biomass-plant/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Git LFS](https://img.shields.io/badge/Git%20LFS-Tracked%20Models-orange.svg)](https://git-lfs.com)
-[![Autonomous: AI Autopilot & FSM](https://img.shields.io/badge/Autonomous%20Platform-AI%20Autopilot%20%26%20FSM%20(V2.0)-gold.svg)]()
-[![Flight Recorder: Blackbox Telemetry](https://img.shields.io/badge/Blackbox-Flight%20Recorder%20%26%20Historian-blueviolet.svg)]()
-[![Economics: Guthrie TEA & 20-Yr DCF](https://img.shields.io/badge/Economics-Guthrie%20TEA%20%26%2020--Yr%20DCF-gold.svg)]()
-[![LCA: ISO 14040/14044 Carbon](https://img.shields.io/badge/LCA-ISO%2014040%2F14044%20Carbon%20Negative-darkgreen.svg)]()
-[![Control: Dynamic MPC & PID](https://img.shields.io/badge/Process%20Control-Dynamic%20MPC%20%26%20PID-blue.svg)]()
-[![Web Platform: Glassmorphism GUI](https://img.shields.io/badge/Web%20Platform-Interactive%20Dark%20Glassmorphism-cyan.svg)]()
-[![REST API: Zero--Dependency](https://img.shields.io/badge/REST%20API-Zero--Dependency%20HTTP-blueviolet.svg)]()
-[![Predictive Maintenance: 95% RUL](https://img.shields.io/badge/PdM-RUL%20Prognostics%20%26%20Work%20Orders-darkgreen.svg)]()
-[![Diagnostics: Tri--Layer FDD](https://img.shields.io/badge/Diagnostics-Tri--Layer%20FDD%20%26%20Alarms-critical.svg)]()
-[![Soft Sensors: 6 Virtual Gauges](https://img.shields.io/badge/Soft%20Sensors-6%20Inferential%20Gauges%20(95%25%20UQ)-blueviolet.svg)]()
-[![Optimization: NSGA--II Pareto & TOPSIS](https://img.shields.io/badge/Optimization-Pareto%20%26%20TOPSIS%20MCDM-blue.svg)]()
-[![Champion ML: Gradient Boosting](https://img.shields.io/badge/Champion%20Model-Gradient%20Boosting%20(R%C2%B2%200.9981)-blueviolet.svg)]()
-[![Tests: 100% Passed](https://img.shields.io/badge/Tests-102%2F102%20Passed-brightgreen.svg)]()
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)]()
+[![Autonomous Platform](https://img.shields.io/badge/Autonomous%20Platform-AI%20Autopilot%20%26%20FSM%20(V2.0)-gold.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
+[![Blackbox Flight Recorder](https://img.shields.io/badge/Blackbox-Flight%20Recorder%20%26%20Historian-blueviolet.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
+[![Economics TEA & DCF](https://img.shields.io/badge/Economics-Guthrie%20TEA%20%26%2020--Yr%20DCF-gold.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
+[![LCA Carbon Negative](https://img.shields.io/badge/LCA-ISO%2014040%2F14044%20Carbon%20Negative-darkgreen.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
+[![Process Control](https://img.shields.io/badge/Process%20Control-Dynamic%20MPC%20%26%20PID-blue.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
+[![Web Platform](https://img.shields.io/badge/Web%20Platform-Interactive%20Dark%20Glassmorphism-cyan.svg)](http://127.0.0.1:8000/)
+[![Tests](https://img.shields.io/badge/Tests-102%2F102%20Passed-brightgreen.svg)](https://github.com/cagataykilicc/ai-biomass-plant/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Author](https://img.shields.io/badge/Author-Çağatay%20Kılıç-blue.svg?logo=github)](https://github.com/cagataykilicc)
 
-A complete, full-stack, first-principles chemical engineering, machine learning, and **Fully Autonomous Plant Platform (V2.0)** for biomass thermochemical recycling, supervisory autopilot finite state machine (FSM) control, blackbox flight telemetry, techno-economic feasibility (TEA), and ISO 14040/14044 Life Cycle Assessment (LCA) carbon accounting.
+**An industrial-grade, physics-informed digital twin, autonomous AI autopilot, and real-time operations platform for thermochemical biomass pyrolysis plants.**
 
----
+[Overview](#-1-system-overview) • [Screenshots](#-2-interactive-web-cockpit--screenshots) • [Architecture](#-3-system-architecture) • [Core Modules](#-4-the-8-operational-modules) • [Quick Start](#-5-quick-start--installation) • [REST API](#-6-rest-api-specification) • [Author](#-7-author--maintainer)
 
-## 1. Digital Twin Architecture & Features
-
-The **V2.0 Autonomous Plant Platform** integrates the complete hierarchy of industrial plant operations into a single interactive web application:
-
-1. **Autonomous Supervisory Agent & Autopilot FSM (V2.0)**:
-   - **Continuous Closed-Loop Operation**: Sense $\rightarrow$ Infer (Soft Sensors) $\rightarrow$ Diagnose (Tri-Layer FDD) $\rightarrow$ Optimize (NSGA-II & TOPSIS) $\rightarrow$ Actuate (MPC) $\rightarrow$ Maintain (RUL).
-   - **5-State Finite State Machine**: `STARTUP_PREHEAT`, `AUTONOMOUS_CRUISE`, `DISTURBANCE_ADAPTATION`, `FAULT_MITIGATION`, and `EMERGENCY_SAFE_PARK`.
-   - **Self-Healing Fault Recovery**: Autonomous nitrogen pulse-jet blowback clearing cyclone blockages without tripping the reactor.
-2. **Blackbox Flight Recorder & Historian (V2.0)**:
-   - Captures high-resolution telemetry, virtual soft sensor estimates, control efforts, and safety alarms into `reports/autonomous_flight_log.json`.
-3. **4-Hour Multi-Phase Autonomous Stress Test Qualification (V2.0)**:
-   - Simulates a 240-minute operational mission spanning Cold Startup, Nominal Cruise, Feed Moisture Jump, Cyclone Blockage self-clearing, Commercial Setpoint Shift, and Orderly Safe Park.
-4. **Techno-Economic Assessment & LCA Carbon Accounting (TEA/LCA)**:
-   - Guthrie Factorial Total Capital Investment ($TCI = \$609,840$), 20-Year Discounted Cash Flow ($NPV = +\$657,833$, $IRR = 24.88\%$, $LCOB = \$0.3534/\text{kg}$).
-   - ISO 14040/14044 Scope 1-2-3 carbon accounting and IPCC Tier 1 solid biochar carbon permanence ($-40.88\text{ g CO}_2\text{eq/MJ}$ Net Carbon Negative).
-5. **Dynamic Process Control & MPC**: Discrete PID with anti-windup clamping and multi-horizon Model Predictive Control.
-6. **Process Flowsheet & Control Room**: Live setpoint sliders, animated P&ID flowsheet, mass & elemental closures, and energy self-sufficiency gauge (TSI).
-7. **Industrial Soft Sensor Suite (95% UQ)**: 6 real-time virtual instruments estimating unmeasured lab properties from physical telemetry.
-8. **Multiobjective Optimization & Pareto Frontier**: Interactive NSGA-II non-dominated trade-off surface and TOPSIS MCDM stakeholder decision profiles.
-9. **Tri-Layer Anomaly Diagnostics & Alarms**: Physical balance residual checks, Isolation Forest, and PCA reconstruction error ($Q$-statistic & Hotelling's $T^2$).
-10. **Predictive Maintenance & Fleet RUL**: Physics-informed degradation kinematics for infeed augers, refractory liners, particulate filters, and condensers with prescriptive work orders.
+</div>
 
 ---
 
-## 2. 4-Hour Autonomous Flight Qualification Leaderboard
+<div align="center">
+  <img src="docs/images/hero_banner.jpg" alt="BIOPLANT AI Digital Twin Real-Time Dashboard" width="100%" style="border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.6);" />
+</div>
 
-From `reports/autonomous_flight_log.json`:
+---
 
-```text
-==================================================================================
-       AI-INTEGRATED BIOMASS CONVERSION PLANT - V2.0
-     (Fully Autonomous AI Autopilot Mission Qualification)
-==================================================================================
-Mission Title       : 4-Hour Autonomous Operational Qualification Mission
-Total Flight Time   : 4.0 Hours (240 Minutes)
-Overall Mission     : [MISSION_SUCCESS]
+## 🔬 1. System Overview
 
-MISSION PHASES FLIGHT TIMELINE
-----------------------------------------------------------------------------------
-Phase                                  Window         Temp Trange    End FSM State
-----------------------------------------------------------------------------------
-Phase 1: Cold Startup & Thermal Ramp   0 - 25 min     120 -> 483°C   [AUTONOMOUS_CRUISE]
-Phase 2: Autonomous Nominal Cruise     25 - 75 min    483 -> 497°C   [AUTONOMOUS_CRUISE]
-Phase 3: High-Moisture Feed Disturbance 75 - 130 min   497 -> 503°C   [DISTURBANCE_ADAPTATION]
-Phase 4: Cyclone Blockage Fault & Pulse-Jet Mitigation 130 - 180 min  503 -> 497°C   [AUTONOMOUS_CRUISE]
-Phase 5: Commercial Setpoint Shift (Biochar Carbon Max) 180 - 220 min  497 -> 422°C   [AUTONOMOUS_CRUISE]
-Phase 6: Orderly Safe Park & Cool-Down 220 - 240 min  422 -> 241°C   [AUTONOMOUS_CRUISE]
-----------------------------------------------------------------------------------
-Flight Recorder Log : reports/autonomous_flight_log.json
-==================================================================================
+**BIOPLANT AI (V2.0)** bridges first-principles chemical engineering with modern physics-informed artificial intelligence, Model Predictive Control (MPC), and autonomous supervisory operations:
+
+* **Closed-Loop Autonomous Supervisory Control (V2.0)**: Governed by a 5-State Finite State Machine (`STARTUP_PREHEAT`, `AUTONOMOUS_CRUISE`, `DISTURBANCE_ADAPTATION`, `FAULT_MITIGATION`, `EMERGENCY_SAFE_PARK`) with self-healing nitrogen pulse-jet blowback to resolve cyclone clogs without tripping the reactor.
+* **Blackbox Flight Telemetry & Historian**: Ring-buffer flight logger storing state vectors, control efforts, and safety alarms into structured JSON reports (`reports/autonomous_flight_log.json`).
+* **Physics-Constrained ML Yield Surrogates**: Gradient Boosting, Random Forest, Extra Trees, and Multilayer Perceptrons enforcing strict elemental conservation ($C, H, O, N, S$) and energy balances ($R^2 = 0.9981$).
+* **Inferential Virtual Soft Sensors (95% UQ)**: Real-time Bayesian Gaussian Process regressors estimating unmeasured Bio-Oil TAN, Moisture, Syngas LHV, and Thermal Self-Sufficiency Index (TSI).
+* **Techno-Economic Assessment & Carbon Accounting**: Guthrie Factorial TCI ($TCI = \$609,840$), 20-Year Discounted Cash Flow ($NPV = +\$657,833$, $IRR = 24.88\%$, $LCOB = \$0.3534/\text{kg}$), and ISO 14040/14044 Net Carbon Negative biochar permanence ($-40.88\text{ g CO}_2\text{eq/MJ}$).
+* **Predictive Maintenance & Fleet Degradation**: Wear kinetics (Archard erosion, spalling) predicting Remaining Useful Life (RUL) with prescriptive Lockout/Tagout (LOTO) work orders.
+
+---
+
+## 📸 2. Interactive Web Cockpit & Screenshots
+
+<div align="center">
+
+### Autonomous Autopilot Cockpit & Flight Director
+<img src="docs/images/autopilot_cockpit.jpg" alt="Autonomous Autopilot Cockpit" width="100%" style="border-radius: 8px; margin-bottom: 20px;" />
+
+### Advanced Analytics: Multi-Objective Pareto & Anomaly Diagnostics
+<img src="docs/images/analytics_dashboard.jpg" alt="Pareto Frontier and Fault Diagnostics" width="100%" style="border-radius: 8px;" />
+
+</div>
+
+---
+
+## 🏗️ 3. System Architecture
+
+```mermaid
+flowchart TD
+    subgraph INGESTION["Physical & Chemical Ingestion"]
+        FS[Feedstock Fingerprint\nOlive Pomace / Pine / Straw / Husk] --> PB[First-Principles Balances\nMass, Elemental & Thermal ODE]
+        SENSOR[Industrial Sensor Array\nThermocouples, Load Cells, Flowmeters] --> TEL[Telemetry Extractor\nDynamic Stream Normalizer]
+    end
+
+    subgraph INFERENCE["Physics-Informed Inference & Diagnostics"]
+        PB --> SURR[ML Yield Surrogate Engine\nGradient Boosting R²=0.9981]
+        TEL --> SOFT[6 Inferential Soft Sensors\nBayesian 95% Confidence Intervals]
+        TEL --> DIAG[Tri-Layer Diagnostics\nIsolation Forest + PCA SPE / T²]
+        TEL --> PDM[Predictive Maintenance\nKinetic Wear & 95% RUL Estimator]
+    end
+
+    subgraph DECISION["Autonomous Decision & Supervisory Control"]
+        SURR --> OPT[NSGA-II Pareto Frontier\nTOPSIS Stakeholder MCDM]
+        OPT --> MPC[Dynamic MPC & PID Control\nLumped Thermal Capacitance ODE]
+        DIAG --> FSM[5-State Autopilot FSM\nStartup -> Cruise -> Fault Recovery]
+        PDM --> WO[Prescriptive Work Orders\nAutomated SIL-2 / LOTO Dispatch]
+    end
+
+    subgraph ACTUATION["Actuation & Executive Telemetry"]
+        FSM --> ACT[Actuators: Infeed Auger, Burner, Pulse-Jet]
+        FSM --> REC[Blackbox Flight Recorder\nautonomous_flight_log.json]
+        ACT --> GUI[Modern Dark Glassmorphism Dashboard\nhttp://127.0.0.1:8000/]
+    end
 ```
 
 ---
 
-## 3. REST API Specification
+## ⚙️ 4. The 8 Operational Modules
 
-The built-in multi-threaded HTTP server serves standard JSON REST endpoints on port 8000:
+| # | Operational Module | Key Technology | Core Engineering Value |
+| :-: | :--- | :--- | :--- |
+| **1** | **Process Flowsheet & Control Room** | Thermodynamic First-Principles | Live animated P&ID flowsheet, mass & elemental closures, and energy self-sufficiency gauge ($TSI$). |
+| **2** | **Inferential Soft Sensor Suite** | Bayesian 95% Uncertainty Regressors | 6 real-time virtual sensors estimating Bio-Oil TAN, Moisture, HHV, Syngas LHV, Yield, and TSI. |
+| **3** | **Multiobjective Optimization** | NSGA-II & TOPSIS Decision Maker | 2D Pareto frontier trading off Yield, Biochar Carbon, and Gross Profit with stakeholder ranking. |
+| **4** | **Tri-Layer Anomaly Diagnostics** | Isolation Forest & PCA ($Q$ & $T^2$) | Fault detection, residual checking, and automated NFPA-86/SIL-2 safety interlocks. |
+| **5** | **Predictive Maintenance & Fleet RUL** | Physics-Informed Wear Kinetics | Fleet wear degradation modeling (Archard, refractory spalling) with prescriptive work orders. |
+| **6** | **Dynamic Process Control & MPC** | Discrete PID & Multi-Horizon MPC | Lumped thermal capacitance ODE, setpoint step tracking, and aggressive feed moisture rejection. |
+| **7** | **Techno-Economics & LCA Carbon** | Guthrie Factorial TCI & 20-Yr DCF | $NPV = +\$657\text{k}$, $IRR = 24.88\%$, $LCOB = \$0.353/\text{kg}$, Net Carbon Negative ($-40.88\text{ g CO}_2\text{e/MJ}$). |
+| **8** | **Autonomous Autopilot Cockpit** | 5-State Supervisory FSM | Closed-loop autonomous flight director, self-healing pulse-jets, and blackbox telemetry log. |
 
-| HTTP Method | Route | Description |
-| :--- | :--- | :--- |
-| **`GET`** | **`/`** | Serves single-page Dark Glassmorphism Web GUI application |
-| **`GET`** | **`/api/status`** | System health status, version `2.0.0`, and active modules |
-| **`GET`** | **`/api/feedstocks`** | Feedstock proximate and ultimate analysis library |
-| **`POST`** | **`/api/simulate`** | Executes digital twin simulation flowsheet (deterministic or ML) |
-| **`POST`** | **`/api/autopilot/step`** | Advances closed-loop autonomous autopilot FSM by one step |
-| **`POST`** | **`/api/autopilot/mission`** | Executes full 4-hour qualification stress test mission |
-| **`POST`** | **`/api/economics`** | Runs 20-yr DCF NPV/IRR/LCOB and ISO 14040/14044 LCA carbon metrics |
-| **`POST`** | **`/api/control`** | Runs 60-min dynamic closed-loop response (MPC / PID / Open-Loop) |
-| **`POST`** | **`/api/soft-sensors`** | Extracts hardware telemetry and evaluates 6 soft sensors with 95% UQ |
-| **`POST`** | **`/api/optimize`** | Solves single-objective or multiobjective Pareto optimization |
-| **`POST`** | **`/api/diagnostics`** | Injects equipment fault and returns anomaly scores and alarms |
-| **`POST`** | **`/api/maintenance`** | Computes asset wear, 95% RUL, and dispatches work orders |
+---
 
-## 4. Installation & Setup (Git LFS)
+## 🚀 5. Quick Start & Installation
 
+### Prerequisites & Git LFS Setup
 > [!IMPORTANT]
 > **Git LFS Required:** Pretrained ML models, soft sensors, and anomaly diagnostic checkpoints under `models/checkpoints/` are version-controlled with [Git LFS](https://git-lfs.com). Ensure Git LFS is installed before cloning.
 
 ```bash
-# 1. Install Git LFS
+# 1. Install and initialize Git LFS
 git lfs install
 
-# 2. Clone the repository
+# 2. Clone repository
 git clone https://github.com/cagataykilicc/ai-biomass-plant.git
 cd ai-biomass-plant
 
-# 3. Pull LFS model checkpoints (if not automatically pulled)
+# 3. Pull LFS binary model checkpoints
 git lfs pull
 
 # 4. Install Python dependencies in editable mode
 pip install -e .[dev]
 ```
 
----
-
-## 5. How to Launch the Platform
-
-### A. Start Digital Twin Web Platform (Interactive 8-Tab Dashboard)
+### Launching the Web Digital Twin Dashboard
 ```bash
-python -m src.run_simulation --web
-# Or:
+# Start the web server and open the browser
 python -m src.web.run_server --port 8000 --open-browser
 ```
-Open **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)** in your browser.
+Access the interactive digital twin cockpit at **`http://127.0.0.1:8000/`**.
 
-### B. Execute Autonomous Autopilot Mission Qualification
+### Executing Autonomous Flight Qualification
 ```bash
+# Run the 4-hour multi-phase autonomous stress test mission
 python -m src.autonomous.run_autopilot --mission
 ```
 
-### C. Run Techno-Economic & LCA Carbon Accounting Dashboard
+### Running Automated Test Suite (102 Tests)
 ```bash
-python -m src.economics.run_economics --feedstock olive_pomace
-```
-
-### D. Run Dynamic Control Benchmark (Open-Loop vs PID vs MPC)
-```bash
-python -m src.control.run_control --benchmark
-```
-
-### E. Run Unit Test Suite
-```bash
-pytest tests/ -v
+pytest tests/ -q
 ```
 
 ---
 
-## 5. Completed Roadmap
+## 📡 6. REST API Specification
 
-* [x] **V0.1: Deterministic Process Flowsheet Model** *(Completed)*
-* [x] **V0.2: Improved Mass, Elemental & Energy Balances & Heat Integration** *(Completed)*
-* [x] **V0.3: Experimental Literature & Synthetic Dataset Generation** *(Completed)*
-* [x] **V0.4: Machine Learning Product Yield Prediction & Physics Constraints** *(Completed)*
-* [x] **V0.5: Multi-Model Benchmark & Physics-Informed ML Comparisons** *(Completed)*
-* [x] **V0.6: AI-Driven Multiobjective Process Optimization (Pareto & TOPSIS)** *(Completed)*
-* [x] **V0.7: Soft Sensors for Real-Time State Estimation (95% UQ)** *(Completed)*
-* [x] **V0.8: Process Anomaly & Fault Detection (Autoencoders, Isolation Forests & Alarms)** *(Completed)*
-* [x] **V0.9: Predictive Maintenance (RUL Estimation & Prescriptive Work Orders)** *(Completed)*
-* [x] **V1.0: Real-Time Digital Twin Platform & Web GUI Dashboard** *(Completed)*
-* [x] **V1.1: Dynamic Closed-Loop Process Control Simulation (MPC & PID)** *(Completed)*
-* [x] **V1.2: Plant-Level AI Decision Support (Techno-Economic & LCA Carbon Accounting)** *(Completed)*
-* [x] **V2.0: Fully Autonomous AI Biomass Recycling Plant Platform** *(Completed)*
+The built-in multi-threaded server provides secure REST endpoints authenticated via `X-API-Key`:
+
+| Method | Route | Description |
+| :--- | :--- | :--- |
+| **`GET`** | **`/`** | Serves the single-page Dark Glassmorphism Web GUI application |
+| **`GET`** | **`/api/status`** | System health status, version `2.0.0`, and active module availability |
+| **`GET`** | **`/api/feedstocks`** | Proximate and ultimate analysis catalog (Olive Pomace, Pine, Straw, Husk) |
+| **`POST`** | **`/api/simulate`** | Executes digital twin flowsheet simulation (Deterministic or ML) |
+| **`POST`** | **`/api/autopilot/step`** | Advances closed-loop autonomous autopilot FSM by one step |
+| **`POST`** | **`/api/autopilot/mission`** | Executes full 4-hour qualification stress test mission |
+| **`POST`** | **`/api/economics`** | Runs 20-yr DCF NPV/IRR/LCOB and ISO 14040/14044 LCA carbon metrics |
+| **`POST`** | **`/api/control`** | Dynamic closed-loop response simulation (MPC / PID / Open-Loop) |
+| **`POST`** | **`/api/soft-sensors`** | Extracts telemetry and evaluates 6 virtual soft sensors (95% UQ) |
+| **`POST`** | **`/api/optimize`** | Solves single-objective or multiobjective Pareto optimization |
+| **`POST`** | **`/api/diagnostics`** | Injects equipment faults and returns tri-layer anomaly scores & alarms |
+| **`POST`** | **`/api/maintenance`** | Computes asset wear, 95% RUL, and dispatches prescriptive work orders |
+
+### Example API Request (curl)
+```bash
+curl -X POST http://127.0.0.1:8000/api/simulate \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: bioplant-default-dev-key" \
+  -d '{
+    "feedstock": "olive_pomace",
+    "reactor_temp_c": 500.0,
+    "feed_rate_kg_h": 100.0,
+    "yield_mode": "ml"
+  }'
+```
+
+---
+
+## 👨‍💻 7. Author & Maintainer
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <a href="https://github.com/cagataykilicc">
+        <img src="https://github.com/cagataykilicc.png" width="120px;" style="border-radius:50%;" alt="Çağatay Kılıç"/>
+        <br />
+        <sub><b>Çağatay Kılıç</b></sub>
+      </a>
+      <br />
+      <sub>Creator & Lead Engineer</sub>
+      <br />
+      <a href="https://github.com/cagataykilicc" title="GitHub">
+        <img src="https://img.shields.io/badge/GitHub-cagataykilicc-181717?style=flat&logo=github" alt="GitHub" />
+      </a>
+    </td>
+  </tr>
+</table>
+
+* **GitHub**: [@cagataykilicc](https://github.com/cagataykilicc)
+* **Project Repository**: [https://github.com/cagataykilicc/ai-biomass-plant](https://github.com/cagataykilicc/ai-biomass-plant)
+
+---
+
+## 📜 8. License
+
+This project is licensed under the terms of the **MIT License**. See the [LICENSE](LICENSE) file for complete details.
