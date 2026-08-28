@@ -192,16 +192,18 @@ class PyrolysisReactor:
         q_total_kw = q_total_thermal_kj_h / 3600.0
         q_total_mj_h = q_total_thermal_kj_h / 1000.0
 
-        # 5. Estimated Higher/Lower Heating Values of Products
-        # Biochar HHV: Carbon-enriched matrix (approx 26 - 32 MJ/kg depending on ash)
+        # 5. Estimated Higher/Lower Heating Values of Products based on feedstock energy content
+        lhv_feed_dry = feedstock.calculate_lhv_dry()
+
+        # Biochar HHV: Carbon-enriched solid matrix (typically 1.25 - 1.35x feed LHV on DAF basis)
         ash_in_char_pct = (feedstock.ultimate.ash / dry_yields.biochar_yield) if dry_yields.biochar_yield > 0 else 0
-        char_hhv = max(15.0, 32.5 * (1.0 - ash_in_char_pct / 100.0))
+        char_hhv = max(14.0, min(29.0, (lhv_feed_dry * 1.32) * (1.0 - ash_in_char_pct / 100.0)))
 
-        # Dry bio-oil organics HHV: ~22 - 25 MJ/kg
-        dry_bio_oil_hhv = 23.5
+        # Dry bio-oil organics HHV: ~0.95 - 1.05x feed LHV
+        dry_bio_oil_hhv = max(15.0, min(23.0, lhv_feed_dry * 1.02))
 
-        # Syngas LHV: ~11 - 15 MJ/kg (rich in CO, H2, CH4, CO2)
-        syngas_lhv = 12.8
+        # Syngas LHV: ~0.45 - 0.55x feed LHV (CO, H2, CH4, CO2 mix, approx 8.5 - 11.5 MJ/kg)
+        syngas_lhv = max(7.0, min(11.5, lhv_feed_dry * 0.50))
 
         assumptions = {
             "reaction_enthalpy_kj_kg": self.config.reaction_enthalpy_kj_kg,
