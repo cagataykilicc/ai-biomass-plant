@@ -1,6 +1,8 @@
 # AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V2.0)
 
+[![CI](https://github.com/cagataykilicc/ai-biomass-plant/actions/workflows/ci.yml/badge.svg)](https://github.com/cagataykilicc/ai-biomass-plant/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Git LFS](https://img.shields.io/badge/Git%20LFS-Tracked%20Models-orange.svg)](https://git-lfs.com)
 [![Autonomous: AI Autopilot & FSM](https://img.shields.io/badge/Autonomous%20Platform-AI%20Autopilot%20%26%20FSM%20(V2.0)-gold.svg)]()
 [![Flight Recorder: Blackbox Telemetry](https://img.shields.io/badge/Blackbox-Flight%20Recorder%20%26%20Historian-blueviolet.svg)]()
 [![Economics: Guthrie TEA & 20-Yr DCF](https://img.shields.io/badge/Economics-Guthrie%20TEA%20%26%2020--Yr%20DCF-gold.svg)]()
@@ -13,7 +15,7 @@
 [![Soft Sensors: 6 Virtual Gauges](https://img.shields.io/badge/Soft%20Sensors-6%20Inferential%20Gauges%20(95%25%20UQ)-blueviolet.svg)]()
 [![Optimization: NSGA--II Pareto & TOPSIS](https://img.shields.io/badge/Optimization-Pareto%20%26%20TOPSIS%20MCDM-blue.svg)]()
 [![Champion ML: Gradient Boosting](https://img.shields.io/badge/Champion%20Model-Gradient%20Boosting%20(R%C2%B2%200.9981)-blueviolet.svg)]()
-[![Tests: 100% Passed](https://img.shields.io/badge/Tests-100%2F100%20Passed-brightgreen.svg)]()
+[![Tests: 100% Passed](https://img.shields.io/badge/Tests-102%2F102%20Passed-brightgreen.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)]()
 
 A complete, full-stack, first-principles chemical engineering, machine learning, and **Fully Autonomous Plant Platform (V2.0)** for biomass thermochemical recycling, supervisory autopilot finite state machine (FSM) control, blackbox flight telemetry, techno-economic feasibility (TEA), and ISO 14040/14044 Life Cycle Assessment (LCA) carbon accounting.
@@ -93,9 +95,29 @@ The built-in multi-threaded HTTP server serves standard JSON REST endpoints on p
 | **`POST`** | **`/api/diagnostics`** | Injects equipment fault and returns anomaly scores and alarms |
 | **`POST`** | **`/api/maintenance`** | Computes asset wear, 95% RUL, and dispatches work orders |
 
+## 4. Installation & Setup (Git LFS)
+
+> [!IMPORTANT]
+> **Git LFS Required:** Pretrained ML models, soft sensors, and anomaly diagnostic checkpoints under `models/checkpoints/` are version-controlled with [Git LFS](https://git-lfs.com). Ensure Git LFS is installed before cloning.
+
+```bash
+# 1. Install Git LFS
+git lfs install
+
+# 2. Clone the repository
+git clone https://github.com/cagataykilicc/ai-biomass-plant.git
+cd ai-biomass-plant
+
+# 3. Pull LFS model checkpoints (if not automatically pulled)
+git lfs pull
+
+# 4. Install Python dependencies in editable mode
+pip install -e .[dev]
+```
+
 ---
 
-## 4. How to Launch the Platform
+## 5. How to Launch the Platform
 
 ### A. Start Digital Twin Web Platform (Interactive 8-Tab Dashboard)
 ```bash
