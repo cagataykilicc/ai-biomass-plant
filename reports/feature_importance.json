@@ -1,0 +1,118 @@
+{
+  "metadata": {
+    "model_type": "random_forest",
+    "n_test_samples": 8,
+    "n_repeats": 3
+  },
+  "domain_insights": {
+    "primary_process_driver": "reactor_temp_c",
+    "top_5_influential_features": [
+      "reactor_temp_c",
+      "moisture_ar_pct",
+      "residence_time_min",
+      "feed_rate_wet_kg_h",
+      "oxygen_pct"
+    ],
+    "chemical_interpretation": "Reactor temperature (reactor_temp_c) dominates thermal devolatilization and cracking. Feedstock proximate composition (volatile_matter_pct, ash_pct, fixed_carbon_pct) and organic carbon content (carbon_pct) control primary phase partitioning and energy recovery."
+  },
+  "permutation_importance_ranked": [
+    {
+      "feature": "reactor_temp_c",
+      "mean_importance": 1.4548,
+      "std": 0.3021
+    },
+    {
+      "feature": "moisture_ar_pct",
+      "mean_importance": 0.0094,
+      "std": 0.0019
+    },
+    {
+      "feature": "residence_time_min",
+      "mean_importance": 0.007,
+      "std": 0.0112
+    },
+    {
+      "feature": "feed_rate_wet_kg_h",
+      "mean_importance": 0.006,
+      "std": 0.0017
+    },
+    {
+      "feature": "oxygen_pct",
+      "mean_importance": 0.0045,
+      "std": 0.0048
+    },
+    {
+      "feature": "volatile_matter_pct",
+      "mean_importance": 0.003,
+      "std": 0.003
+    },
+    {
+      "feature": "sulfur_pct",
+      "mean_importance": 0.0019,
+      "std": 0.0011
+    },
+    {
+      "feature": "feedstock_hhv_dry_mj_kg",
+      "mean_importance": 0.0004,
+      "std": 0.0001
+    },
+    {
+      "feature": "fixed_carbon_pct",
+      "mean_importance": 0.0002,
+      "std": 0.0008
+    },
+    {
+      "feature": "particle_size_mm",
+      "mean_importance": -0.0,
+      "std": 0.0
+    },
+    {
+      "feature": "nitrogen_pct",
+      "mean_importance": -0.0001,
+      "std": 0.0006
+    },
+    {
+      "feature": "carbon_pct",
+      "mean_importance": -0.0004,
+      "std": 0.0008
+    },
+    {
+      "feature": "ash_pct",
+      "mean_importance": -0.0013,
+      "std": 0.0027
+    },
+    {
+      "feature": "hydrogen_pct",
+      "mean_importance": -0.0015,
+      "std": 0.0006
+    },
+    {
+      "feature": "bulk_density_kg_m3",
+      "mean_importance": -0.002,
+      "std": 0.0016
+    },
+    {
+      "feature": "heating_rate_c_min",
+      "mean_importance": -0.0341,
+      "std": 0.0239
+    }
+  ],
+  "tree_mdi_importance": {
+    "carbon_pct": 0.0021,
+    "hydrogen_pct": 0.001,
+    "oxygen_pct": 0.0046,
+    "nitrogen_pct": 0.0015,
+    "sulfur_pct": 0.0025,
+    "ash_pct": 0.0035,
+    "moisture_ar_pct": 0.0135,
+    "volatile_matter_pct": 0.0025,
+    "fixed_carbon_pct": 0.0027,
+    "particle_size_mm": 0.0,
+    "bulk_density_kg_m3": 0.0023,
+    "feedstock_hhv_dry_mj_kg": 0.0007,
+    "reactor_temp_c": 0.9205,
+    "heating_rate_c_min": 0.0262,
+    "residence_time_min": 0.0123,
+    "feed_rate_wet_kg_h": 0.004
+  }
+}
