@@ -1,0 +1,36 @@
+{
+  "success": false,
+  "objective": "MAX_BIO_OIL_YIELD",
+  "feedstock_name": "olive_pomace",
+  "optimal_setpoints": {
+    "reactor_temp_c": 492.93,
+    "heating_rate_c_min": 272.74,
+    "residence_time_min": 2.85,
+    "feed_rate_kg_h": 300.0,
+    "dryer_target_moisture_pct": 12.0
+  },
+  "optimal_objective_value": 157.045,
+  "solver_name": "Differential_Evolution",
+  "iterations": 30,
+  "execution_time_sec": 2.064,
+  "economic_breakdown": {
+    "revenue_bio_oil_usd_h": 86.375,
+    "revenue_biochar_usd_h": 56.959,
+    "revenue_surplus_heat_usd_h": 0.646,
+    "total_revenue_usd_h": 143.98,
+    "cost_feedstock_usd_h": 13.5,
+    "cost_electricity_usd_h": 0.84,
+    "cost_supplemental_heat_usd_h": 0.0,
+    "total_opex_usd_h": 14.34,
+    "gross_margin_usd_h": 129.64
+  },
+  "key_kpis": {
+    "bio_oil_yield_dry_pct": 50.516170785321755,
+    "biochar_yield_dry_pct": 26.678726150022126,
+    "syngas_yield_dry_pct": 22.805103064656112,
+    "recovered_bio_oil_kg_h": 157.0454042642858,
+    "recovered_biochar_kg_h": 67.01029040731807,
+    "thermal_self_sufficiency_index_pct": 109.7625131411033,
+    "net_thermal_efficiency_pct": 76.64957267510185
+  }
+}
