@@ -1,9 +1,9 @@
-"""Command-line interface (CLI) entry point for the Virtual Biomass Conversion Plant (V0.2).
+"""Command-line interface (CLI) entry point for the Virtual Biomass Conversion Plant (V0.4).
 
 Usage:
     python -m src.run_simulation
     python -m src.run_simulation --config configs/scenarios/olive_pomace_standard.yaml
-    python -m src.run_simulation --feedstock pine_sawdust --feed-rate 200 --temp 520 --moisture 12
+    python -m src.run_simulation --yield-mode ml --feedstock pine_sawdust --temp 520
 """
 
 from __future__ import annotations
@@ -37,10 +37,11 @@ def print_simulation_dashboard(report: SimulationReport) -> None:
     sub_border = "-" * w
 
     print(f"\n{border}")
-    print(f"       AI-INTEGRATED BIOMASS CONVERSION PLANT - V0.2")
-    print(f"   (Thermodynamics, Elemental Balances & Heat Integration)")
+    print(f"       AI-INTEGRATED BIOMASS CONVERSION PLANT - V0.4")
+    print(f" (Physics-Constrained ML Surrogate & Thermodynamic Balances)")
     print(f"{border}")
     print(f"Feedstock            : {feedstock.name} ({feedstock.category})")
+    print(f"Yield Engine         : [{reactor.yield_engine_used}]")
     print(f"Feed Rate (Wet)      : {cfg.feed_rate_kg_h:.1f} kg/h")
     print(f"Initial Moisture     : {feedstock.proximate.moisture:.1f} wt%")
     print(f"Target Exit Moisture : {drying.final_moisture_pct:.1f} wt%")
@@ -55,6 +56,12 @@ def print_simulation_dashboard(report: SimulationReport) -> None:
     print(f"Clean Syngas         : {sep.clean_syngas_kg_h:6.2f} kg/h  ({syngas.standard_volume_flow_nm3_h:.1f} Nm³/h, LHV: {syngas.lhv_vol_mj_nm3:.1f} MJ/Nm³)")
     print(f"Dryer Exhaust Water  : {drying.water_evaporated_kg_h:6.2f} kg/h")
     print(f"Cyclone Fines Loss   : {sep.cyclone_fines_loss_kg_h:6.2f} kg/h")
+
+    print(f"\nDRY YIELD FRACTIONS (100.00% Conserved)")
+    print(f"{sub_border}")
+    print(f"Biochar Yield (dry)  : {reactor.yields_dry.biochar_yield * 100:5.2f} wt%")
+    print(f"Bio-oil Yield (dry)  : {reactor.yields_dry.bio_oil_yield * 100:5.2f} wt%")
+    print(f"Syngas Yield (dry)   : {reactor.yields_dry.syngas_yield * 100:5.2f} wt%")
 
     print(f"\nSYNGAS MOLECULAR SPECIATION")
     print(f"{sub_border}")
@@ -117,7 +124,7 @@ def print_simulation_dashboard(report: SimulationReport) -> None:
 def build_parser() -> argparse.ArgumentParser:
     """Build command-line parser."""
     parser = argparse.ArgumentParser(
-        description="AI-Integrated Biomass Pyrolysis Plant Simulation Platform (V0.2)"
+        description="AI-Integrated Biomass Pyrolysis Plant Simulation Platform (V0.4)"
     )
     parser.add_argument(
         "--config",
@@ -130,6 +137,13 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         default=None,
         help="Feedstock profile name (e.g. olive_pomace, pine_sawdust, wheat_straw, rice_husk).",
+    )
+    parser.add_argument(
+        "--yield-mode",
+        type=str,
+        default="deterministic",
+        choices=["deterministic", "ml"],
+        help="Yield engine mode: 'deterministic' (kinetic model) or 'ml' (trained ML surrogate).",
     )
     parser.add_argument(
         "--feed-rate",
@@ -193,6 +207,7 @@ def main() -> None:
             scenario = ConfigManager.get_default_config()
 
     simulator = BiomassPlantSimulator()
+    mode_str = "ML_SURROGATE" if args.yield_mode.lower() == "ml" else "DETERMINISTIC"
 
     try:
         report = simulator.run_simulation(
@@ -203,6 +218,7 @@ def main() -> None:
             reactor_temp_c=args.temp,
             heating_rate_c_min=args.heating_rate,
             residence_time_min=args.residence_time,
+            yield_mode=mode_str,
         )
     except Exception as e:
         print(f"\n[ERROR] Simulation failed: {e}", file=sys.stderr)

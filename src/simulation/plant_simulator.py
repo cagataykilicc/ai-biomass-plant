@@ -1,8 +1,8 @@
-"""Plant simulation engine orchestrating unit operations, elemental balances, and heat integration.
+"""Plant simulation engine orchestrating unit operations, elemental balances, ML models, and heat integration.
 
 Executes end-to-end simulation workflows:
-Feedstock -> Drying -> Pyrolysis Reactor -> Separation -> Syngas Speciation & Bio-oil Grouping ->
-Combustor & Heat Integration -> Mass & Elemental Balances -> Energy & Exergy Accounting.
+Feedstock -> Drying -> Pyrolysis Reactor (Deterministic or ML Surrogate) -> Separation ->
+Syngas Speciation & Bio-oil Grouping -> Combustor & Heat Integration -> Mass & Elemental Balances -> Energy & Exergy Accounting.
 """
 
 from __future__ import annotations
@@ -10,6 +10,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Dict, Any, Optional
+from pathlib import Path
 import json
 
 from src.data.feedstock import BiomassFeedstock
@@ -23,6 +24,7 @@ from src.process.elemental_balance import ElementalBalanceEngine, PlantElemental
 from src.process.energy_balance import EnergyBalanceEngine, EnergyBalanceSummary
 from src.models.syngas_model import SyngasSpeciationModel, SyngasComposition
 from src.models.bio_oil_model import BioOilPropertyModel, BioOilChemicalGrouping
+from src.ml.yield_predictor import YieldPredictorModel
 from src.utils.config import PlantScenarioConfig
 
 
@@ -45,9 +47,10 @@ class SimulationReport:
     def to_dict(self) -> Dict[str, Any]:
         return {
             "metadata": {
-                "version": "0.2.0",
+                "version": "0.4.0",
                 "timestamp": self.timestamp,
                 "plant_status": "OPERATIONAL",
+                "yield_engine_used": self.reactor.yield_engine_used,
                 "mass_balance_status": self.mass_balance.status,
                 "elemental_balance_status": self.elemental_balance.overall_status,
                 "energy_balance_status": self.energy_balance.status,
@@ -72,13 +75,28 @@ class SimulationReport:
 class BiomassPlantSimulator:
     """Core simulation orchestrator for the virtual biomass conversion plant."""
 
-    def __init__(self, feedstock_library: Optional[FeedstockLibrary] = None) -> None:
+    def __init__(
+        self,
+        feedstock_library: Optional[FeedstockLibrary] = None,
+        ml_yield_predictor: Optional[YieldPredictorModel] = None,
+    ) -> None:
         self.feedstock_library = feedstock_library or FeedstockLibrary()
         self.syngas_model = SyngasSpeciationModel()
         self.bio_oil_model = BioOilPropertyModel()
         self.mass_balance_engine = MassBalanceEngine()
         self.elemental_balance_engine = ElementalBalanceEngine()
         self.energy_balance_engine = EnergyBalanceEngine()
+        self.ml_yield_predictor = ml_yield_predictor or self._try_load_default_ml_model()
+
+    def _try_load_default_ml_model(self) -> Optional[YieldPredictorModel]:
+        """Try loading default trained ML yield surrogate if present."""
+        default_ckpt = Path(__file__).resolve().parent.parent.parent / "models" / "checkpoints" / "yield_predictor_rf.joblib"
+        if default_ckpt.is_file():
+            try:
+                return YieldPredictorModel.load(default_ckpt)
+            except Exception:
+                return None
+        return None
 
     def run_simulation(
         self,
@@ -89,6 +107,7 @@ class BiomassPlantSimulator:
         reactor_temp_c: Optional[float] = None,
         heating_rate_c_min: Optional[float] = None,
         residence_time_min: Optional[float] = None,
+        yield_mode: Optional[str] = None,
     ) -> SimulationReport:
         """Run an end-to-end plant simulation.
 
@@ -100,6 +119,7 @@ class BiomassPlantSimulator:
             reactor_temp_c: Optional override for reactor temperature (°C).
             heating_rate_c_min: Optional override for heating rate (°C/min).
             residence_time_min: Optional override for residence time (min).
+            yield_mode: Optional override for yield engine ("DETERMINISTIC" vs "ML_SURROGATE").
 
         Returns:
             SimulationReport with detailed stream, unit, speciation, and balance information.
@@ -119,6 +139,8 @@ class BiomassPlantSimulator:
             cfg.reactor.heating_rate_c_min = heating_rate_c_min
         if residence_time_min is not None:
             cfg.reactor.residence_time_min = residence_time_min
+        if yield_mode is not None:
+            cfg.reactor.yield_mode = yield_mode.upper()
 
         cfg.validate()
 
@@ -137,7 +159,10 @@ class BiomassPlantSimulator:
         )
 
         # 4. Step 2: Pyrolysis Reactor Unit (R101)
-        reactor = PyrolysisReactor(config=cfg.reactor)
+        reactor = PyrolysisReactor(
+            config=cfg.reactor,
+            ml_yield_predictor=self.ml_yield_predictor,
+        )
         reactor_output = reactor.process(
             dried_feed_rate_kg_h=drying_result.dried_feed_rate_out_kg_h,
             residual_moisture_pct=drying_result.final_moisture_pct,
@@ -145,6 +170,7 @@ class BiomassPlantSimulator:
             temp_override=cfg.reactor.temperature_c,
             heating_rate_override=cfg.reactor.heating_rate_c_min,
             residence_time_override=cfg.reactor.residence_time_min,
+            yield_mode_override=cfg.reactor.yield_mode,
         )
 
         # 5. Step 3: Product Separation & Condensation Unit (C101, E101)
