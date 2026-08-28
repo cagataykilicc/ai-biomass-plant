@@ -193,6 +193,18 @@ def build_parser() -> argparse.ArgumentParser:
         help="Run process optimization: max_bio_oil, max_biochar, max_profit, max_efficiency, or pareto.",
     )
     parser.add_argument(
+        "--control",
+        type=str,
+        default=None,
+        choices=["pid", "mpc", "open_loop"],
+        help="Run dynamic closed-loop process control simulation.",
+    )
+    parser.add_argument(
+        "--benchmark-control",
+        action="store_true",
+        help="Run comparative control benchmark (Open-Loop vs PID vs MPC).",
+    )
+    parser.add_argument(
         "--feed-rate",
         type=float,
         default=None,
@@ -257,6 +269,23 @@ def main() -> None:
         if args.output:
             sys.argv += ["--output", args.output]
         run_diag()
+        return
+
+    # Route to control benchmark runner if requested
+    if args.benchmark_control:
+        from src.control.run_control import main as run_ctrl
+        sys.argv = [sys.argv[0], "--benchmark"]
+        if args.output:
+            sys.argv += ["--output", args.output]
+        run_ctrl()
+        return
+
+    if args.control:
+        from src.control.run_control import main as run_ctrl
+        sys.argv = [sys.argv[0], "--controller", args.control]
+        if args.temp:
+            sys.argv += ["--setpoint", str(args.temp)]
+        run_ctrl()
         return
 
     # If --optimize flag is provided, route directly to optimization runner
