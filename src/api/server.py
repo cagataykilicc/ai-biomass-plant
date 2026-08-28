@@ -82,6 +82,12 @@ class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
             elif path == "/api/economics":
                 res = APIRequestHandler.handle_economics(data)
                 self._send_json(200, res)
+            elif path == "/api/autopilot/step":
+                res = APIRequestHandler.handle_autopilot_step(data)
+                self._send_json(200, res)
+            elif path == "/api/autopilot/mission":
+                res = APIRequestHandler.handle_autopilot_mission(data)
+                self._send_json(200, res)
             else:
                 self._send_json(404, {"error": f"Endpoint not found: {path}"})
         except Exception as exc:

@@ -1,5 +1,5 @@
 /**
- * AI-Integrated Biomass Conversion Plant - Real-Time Digital Twin Frontend Controller (V1.2)
+ * AI-Integrated Biomass Conversion Plant - Real-Time Digital Twin Frontend Controller (V2.0)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMaintenanceHandlers();
   initControlHandlers();
   initEconomicsHandlers();
+  initAutopilotHandlers();
 
   // Run initial simulation on load
   runSimulation();
@@ -37,6 +38,7 @@ function initNavigation() {
       if (targetTab === 'maintenance-tab') runMaintenance();
       if (targetTab === 'control-tab') runControlSimulation();
       if (targetTab === 'economics-tab') runEconomics();
+      if (targetTab === 'autopilot-tab') stepAutopilot();
     });
   });
 }
@@ -96,6 +98,14 @@ function initSliders() {
   if (sliderCtrlMoist && dispCtrlMoist) {
     sliderCtrlMoist.addEventListener('input', (e) => {
       dispCtrlMoist.textContent = `${e.target.value} wt%`;
+    });
+  }
+
+  const sliderApMoist = document.getElementById('slider-ap-moist');
+  const dispApMoist = document.getElementById('disp-ap-moist');
+  if (sliderApMoist && dispApMoist) {
+    sliderApMoist.addEventListener('input', (e) => {
+      dispApMoist.textContent = `${e.target.value} %`;
     });
   }
 }
@@ -695,4 +705,113 @@ function renderEconomicsUI(data) {
       </div>
     </div>
   `;
+}
+
+/* Tab 8: Autonomous Autopilot Cockpit */
+let autopilotInterval = null;
+function initAutopilotHandlers() {
+  const btnToggle = document.getElementById('btn-toggle-ap');
+  if (btnToggle) {
+    btnToggle.addEventListener('click', toggleAutopilot);
+  }
+
+  const btnMission = document.getElementById('btn-run-full-mission');
+  if (btnMission) {
+    btnMission.addEventListener('click', runFullMission);
+  }
+}
+
+function toggleAutopilot() {
+  const btn = document.getElementById('btn-toggle-ap');
+  const text = document.getElementById('ap-toggle-text');
+  const statusBadge = document.getElementById('ap-loop-status');
+
+  if (autopilotInterval) {
+    clearInterval(autopilotInterval);
+    autopilotInterval = null;
+    btn.className = 'btn btn-primary';
+    text.textContent = 'ENGAGE AUTONOMOUS AUTOPILOT';
+    statusBadge.textContent = 'AUTOPILOT STANDBY';
+    statusBadge.className = 'badge badge-warning';
+  } else {
+    btn.className = 'btn';
+    btn.style.background = 'var(--accent-crimson)';
+    text.textContent = 'DISENGAGE AUTOPILOT';
+    statusBadge.textContent = 'AUTOPILOT ENGAGED (2.0s LOOP)';
+    statusBadge.className = 'badge badge-success';
+
+    // Step immediately and then every 2 seconds
+    stepAutopilot();
+    autopilotInterval = setInterval(stepAutopilot, 2000);
+  }
+}
+
+async function stepAutopilot(reset = false) {
+  const moist = parseFloat(document.getElementById('slider-ap-moist').value);
+  const fault = document.getElementById('ap-fault-select').value;
+
+  try {
+    const res = await fetch('/api/autopilot/step', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ moisture: moist, fault: fault, reset: reset }),
+    });
+    const data = await res.json();
+    renderAutopilotStep(data);
+  } catch (err) {
+    console.error('Autopilot step failed:', err);
+  }
+}
+
+function renderAutopilotStep(data) {
+  const st = data.plant_state;
+  const cmd = data.command;
+
+  // Update Flight Director Badges
+  const fsmBadge = document.getElementById('ap-fsm-badge');
+  if (fsmBadge) {
+    fsmBadge.textContent = cmd.fsm_state;
+    if (cmd.fsm_state === 'STARTUP_PREHEAT') fsmBadge.className = 'badge badge-cyan';
+    else if (cmd.fsm_state === 'AUTONOMOUS_CRUISE') fsmBadge.className = 'badge badge-success';
+    else if (cmd.fsm_state === 'DISTURBANCE_ADAPTATION') fsmBadge.className = 'badge badge-warning';
+    else if (cmd.fsm_state === 'FAULT_MITIGATION') fsmBadge.className = 'badge badge-warning';
+    else fsmBadge.className = 'badge badge-danger';
+  }
+
+  // Update Gauges
+  document.getElementById('ap-pv-temp').textContent = `${st.reactor_temp_c.toFixed(1)} °C`;
+  document.getElementById('ap-sp-temp').textContent = `${cmd.target_temp_c.toFixed(1)} °C`;
+  document.getElementById('ap-feed-rate').textContent = `${st.feed_rate_kg_h.toFixed(1)} kg/h`;
+  document.getElementById('ap-burner-duty').textContent = `${cmd.burner_duty_pct.toFixed(0)}% Firing`;
+  document.getElementById('ap-tsi').textContent = `${st.tsi_pct.toFixed(1)} %`;
+
+  // Action summary & event log
+  document.getElementById('ap-action-headline').textContent = cmd.action_summary;
+  const events = data.active_events || [];
+  if (events.length > 0) {
+    const latest = events[events.length - 1];
+    document.getElementById('ap-event-log').textContent = `[${latest.time_min.toFixed(1)}m] ${latest.action} | Alarm: ${latest.alarm}`;
+  }
+}
+
+async function runFullMission() {
+  const btn = document.getElementById('btn-run-full-mission');
+  btn.disabled = true;
+  btn.innerHTML = '<span>Executing 4-Hour Autonomous Stress Test...</span>';
+
+  try {
+    const res = await fetch('/api/autopilot/mission', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dt: 2.0 }),
+    });
+    const data = await res.json();
+    alert(`Autonomous Mission Completed: ${data.overall_status} across ${data.phases_executed_count} flight phases! Log saved.`);
+    stepAutopilot();
+  } catch (err) {
+    alert(`Mission failed: ${err.message}`);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>Execute 4-Hour Stress Test Mission</span>';
+  }
 }

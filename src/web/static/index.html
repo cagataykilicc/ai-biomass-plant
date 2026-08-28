@@ -54,6 +54,10 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           <span>TEA & LCA Carbon</span>
         </button>
+        <button class="nav-btn" data-tab="autopilot-tab" id="btn-tab-autopilot">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V18a1 1 0 0 1-2 0v-1.07A6 6 0 0 1 6.07 12H5a1 1 0 0 1 0-2h1.07A6 6 0 0 1 11 4.93V4a1 1 0 0 1 2 0v.93A6 6 0 0 1 17.93 10H19a1 1 0 0 1 0 2h-1.07A6 6 0 0 1 13 16.93z"/><circle cx="12" cy="12" r="2"/></svg>
+          <span>Autopilot Cockpit</span>
+        </button>
       </nav>
 
       <div class="sidebar-status">
@@ -413,6 +417,76 @@
 
           <div class="glass-card flowsheet-card" id="econ-results-container">
             <!-- Rendered by JavaScript -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 8: AUTONOMOUS AUTOPILOT COCKPIT -->
+      <section class="tab-pane" id="autopilot-tab">
+        <div class="tab-header">
+          <h2>Fully Autonomous AI Plant Autopilot & Supervisory Cockpit (V2.0)</h2>
+          <p>Closed-loop autonomous flight operations: Startup preheat, cruise tracking, moisture adaptation, and pulse-jet fault self-healing.</p>
+        </div>
+        <div class="dashboard-grid">
+          <div class="glass-card control-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <h3>Flight Director Control</h3>
+              <span class="badge badge-cyan" id="ap-fsm-badge">STARTUP_PREHEAT</span>
+            </div>
+            <div class="control-group">
+              <label>Autopilot Master Switch</label>
+              <button class="btn btn-primary" id="btn-toggle-ap" style="width:100%;">
+                <span id="ap-toggle-text">ENGAGE AUTONOMOUS AUTOPILOT</span>
+              </button>
+            </div>
+            <div class="control-group">
+              <div class="slider-label">
+                <span>Injected Disturbance (Moisture)</span>
+                <span class="val-display" id="disp-ap-moist">12.0 %</span>
+              </div>
+              <input type="range" id="slider-ap-moist" min="10" max="28" step="1" value="12">
+            </div>
+            <div class="control-group">
+              <label for="ap-fault-select">Inject Flight Anomaly</label>
+              <select id="ap-fault-select" class="custom-select">
+                <option value="none" selected>Nominal (No Injected Fault)</option>
+                <option value="cyclone_blockage">Cyclone Dipleg Blockage</option>
+                <option value="thermal_runaway">Reactor Thermal Runaway (>630°C)</option>
+              </select>
+            </div>
+            <div style="margin-top:12px;">
+              <button class="btn" id="btn-run-full-mission" style="background:linear-gradient(135deg, rgba(0,255,136,0.15), rgba(0,240,255,0.15)); border:1px solid rgba(0,255,136,0.4); color:var(--accent-green); width:100%;">
+                <span>Execute 4-Hour Stress Test Mission</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="glass-card flowsheet-card" id="ap-telemetry-container">
+            <div class="card-header">
+              <h3>Live Blackbox Telemetry & Event Stream</h3>
+              <span class="badge badge-success" id="ap-loop-status">AUTOPILOT READY</span>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:8px;">
+              <div class="metric-item">
+                <span class="m-title">Reactor Temp (PV)</span>
+                <span class="m-val" id="ap-pv-temp">120.0 °C</span>
+                <span class="m-sub">Target: <strong id="ap-sp-temp">500.0 °C</strong></span>
+              </div>
+              <div class="metric-item">
+                <span class="m-title">Feed Auger Rate</span>
+                <span class="m-val" id="ap-feed-rate">0.0 kg/h</span>
+                <span class="m-sub">Duty: <strong id="ap-burner-duty">85% Firing</strong></span>
+              </div>
+              <div class="metric-item">
+                <span class="m-title">Thermal Index (TSI)</span>
+                <span class="m-val text-green" id="ap-tsi">112.0 %</span>
+                <span class="m-sub">Self-Sustaining</span>
+              </div>
+            </div>
+            <div class="work-order-card" style="margin-top:12px;">
+              <div style="font-weight:700; color:var(--primary-cyan);" id="ap-action-headline">PREHEAT_BURNER_FIRING</div>
+              <div style="font-size:0.85rem; color:var(--text-muted); margin-top:4px;" id="ap-event-log">Autonomous agent is ramping up bed temperature with nitrogen sweep active.</div>
+            </div>
           </div>
         </div>
       </section>

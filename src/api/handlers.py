@@ -55,7 +55,7 @@ class APIRequestHandler:
         """System status and module availability."""
         return {
             "status": "ONLINE",
-            "version": "1.2.0",
+            "version": "2.0.0",
             "modules": {
                 "thermodynamic_flowsheet": "ACTIVE",
                 "ml_yield_surrogate": "ACTIVE",
@@ -65,6 +65,7 @@ class APIRequestHandler:
                 "predictive_maintenance_rul": "ACTIVE",
                 "dynamic_process_control_mpc": "ACTIVE",
                 "techno_economic_lca_carbon": "ACTIVE",
+                "autonomous_autopilot_agent": "ACTIVE",
             },
             "available_feedstocks": ["pine_sawdust", "olive_pomace", "wheat_straw", "rice_husk"],
         }
@@ -303,3 +304,45 @@ class APIRequestHandler:
             biochar_price_usd_kg=char_price,
             corc_price_usd_tonne=corc_price,
         )
+
+    _autopilot_agent = None
+
+    @classmethod
+    def _get_autopilot(cls):
+        from src.autonomous.autopilot import AutonomousSupervisoryAgent
+        if cls._autopilot_agent is None:
+            cls._autopilot_agent = AutonomousSupervisoryAgent(dt_sec=2.0)
+        return cls._autopilot_agent
+
+    @classmethod
+    def handle_autopilot_step(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Advance autonomous autopilot by one decision step."""
+        agent = cls._get_autopilot()
+        moist = float(data.get("moisture", 12.0))
+        fault = data.get("fault", "none")
+        sp = float(data.get("setpoint", 500.0))
+        reset_agent = data.get("reset", False)
+
+        if reset_agent:
+            agent.reset()
+
+        state, cmd = agent.step(
+            mission_phase="WEB_AUTONOMOUS_OPERATION",
+            moisture_override=moist,
+            injected_fault=fault,
+            target_temp_override=sp,
+        )
+
+        return {
+            "plant_state": state.to_dict(),
+            "command": cmd.to_dict(),
+            "active_events": agent.flight_recorder.events[-5:],
+        }
+
+    @classmethod
+    def handle_autopilot_mission(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute full autonomous stress test mission."""
+        from src.autonomous.stress_test import AutonomousStressTestRunner
+        dt = float(data.get("dt", 2.0))
+        runner = AutonomousStressTestRunner(dt_sec=dt)
+        return runner.run_4hour_mission()

@@ -14,7 +14,7 @@ def test_api_status_and_feedstocks() -> None:
     """Verify status and feedstock catalog API endpoints."""
     status = APIRequestHandler.handle_status()
     assert status["status"] == "ONLINE"
-    assert status["version"] == "1.2.0"
+    assert status["version"] == "2.0.0"
     assert "pine_sawdust" in status["available_feedstocks"]
 
     feedstocks = APIRequestHandler.handle_feedstocks()
@@ -98,6 +98,19 @@ def test_api_economics() -> None:
     assert res["financial_viability_dcf"]["net_present_value_usd"] > 0.0
 
 
+def test_api_autopilot() -> None:
+    """Verify autonomous autopilot step and mission REST API."""
+    step_payload = {"moisture": 12.0, "fault": "none", "setpoint": 500.0}
+    res_step = APIRequestHandler.handle_autopilot_step(step_payload)
+    assert "plant_state" in res_step
+    assert "command" in res_step
+
+    mission_payload = {"dt": 10.0}
+    res_mission = APIRequestHandler.handle_autopilot_mission(mission_payload)
+    assert res_mission["overall_status"] == "MISSION_SUCCESS"
+    assert res_mission["phases_executed_count"] == 6
+
+
 def test_live_http_server_endpoints() -> None:
     """Spin up live ThreadingHTTPServer and execute end-to-end HTTP requests."""
     server = DigitalTwinServer(host="127.0.0.1", port=8123)
@@ -109,7 +122,7 @@ def test_live_http_server_endpoints() -> None:
         with urllib.request.urlopen("http://127.0.0.1:8123/api/status") as response:
             assert response.status == 200
             data = json.loads(response.read().decode())
-            assert data["version"] == "1.2.0"
+            assert data["version"] == "2.0.0"
             assert data["status"] == "ONLINE"
 
         # 2. Test GET / (HTML frontend)
