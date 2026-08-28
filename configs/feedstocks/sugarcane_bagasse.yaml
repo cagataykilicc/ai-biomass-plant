@@ -1,0 +1,21 @@
+name: "Sugarcane Bagasse"
+category: "agricultural_residue"
+description: "Fibrous residue remaining after crushing sugarcane stalks"
+
+ultimate:
+  carbon: 48.0
+  hydrogen: 5.8
+  oxygen: 43.5
+  nitrogen: 0.3
+  sulfur: 0.05
+  ash: 2.35
+
+proximate:
+  moisture: 18.0
+  volatile_matter: 81.0
+  fixed_carbon: 16.65
+  ash: 2.35
+
+physical:
+  particle_size_mm: 2.0
+  bulk_density_kg_m3: 180.0

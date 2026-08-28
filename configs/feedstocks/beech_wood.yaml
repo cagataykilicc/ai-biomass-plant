@@ -1,0 +1,21 @@
+name: "Beech Wood"
+category: "woody_biomass"
+description: "Hardwood beech timber residue"
+
+ultimate:
+  carbon: 49.5
+  hydrogen: 6.1
+  oxygen: 43.8
+  nitrogen: 0.2
+  sulfur: 0.02
+  ash: 0.38
+
+proximate:
+  moisture: 10.0
+  volatile_matter: 84.0
+  fixed_carbon: 15.62
+  ash: 0.38
+
+physical:
+  particle_size_mm: 1.0
+  bulk_density_kg_m3: 460.0

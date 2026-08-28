@@ -1,0 +1,21 @@
+name: "Almond Shells"
+category: "nut_shells"
+description: "Dense, lignin-rich hard nutshell byproduct from almond hulling"
+
+ultimate:
+  carbon: 51.0
+  hydrogen: 6.0
+  oxygen: 39.5
+  nitrogen: 0.5
+  sulfur: 0.05
+  ash: 2.95
+
+proximate:
+  moisture: 10.0
+  volatile_matter: 73.5
+  fixed_carbon: 23.55
+  ash: 2.95
+
+physical:
+  particle_size_mm: 3.5
+  bulk_density_kg_m3: 480.0

@@ -1,0 +1,21 @@
+name: "Miscanthus"
+category: "energy_crop"
+description: "Perennial high-yield lignocellulosic energy crop grass"
+
+ultimate:
+  carbon: 48.5
+  hydrogen: 5.7
+  oxygen: 42.6
+  nitrogen: 0.6
+  sulfur: 0.1
+  ash: 2.5
+
+proximate:
+  moisture: 11.0
+  volatile_matter: 79.5
+  fixed_carbon: 18.0
+  ash: 2.5
+
+physical:
+  particle_size_mm: 2.2
+  bulk_density_kg_m3: 200.0
