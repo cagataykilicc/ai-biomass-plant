@@ -63,7 +63,7 @@
     },
     {
       "feature": "particle_size_mm",
-      "mean_importance": 0.0,
+      "mean_importance": -0.0,
       "std": 0.0
     },
     {

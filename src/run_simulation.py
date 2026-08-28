@@ -205,6 +205,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Run comparative control benchmark (Open-Loop vs PID vs MPC).",
     )
     parser.add_argument(
+        "--economics",
+        action="store_true",
+        help="Run Techno-Economic Analysis (TEA) and ISO 14040/14044 LCA carbon accounting.",
+    )
+    parser.add_argument(
         "--feed-rate",
         type=float,
         default=None,
@@ -286,6 +291,21 @@ def main() -> None:
         if args.temp:
             sys.argv += ["--setpoint", str(args.temp)]
         run_ctrl()
+        return
+
+    # Route to economics and LCA runner if requested
+    if args.economics:
+        from src.economics.run_economics import main as run_econ
+        sys.argv = [sys.argv[0]]
+        if args.feedstock:
+            sys.argv += ["--feedstock", args.feedstock]
+        if args.temp:
+            sys.argv += ["--temp", str(args.temp)]
+        if args.feed_rate:
+            sys.argv += ["--feed-rate", str(args.feed_rate)]
+        if args.output:
+            sys.argv += ["--output", args.output]
+        run_econ()
         return
 
     # If --optimize flag is provided, route directly to optimization runner
