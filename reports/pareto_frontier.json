@@ -1,0 +1,127 @@
+{
+  "feedstock_name": "pine_sawdust",
+  "total_evaluated_candidates": 120,
+  "pareto_optimal_count": 6,
+  "pareto_solutions": [
+    {
+      "solution_id": 13,
+      "setpoints": {
+        "reactor_temp_c": 485.79,
+        "heating_rate_c_min": 65.7,
+        "residence_time_min": 17.28,
+        "feed_rate_kg_h": 66.11,
+        "dryer_target_moisture_pct": 8.52
+      },
+      "objectives": {
+        "bio_oil_yield_dry_pct": 51.475,
+        "biochar_yield_dry_pct": 26.101,
+        "gross_margin_usd_h": 27.005,
+        "thermal_efficiency_pct": 76.254,
+        "thermal_self_sufficiency_index_pct": 100.931
+      },
+      "is_self_sufficient": true,
+      "rank": 1,
+      "crowding_distance": 0.0
+    },
+    {
+      "solution_id": 23,
+      "setpoints": {
+        "reactor_temp_c": 493.87,
+        "heating_rate_c_min": 467.96,
+        "residence_time_min": 27.96,
+        "feed_rate_kg_h": 279.16,
+        "dryer_target_moisture_pct": 6.25
+      },
+      "objectives": {
+        "bio_oil_yield_dry_pct": 51.773,
+        "biochar_yield_dry_pct": 24.529,
+        "gross_margin_usd_h": 108.881,
+        "thermal_efficiency_pct": 75.891,
+        "thermal_self_sufficiency_index_pct": 104.387
+      },
+      "is_self_sufficient": true,
+      "rank": 1,
+      "crowding_distance": 0.0
+    },
+    {
+      "solution_id": 30,
+      "setpoints": {
+        "reactor_temp_c": 511.04,
+        "heating_rate_c_min": 221.37,
+        "residence_time_min": 8.37,
+        "feed_rate_kg_h": 126.49,
+        "dryer_target_moisture_pct": 7.66
+      },
+      "objectives": {
+        "bio_oil_yield_dry_pct": 52.226,
+        "biochar_yield_dry_pct": 22.021,
+        "gross_margin_usd_h": 48.582,
+        "thermal_efficiency_pct": 74.13,
+        "thermal_self_sufficiency_index_pct": 118.6
+      },
+      "is_self_sufficient": true,
+      "rank": 1,
+      "crowding_distance": 0.0
+    },
+    {
+      "solution_id": 33,
+      "setpoints": {
+        "reactor_temp_c": 487.83,
+        "heating_rate_c_min": 189.0,
+        "residence_time_min": 6.39,
+        "feed_rate_kg_h": 167.29,
+        "dryer_target_moisture_pct": 11.97
+      },
+      "objectives": {
+        "bio_oil_yield_dry_pct": 51.725,
+        "biochar_yield_dry_pct": 25.98,
+        "gross_margin_usd_h": 72.134,
+        "thermal_efficiency_pct": 76.168,
+        "thermal_self_sufficiency_index_pct": 106.727
+      },
+      "is_self_sufficient": true,
+      "rank": 1,
+      "crowding_distance": 0.0
+    },
+    {
+      "solution_id": 51,
+      "setpoints": {
+        "reactor_temp_c": 491.55,
+        "heating_rate_c_min": 17.97,
+        "residence_time_min": 37.31,
+        "feed_rate_kg_h": 282.95,
+        "dryer_target_moisture_pct": 5.29
+      },
+      "objectives": {
+        "bio_oil_yield_dry_pct": 50.389,
+        "biochar_yield_dry_pct": 26.533,
+        "gross_margin_usd_h": 110.95,
+        "thermal_efficiency_pct": 76.994,
+        "thermal_self_sufficiency_index_pct": 99.86
+      },
+      "is_self_sufficient": false,
+      "rank": 1,
+      "crowding_distance": 0.0
+    },
+    {
+      "solution_id": 55,
+      "setpoints": {
+        "reactor_temp_c": 495.5,
+        "heating_rate_c_min": 485.07,
+        "residence_time_min": 2.73,
+        "feed_rate_kg_h": 267.84,
+        "dryer_target_moisture_pct": 10.5
+      },
+      "objectives": {
+        "bio_oil_yield_dry_pct": 52.099,
+        "biochar_yield_dry_pct": 24.546,
+        "gross_margin_usd_h": 111.304,
+        "thermal_efficiency_pct": 75.553,
+        "thermal_self_sufficiency_index_pct": 110.171
+      },
+      "is_self_sufficient": true,
+      "rank": 1,
+      "crowding_distance": 0.0
+    }
+  ]
+}
