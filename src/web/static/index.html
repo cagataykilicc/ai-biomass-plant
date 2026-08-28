@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Integrated Biomass Conversion Plant - Digital Twin Platform (V1.0)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h2>BIOPLANT AI</h2>
+          <span class="version-tag">V1.0 DIGITAL TWIN</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-btn active" data-tab="flowsheet-tab" id="btn-tab-flowsheet">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>
+          <span>Control Room</span>
+        </button>
+        <button class="nav-btn" data-tab="soft-sensors-tab" id="btn-tab-soft-sensors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <span>Soft Sensors (95% UQ)</span>
+        </button>
+        <button class="nav-btn" data-tab="optimization-tab" id="btn-tab-optimization">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          <span>Pareto Optimizer</span>
+        </button>
+        <button class="nav-btn" data-tab="diagnostics-tab" id="btn-tab-diagnostics">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Fault Diagnostics</span>
+        </button>
+        <button class="nav-btn" data-tab="maintenance-tab" id="btn-tab-maintenance">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          <span>Predictive Maintenance</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-status">
+        <div class="status-indicator online"></div>
+        <div class="status-meta">
+          <span class="status-label">DIGITAL TWIN STATE</span>
+          <span class="status-value" id="twin-status">REAL-TIME ACTIVE</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Live Telemetry Bar -->
+      <header class="top-bar">
+        <div class="top-telemetry-item">
+          <span class="t-label">REACTOR CORE (TI-103)</span>
+          <span class="t-val" id="top-temp">500.0 °C</span>
+        </div>
+        <div class="top-telemetry-item">
+          <span class="t-label">FEED RATE (FI-101)</span>
+          <span class="t-val" id="top-feed">100.0 kg/h</span>
+        </div>
+        <div class="top-telemetry-item">
+          <span class="t-label">THERMAL SELF-SUFFICIENCY</span>
+          <span class="t-val highlight" id="top-tsi">111.3 %</span>
+        </div>
+        <div class="top-telemetry-item">
+          <span class="t-label">ENERGY STATUS</span>
+          <span class="badge badge-success" id="top-energy-status">AUTONOMOUS</span>
+        </div>
+        <div class="top-telemetry-item">
+          <span class="t-label">MODEL MODE</span>
+          <span class="badge badge-cyan" id="top-model-mode">GRADIENT BOOSTING</span>
+        </div>
+      </header>
+
+      <!-- TAB 1: FLOWSHEET & CONTROL ROOM -->
+      <section class="tab-pane active" id="flowsheet-tab">
+        <div class="dashboard-grid">
+          <!-- Control Panel -->
+          <div class="glass-card control-card">
+            <div class="card-header">
+              <h3>Process Setpoint Actuators</h3>
+              <span class="badge badge-cyan">Closed-Loop DCS</span>
+            </div>
+            <div class="control-group">
+              <label for="feedstock-select">Feedstock Profile</label>
+              <select id="feedstock-select" class="custom-select">
+                <option value="pine_sawdust" selected>Pine Sawdust (Forestry Residue)</option>
+                <option value="olive_pomace">Olive Pomace (Agri Waste)</option>
+                <option value="wheat_straw">Wheat Straw (Herbaceous)</option>
+                <option value="rice_husk">Rice Husk (Cereal Husk)</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <div class="slider-label">
+                <span>Reactor Temperature</span>
+                <span class="val-display" id="disp-temp">500 °C</span>
+              </div>
+              <input type="range" id="slider-temp" min="400" max="650" step="5" value="500">
+            </div>
+            <div class="control-group">
+              <div class="slider-label">
+                <span>Wet Biomass Feed Rate</span>
+                <span class="val-display" id="disp-feed">100 kg/h</span>
+              </div>
+              <input type="range" id="slider-feed" min="20" max="250" step="5" value="100">
+            </div>
+            <div class="control-group">
+              <div class="slider-label">
+                <span>Feed Initial Moisture</span>
+                <span class="val-display" id="disp-moisture">15.0 %</span>
+              </div>
+              <input type="range" id="slider-moisture" min="5" max="35" step="0.5" value="15">
+            </div>
+            <div class="control-group">
+              <label for="yield-engine-select">Yield Prediction Engine</label>
+              <select id="yield-engine-select" class="custom-select">
+                <option value="deterministic" selected>Deterministic (First-Principles Kinetics)</option>
+                <option value="ml">Machine Learning (Gradient Boosting Champion)</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" id="btn-run-sim">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Execute Digital Twin Simulation</span>
+            </button>
+          </div>
+
+          <!-- Animated P&ID Flowsheet -->
+          <div class="glass-card flowsheet-card">
+            <div class="card-header">
+              <h3>Live Flowsheet & Energy Integration</h3>
+              <div class="flow-status"><span class="pulse-dot"></span> MASS CONSERVED 100.0%</div>
+            </div>
+            <div class="flowsheet-svg-container">
+              <svg viewBox="0 0 760 320" class="plant-flowsheet" id="svg-flowsheet">
+                <!-- Connectors / Pipes -->
+                <path d="M 90 160 L 160 160" class="pipe-line active-pipe" />
+                <path d="M 260 160 L 330 160" class="pipe-line active-pipe" />
+                <path d="M 430 140 L 490 110" class="pipe-line vapor-pipe" />
+                <path d="M 430 180 L 490 220" class="pipe-line solids-pipe" />
+                <path d="M 570 90 L 630 60" class="pipe-line gas-pipe" />
+                <path d="M 570 130 L 630 170" class="pipe-line liquid-pipe" />
+                <path d="M 680 60 L 680 230 L 210 230 L 210 190" class="pipe-line flue-pipe" />
+
+                <!-- Units -->
+                <!-- Dryer -->
+                <g class="unit-node" id="node-dryer" transform="translate(160, 120)">
+                  <rect width="100" height="80" rx="8" class="unit-box" />
+                  <text x="50" y="35" class="unit-title">DRYER D101</text>
+                  <text x="50" y="55" class="unit-val" id="fs-dry-val">105 °C</text>
+                </g>
+                <!-- Reactor -->
+                <g class="unit-node" id="node-reactor" transform="translate(330, 110)">
+                  <rect width="100" height="100" rx="10" class="unit-box highlight-box" />
+                  <text x="50" y="40" class="unit-title">REACTOR R101</text>
+                  <text x="50" y="65" class="unit-val highlight-val" id="fs-reactor-temp">500 °C</text>
+                </g>
+                <!-- Cyclone -->
+                <g class="unit-node" id="node-cyclone" transform="translate(490, 80)">
+                  <polygon points="50,0 80,40 55,80 45,80 20,40" class="unit-box" />
+                  <text x="50" y="35" class="unit-title">CYCLONE C101</text>
+                  <text x="50" y="50" class="unit-val">98.5% Eff</text>
+                </g>
+                <!-- Condenser -->
+                <g class="unit-node" id="node-condenser" transform="translate(620, 130)">
+                  <rect width="90" height="70" rx="8" class="unit-box" />
+                  <text x="45" y="30" class="unit-title">CONDENSER</text>
+                  <text x="45" y="50" class="unit-val" id="fs-biooil-rate">48.1 kg/h</text>
+                </g>
+                <!-- Char Hopper -->
+                <g class="unit-node" id="node-char" transform="translate(490, 200)">
+                  <rect width="80" height="50" rx="6" class="unit-box" />
+                  <text x="40" y="25" class="unit-title">BIOCHAR</text>
+                  <text x="40" y="42" class="unit-val" id="fs-char-rate">27.4 kg/h</text>
+                </g>
+                <!-- Combustor Burner -->
+                <g class="unit-node" id="node-combustor" transform="translate(630, 30)">
+                  <circle cx="45" cy="35" r="30" class="unit-box flame-box" />
+                  <text x="45" y="32" class="unit-title">BURNER B101</text>
+                  <text x="45" y="48" class="unit-val" id="fs-burner-tsi">TSI 111%</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- Flowsheet Key Metrics -->
+            <div class="metrics-row">
+              <div class="metric-item">
+                <span class="m-title">Liquid Bio-Oil</span>
+                <span class="m-val" id="card-biooil-rate">48.1 kg/h</span>
+                <span class="m-sub" id="card-biooil-pct">48.09 wt% dry</span>
+              </div>
+              <div class="metric-item">
+                <span class="m-title">Solid Biochar</span>
+                <span class="m-val" id="card-biochar-rate">27.4 kg/h</span>
+                <span class="m-sub" id="card-biochar-pct">27.35 wt% dry</span>
+              </div>
+              <div class="metric-item">
+                <span class="m-title">Clean Syngas</span>
+                <span class="m-val" id="card-syngas-rate">24.5 kg/h</span>
+                <span class="m-sub" id="card-syngas-pct">24.56 wt% dry</span>
+              </div>
+              <div class="metric-item">
+                <span class="m-title">Net Thermal Power</span>
+                <span class="m-val text-green" id="card-surplus-heat">+5.3 kW</span>
+                <span class="m-sub">Self-Sufficient</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: SOFT SENSORS -->
+      <section class="tab-pane" id="soft-sensors-tab">
+        <div class="tab-header">
+          <h2>Industrial Soft Sensor Suite & 95% Uncertainty Quantification (UQ)</h2>
+          <p>Real-time inferential estimators predicting unmeasured lab properties from online plant telemetry.</p>
+        </div>
+        <div class="soft-sensors-grid" id="soft-sensors-container">
+          <!-- Rendered via JavaScript -->
+        </div>
+      </section>
+
+      <!-- TAB 3: OPTIMIZATION -->
+      <section class="tab-pane" id="optimization-tab">
+        <div class="tab-header">
+          <h2>AI-Driven Multiobjective Optimization & Pareto Frontier</h2>
+          <p>Non-dominated NSGA-II frontiers and TOPSIS multi-criteria decision support.</p>
+        </div>
+        <div class="optimization-grid">
+          <div class="glass-card opt-controls">
+            <h3>Stakeholder Profile Selection</h3>
+            <div class="profile-buttons">
+              <button class="btn btn-outline active" data-profile="balanced">Balanced Operator</button>
+              <button class="btn btn-outline" data-profile="bio_oil">Max Bio-Oil Yield</button>
+              <button class="btn btn-outline" data-profile="biochar">Carbon Sequestration</button>
+              <button class="btn btn-outline" data-profile="profit">Max Economic Profit</button>
+            </div>
+            <button class="btn btn-primary" id="btn-run-opt" style="margin-top: 20px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span>Compute Pareto Frontier (30 Solutions)</span>
+            </button>
+            <div class="opt-result-card" id="opt-best-solution">
+              <!-- Best solution table -->
+            </div>
+          </div>
+          <div class="glass-card opt-chart-card">
+            <h3>Bio-Oil vs Biochar Pareto Frontier Trade-Off</h3>
+            <div class="chart-wrapper">
+              <canvas id="paretoCanvas" width="540" height="320"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: DIAGNOSTICS & FAULT DETECTION -->
+      <section class="tab-pane" id="diagnostics-tab">
+        <div class="tab-header">
+          <h2>Process Anomaly Detection, Equipment Diagnostics & Alarm Management</h2>
+          <p>Tri-layer anomaly detection (Physical Balances, Isolation Forest & PCA Reconstruction Error).</p>
+        </div>
+        <div class="diagnostics-grid">
+          <div class="glass-card diag-controls">
+            <h3>Simulate Industrial Failure Mode</h3>
+            <div class="control-group">
+              <label for="fault-select">Injected Equipment Failure</label>
+              <select id="fault-select" class="custom-select">
+                <option value="none">Normal Nominal Operations (Healthy)</option>
+                <option value="cyclone_blockage" selected>Cyclone C101 Dipleg Blockage (Ash Bridge)</option>
+                <option value="condenser_fouling">Condenser HX102 Tar/Wax Fouling</option>
+                <option value="thermal_runaway">Pyrolysis Reactor R101 Thermal Runaway</option>
+                <option value="sensor_drift">Thermocouple Sensor Drift (TI-103 Bias)</option>
+                <option value="feed_jam">Biomass Infeed Auger Jamming (Fuel Loss)</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <div class="slider-label">
+                <span>Fault Severity</span>
+                <span class="val-display" id="disp-severity">85 %</span>
+              </div>
+              <input type="range" id="slider-severity" min="10" max="100" step="5" value="85">
+            </div>
+            <button class="btn btn-danger" id="btn-run-diag">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+              <span>Run Tri-Layer Anomaly Diagnostics</span>
+            </button>
+          </div>
+
+          <div class="glass-card diag-results" id="diag-results-container">
+            <!-- Anomaly meters and alarm cards -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: PREDICTIVE MAINTENANCE -->
+      <section class="tab-pane" id="maintenance-tab">
+        <div class="tab-header">
+          <h2>Predictive Maintenance, 95% RUL Prognostics & Work Order Dispatch</h2>
+          <p>Physics-informed asset wear degradation trajectories and automated safety LOTO work orders.</p>
+        </div>
+        <div class="maintenance-grid">
+          <div class="glass-card maint-controls">
+            <h3>Plant Operating Timeline</h3>
+            <div class="control-group">
+              <div class="slider-label">
+                <span>Cumulative Operating Hours</span>
+                <span class="val-display" id="disp-hours">4,500 Hours</span>
+              </div>
+              <input type="range" id="slider-hours" min="500" max="10000" step="250" value="4500">
+            </div>
+            <button class="btn btn-primary" id="btn-run-maint">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+              <span>Evaluate Fleet RUL & Work Orders</span>
+            </button>
+          </div>
+
+          <div class="glass-card maint-results" id="maint-results-container">
+            <!-- Asset health and work order cards -->
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
