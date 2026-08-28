@@ -1,0 +1,195 @@
+{
+  "metadata": {
+    "total_observations": 40,
+    "n_models_evaluated": 3,
+    "champion_model": "extra_trees",
+    "champion_checkpoint_path": "C:\\Users\\USER\\AppData\\Local\\Temp\\pytest-of-USER\\pytest-1\\test_multimodel_benchmark_exec0\\checkpoints\\yield_predictor_champion.joblib"
+  },
+  "leaderboard": [
+    {
+      "model_type": "extra_trees",
+      "cv_r2_score": 0.873,
+      "test_r2_score": 0.8618,
+      "test_rmse_wt_pct": 3.7895,
+      "test_mae_wt_pct": 3.0727,
+      "unconstrained_closure_error_pct": 0.0013,
+      "latency_us_per_sample": 1802.2,
+      "composite_score": 0.8059,
+      "checkpoint_path": "C:\\Users\\USER\\AppData\\Local\\Temp\\pytest-of-USER\\pytest-1\\test_multimodel_benchmark_exec0\\checkpoints\\yield_predictor_extra_trees.joblib"
+    },
+    {
+      "model_type": "random_forest",
+      "cv_r2_score": 0.8302,
+      "test_r2_score": 0.8208,
+      "test_rmse_wt_pct": 4.6913,
+      "test_mae_wt_pct": 3.8622,
+      "unconstrained_closure_error_pct": 0.0011,
+      "latency_us_per_sample": 1801.8,
+      "composite_score": 0.7559,
+      "checkpoint_path": "C:\\Users\\USER\\AppData\\Local\\Temp\\pytest-of-USER\\pytest-1\\test_multimodel_benchmark_exec0\\checkpoints\\yield_predictor_random_forest.joblib"
+    },
+    {
+      "model_type": "ridge",
+      "cv_r2_score": 0.2961,
+      "test_r2_score": 0.5788,
+      "test_rmse_wt_pct": 6.2244,
+      "test_mae_wt_pct": 5.5447,
+      "unconstrained_closure_error_pct": 0.0023,
+      "latency_us_per_sample": 4.0,
+      "composite_score": 0.5165,
+      "checkpoint_path": "C:\\Users\\USER\\AppData\\Local\\Temp\\pytest-of-USER\\pytest-1\\test_multimodel_benchmark_exec0\\checkpoints\\yield_predictor_ridge.joblib"
+    }
+  ],
+  "detailed_reports": {
+    "random_forest": {
+      "cross_validation": {
+        "n_folds": 5,
+        "mean_cv_r2_score": 0.8302,
+        "std_cv_r2_score": 0.082,
+        "mean_cv_mae": 3.2664,
+        "fold_r2_scores": [
+          0.7392,
+          0.8441,
+          0.7752,
+          0.8147,
+          0.978
+        ]
+      },
+      "holdout_test": {
+        "per_target_metrics": {
+          "biochar_yield_dry_pct": {
+            "r2_score_raw": 0.8933,
+            "r2_score_constrained": 0.8933,
+            "rmse_constrained_wt_pct": 6.3021,
+            "mae_constrained_wt_pct": 4.8536
+          },
+          "bio_oil_yield_dry_pct": {
+            "r2_score_raw": 0.5872,
+            "r2_score_constrained": 0.5872,
+            "rmse_constrained_wt_pct": 5.3425,
+            "mae_constrained_wt_pct": 4.8028
+          },
+          "syngas_yield_dry_pct": {
+            "r2_score_raw": 0.9818,
+            "r2_score_constrained": 0.9818,
+            "rmse_constrained_wt_pct": 2.4293,
+            "mae_constrained_wt_pct": 1.9303
+          }
+        },
+        "aggregate_metrics": {
+          "mean_r2_score_constrained": 0.8208,
+          "mean_rmse_constrained": 4.6913,
+          "mean_mae_constrained": 3.8622
+        },
+        "physics_closure_diagnostics": {
+          "raw_unconstrained_mean_closure_error_pct": 0.0011,
+          "raw_unconstrained_max_closure_error_pct": 0.0031,
+          "constrained_mean_closure_error_pct": 0.0,
+          "constrained_max_closure_error_pct": 0.0,
+          "mass_conservation_guaranteed": true
+        }
+      },
+      "latency_us_per_sample": 1801.8
+    },
+    "extra_trees": {
+      "cross_validation": {
+        "n_folds": 5,
+        "mean_cv_r2_score": 0.873,
+        "std_cv_r2_score": 0.0751,
+        "mean_cv_mae": 3.0332,
+        "fold_r2_scores": [
+          0.7649,
+          0.936,
+          0.9071,
+          0.8034,
+          0.9538
+        ]
+      },
+      "holdout_test": {
+        "per_target_metrics": {
+          "biochar_yield_dry_pct": {
+            "r2_score_raw": 0.9367,
+            "r2_score_constrained": 0.9367,
+            "rmse_constrained_wt_pct": 4.8559,
+            "mae_constrained_wt_pct": 3.7632
+          },
+          "bio_oil_yield_dry_pct": {
+            "r2_score_raw": 0.657,
+            "r2_score_constrained": 0.657,
+            "rmse_constrained_wt_pct": 4.8699,
+            "mae_constrained_wt_pct": 4.2099
+          },
+          "syngas_yield_dry_pct": {
+            "r2_score_raw": 0.9917,
+            "r2_score_constrained": 0.9917,
+            "rmse_constrained_wt_pct": 1.6428,
+            "mae_constrained_wt_pct": 1.2449
+          }
+        },
+        "aggregate_metrics": {
+          "mean_r2_score_constrained": 0.8618,
+          "mean_rmse_constrained": 3.7895,
+          "mean_mae_constrained": 3.0727
+        },
+        "physics_closure_diagnostics": {
+          "raw_unconstrained_mean_closure_error_pct": 0.0013,
+          "raw_unconstrained_max_closure_error_pct": 0.0033,
+          "constrained_mean_closure_error_pct": 0.0,
+          "constrained_max_closure_error_pct": 0.0,
+          "mass_conservation_guaranteed": true
+        }
+      },
+      "latency_us_per_sample": 1802.2
+    },
+    "ridge": {
+      "cross_validation": {
+        "n_folds": 5,
+        "mean_cv_r2_score": 0.2961,
+        "std_cv_r2_score": 0.2511,
+        "mean_cv_mae": 6.6502,
+        "fold_r2_scores": [
+          0.1273,
+          0.521,
+          0.4475,
+          0.5021,
+          -0.1171
+        ]
+      },
+      "holdout_test": {
+        "per_target_metrics": {
+          "biochar_yield_dry_pct": {
+            "r2_score_raw": 0.8804,
+            "r2_score_constrained": 0.8804,
+            "rmse_constrained_wt_pct": 6.6732,
+            "mae_constrained_wt_pct": 6.1122
+          },
+          "bio_oil_yield_dry_pct": {
+            "r2_score_raw": -0.1117,
+            "r2_score_constrained": -0.1118,
+            "rmse_constrained_wt_pct": 8.7673,
+            "mae_constrained_wt_pct": 7.5355
+          },
+          "syngas_yield_dry_pct": {
+            "r2_score_raw": 0.9677,
+            "r2_score_constrained": 0.9677,
+            "rmse_constrained_wt_pct": 3.2326,
+            "mae_constrained_wt_pct": 2.9864
+          }
+        },
+        "aggregate_metrics": {
+          "mean_r2_score_constrained": 0.5788,
+          "mean_rmse_constrained": 6.2244,
+          "mean_mae_constrained": 5.5447
+        },
+        "physics_closure_diagnostics": {
+          "raw_unconstrained_mean_closure_error_pct": 0.0023,
+          "raw_unconstrained_max_closure_error_pct": 0.005,
+          "constrained_mean_closure_error_pct": 0.0,
+          "constrained_max_closure_error_pct": 0.0,
+          "mass_conservation_guaranteed": true
+        }
+      },
+      "latency_us_per_sample": 4.0
+    }
+  }
+}
