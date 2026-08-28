@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIOPLANT AI - User Manual / Kullanıcı Kılavuzu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .manual-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+    .manual-nav {
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-color);
+      padding: 24px 16px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .manual-content {
+      padding: 32px 48px;
+      max-width: 1000px;
+    }
+    .lang-switcher {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      background: rgba(255,255,255,0.03);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    .lang-btn {
+      flex: 1;
+      padding: 6px 12px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-btn.active {
+      background: var(--primary-cyan);
+      color: #06090e;
+    }
+    .manual-section {
+      margin-bottom: 48px;
+    }
+    .manual-section h2 {
+      font-size: 1.6rem;
+      color: var(--text-main);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+    .manual-section h3 {
+      font-size: 1.2rem;
+      color: var(--primary-cyan);
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+    .callout {
+      padding: 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+      border-left: 4px solid;
+    }
+    .callout-info {
+      background: rgba(0, 240, 255, 0.05);
+      border-color: var(--primary-cyan);
+    }
+    .callout-success {
+      background: rgba(0, 255, 136, 0.05);
+      border-color: var(--accent-green);
+    }
+    .callout-warning {
+      background: rgba(255, 184, 0, 0.05);
+      border-color: var(--accent-amber);
+    }
+    .doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+    .doc-table th, .doc-table td {
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      text-align: left;
+    }
+    .doc-table th {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--primary-cyan);
+    }
+    .code-block {
+      background: #0d1117;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      overflow-x: auto;
+      margin: 12px 0;
+      color: #79c0ff;
+    }
+    .nav-link {
+      display: block;
+      padding: 8px 12px;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--primary-cyan);
+      background: rgba(0,240,255,0.08);
+    }
+  </style>
+</head>
+<body>
+  <div class="manual-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="manual-nav">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:20px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary-cyan)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <h3 style="margin:0; font-size:1.1rem; color:var(--text-main);">BIOPLANT DOCS</h3>
+      </div>
+
+      <!-- Language Selector -->
+      <div class="lang-switcher">
+        <button class="lang-btn active" id="btn-lang-en" onclick="setLanguage('en')">English</button>
+        <button class="lang-btn" id="btn-lang-tr" onclick="setLanguage('tr')">Türkçe</button>
+      </div>
+
+      <nav id="sidebar-nav-en">
+        <a href="#overview" class="nav-link">1. System Overview</a>
+        <a href="#quickstart" class="nav-link">2. Quick Start</a>
+        <a href="#modules" class="nav-link">3. 8 Core Modules</a>
+        <a href="#autopilot" class="nav-link">4. Autonomous Autopilot</a>
+        <a href="#api" class="nav-link">5. REST API</a>
+        <a href="#feedstocks" class="nav-link">6. Feedstocks</a>
+        <a href="#safety" class="nav-link">7. Safety & LOTO</a>
+        <a href="#faq" class="nav-link">8. Troubleshooting & FAQ</a>
+      </nav>
+
+      <nav id="sidebar-nav-tr" style="display:none;">
+        <a href="#overview" class="nav-link">1. Sistem Genel Bakış</a>
+        <a href="#quickstart" class="nav-link">2. Hızlı Başlangıç</a>
+        <a href="#modules" class="nav-link">3. 8 Temel Modül</a>
+        <a href="#autopilot" class="nav-link">4. Otonom Otopilot</a>
+        <a href="#api" class="nav-link">5. REST API</a>
+        <a href="#feedstocks" class="nav-link">6. Hammaddeler</a>
+        <a href="#safety" class="nav-link">7. Güvenlik ve LOTO</a>
+        <a href="#faq" class="nav-link">8. Sorun Giderme ve SSS</a>
+      </nav>
+
+      <div style="margin-top:32px; padding-top:16px; border-top:1px solid var(--border-color);">
+        <a href="/" style="color:var(--primary-cyan); text-decoration:none; font-size:0.85rem; font-weight:600;">← Back to Live Dashboard</a>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <main class="manual-content">
+
+      <!-- ================= ENGLISH CONTENT ================= -->
+      <div id="content-en">
+        <div style="margin-bottom:32px;">
+          <h1 style="font-size:2.2rem; margin-bottom:8px; background:linear-gradient(135deg, #fff, var(--text-muted)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">BIOPLANT AI Digital Twin & Autopilot</h1>
+          <p style="color:var(--text-muted); font-size:1.05rem;">Comprehensive User Manual & Technical Reference Guide (Version 2.0.0)</p>
+        </div>
+
+        <section id="overview" class="manual-section">
+          <h2>1. System Architecture & Overview</h2>
+          <p><strong>BIOPLANT AI</strong> is an industrial digital twin platform combining first-principles chemical engineering, physics-informed machine learning, and autonomous supervisory control for biomass thermochemical conversion.</p>
+          
+          <div class="callout callout-info">
+            <strong>Key Achievement (V2.0):</strong> Closed-loop autonomous plant operation with a 5-State Finite State Machine (FSM), real-time virtual soft sensors, predictive maintenance, 20-year DCF techno-economics, and ISO 14040/14044 Net Carbon Negative accounting.
+          </div>
+        </section>
+
+        <section id="quickstart" class="manual-section">
+          <h2>2. Quick Start & Execution</h2>
+          <h3>Starting the Web Platform</h3>
+          <p>Run the built-in HTTP server to access the live glassmorphism dashboard:</p>
+          <div class="code-block">python -m src.web.run_server --port 8000 --open-browser</div>
+          <p>Access the web application at <strong>http://127.0.0.1:8000/</strong>.</p>
+        </section>
+
+        <section id="modules" class="manual-section">
+          <h2>3. The 8 Operational Modules</h2>
+          <table class="doc-table">
+            <thead>
+              <tr><th>#</th><th>Module</th><th>Key Technology</th><th>Primary Purpose</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td><strong>Flowsheet Control Room</strong></td><td>First-Principles Balances</td><td>Interactive P&ID flowsheet, mass & elemental closures, TSI gauge.</td></tr>
+              <tr><td>2</td><td><strong>Inferential Soft Sensors</strong></td><td>Bayesian 95% UQ</td><td>6 virtual gauges: Bio-Oil TAN, Moisture, HHV, Syngas LHV, Yield, TSI.</td></tr>
+              <tr><td>3</td><td><strong>Multiobjective Optimization</strong></td><td>NSGA-II & TOPSIS</td><td>2D Pareto frontier trading off Yield, Biochar Carbon, and Profit.</td></tr>
+              <tr><td>4</td><td><strong>Tri-Layer Diagnostics</strong></td><td>Isolation Forest & PCA</td><td>Residual checking, anomaly scores, automated NFPA/SIL-2 interlocks.</td></tr>
+              <tr><td>5</td><td><strong>Predictive Maintenance</strong></td><td>Kinetic Wear & RUL</td><td>Fleet degradation modeling (Archard, spalling), work orders & LOTO.</td></tr>
+              <tr><td>6</td><td><strong>Dynamic Process Control</strong></td><td>Discrete PID & MPC</td><td>Lumped thermal capacitance ODE, setpoint tracking & disturbance rejection.</td></tr>
+              <tr><td>7</td><td><strong>TEA & LCA Carbon</strong></td><td>Guthrie TCI & 20-Yr DCF</td><td>NPV (+$657k), IRR (24.88%), LCOB ($0.353/kg), Net Carbon Negative.</td></tr>
+              <tr><td>8</td><td><strong>Autopilot Cockpit</strong></td><td>5-State Supervisory FSM</td><td>Closed-loop autonomous flight director & blackbox flight recorder.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="autopilot" class="manual-section">
+          <h2>4. Autonomous Autopilot & Flight Qualification</h2>
+          <p>The Autopilot FSM governs autonomous operations across 5 discrete states:</p>
+          <ul>
+            <li><code>STARTUP_PREHEAT</code>: Automated burner ramp with nitrogen sweep until $T_{bed} \ge 480^\circ\text{C}$.</li>
+            <li><code>AUTONOMOUS_CRUISE</code>: Nominal steady-state setpoint tracking with thermal self-sufficiency ($TSI \ge 100\%$).</li>
+            <li><code>DISTURBANCE_ADAPTATION</code>: Feed throttling and burner boost when feed moisture jumps to $22\%$.</li>
+            <li><code>FAULT_MITIGATION</code>: Self-healing pulse-jet blowback clearing cyclone blockages in 40s.</li>
+            <li><code>EMERGENCY_SAFE_PARK</code>: NFPA-86 inert cooling sweep upon critical overtemperature.</li>
+          </ul>
+          <div class="code-block">python -m src.autonomous.run_autopilot --mission</div>
+        </section>
+
+        <section id="api" class="manual-section">
+          <h2>5. REST API Integration</h2>
+          <p>Integrate with external SCADA/MES using JSON REST endpoints:</p>
+          <div class="code-block">POST /api/simulate
+Content-Type: application/json
+
+{
+  "feedstock": "olive_pomace",
+  "reactor_temp_c": 500.0,
+  "feed_rate_kg_h": 100.0,
+  "yield_mode": "hybrid"
+}</div>
+        </section>
+
+        <section id="faq" class="manual-section">
+          <h2>8. Troubleshooting & FAQ</h2>
+          <div class="callout callout-warning">
+            <strong>Port Conflict:</strong> If port 8000 is occupied, launch on port 8080: <code>python -m src.web.run_server --port 8080</code>.
+          </div>
+        </section>
+      </div>
+
+      <!-- ================= TURKISH CONTENT ================= -->
+      <div id="content-tr" style="display:none;">
+        <div style="margin-bottom:32px;">
+          <h1 style="font-size:2.2rem; margin-bottom:8px; background:linear-gradient(135deg, #fff, var(--text-muted)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">BIOPLANT AI Dijital İkiz ve Otopilot</h1>
+          <p style="color:var(--text-muted); font-size:1.05rem;">Kapsamlı Kullanıcı Kılavuzu ve Teknik Referans Belgesi (Sürüm 2.0.0)</p>
+        </div>
+
+        <section class="manual-section">
+          <h2>1. Sistem Mimarisi ve Genel Bakış</h2>
+          <p><strong>BIOPLANT AI</strong>, biyokütle termokimyasal piroliz süreçleri için birinci prensipler kimya mühendisliği, fizik destekli makine öğrenmesi ve otonom süreç yönetimini bir araya getiren endüstriyel bir dijital ikiz platformudur.</p>
+          
+          <div class="callout callout-info">
+            <strong>Temel Başarı (V2.0):</strong> 5 Durumlu Sonlu Durum Makinesi (FSM), gerçek zamanlı çıkarımsal yumuşak sensörler, kestirimci bakım, 20 yıllık DCF tekno-ekonomik analizi ve ISO 14040/14044 Net Karbon Negatif muhasebesi ile kapalı çevrim otonom tesis işletimi.
+          </div>
+        </section>
+
+        <section class="manual-section">
+          <h2>2. Hızlı Başlangıç ve Çalıştırma</h2>
+          <h3>Web Platformunu Başlatma</h3>
+          <p>Modern koyu cam efektli paneli başlatmak için:</p>
+          <div class="code-block">python -m src.web.run_server --port 8000 --open-browser</div>
+          <p>Tarayıcınızdan <strong>http://127.0.0.1:8000/</strong> adresini açın.</p>
+        </section>
+
+        <section class="manual-section">
+          <h2>3. 8 Temel Operasyonel Modül</h2>
+          <table class="doc-table">
+            <thead>
+              <tr><th>#</th><th>Modül</th><th>Temel Teknoloji</th><th>Ana İşlev</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td><strong>Akış Şeması Kontrol Odası</strong></td><td>Termodinamik Denklikler</td><td>Etkileşimli P&ID akış şeması, kütle/elementel kapanımları, TSI göstergesi.</td></tr>
+              <tr><td>2</td><td><strong>Çıkarımsal Yumuşak Sensörler</strong></td><td>Bayesyen %95 Güven Aralığı</td><td>6 sanal gösterge: Biyo-Yağ TAN, Nem, HHV, Sentez Gazı LHV, Verim, TSI.</td></tr>
+              <tr><td>3</td><td><strong>Çok Amaçlı Optimizasyon</strong></td><td>NSGA-II & TOPSIS</td><td>2D Pareto eğrisi; Verim, Karbon ve Kâr dengesi.</td></tr>
+              <tr><td>4</td><td><strong>Üç Katmanlı Arıza Teşhisi</strong></td><td>Isolation Forest & PCA</td><td>Kütle artıkları, anomali skoru, otomatik NFPA/SIL-2 emniyet kilitleri.</td></tr>
+              <tr><td>5</td><td><strong>Kestirimci Bakım</strong></td><td>Aşınma Dinamiği & RUL</td><td>Aşınma modellemesi (Archard, dökülme), reçeteli iş emirleri ve LOTO.</td></tr>
+              <tr><td>6</td><td><strong>Dinamik Süreç Kontrolü</strong></td><td>Dijital PID & MPC</td><td>Isıl kapasitans ODE'si, ayar noktası takibi ve nem bozulması giderme.</td></tr>
+              <tr><td>7</td><td><strong>Tekno-Ekonomik ve LCA Karbon</strong></td><td>Guthrie TCI & 20 Yıl DCF</td><td>NPV (+$657k), IRR (%24.88), LCOB ($0.353/kg), Net Karbon Negatif.</td></tr>
+              <tr><td>8</td><td><strong>Otonom Otopilot Kokpiti</strong></td><td>5 Durumlu Otonom FSM</td><td>Kapalı çevrim otonom uçuş yöneticisi ve kara kutu telemetri kaydı.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="manual-section">
+          <h2>4. Otonom Otopilot ve Görev Yeterliliği</h2>
+          <p>Otopilot FSM, tesisi 5 farklı operasyonel durumda yönetir:</p>
+          <ul>
+            <li><code>STARTUP_PREHEAT</code>: Yatak sıcaklığı $480^\circ\text{C}$ olana kadar azot süpürmeli otomatik brülör ısıtması.</li>
+            <li><code>AUTONOMOUS_CRUISE</code>: Termal olarak kendi kendine yetebilen nominal seyir ($TSI \ge %100$).</li>
+            <li><code>DISTURBANCE_ADAPTATION</code>: Hammadde nemi $\%22$'ye fırladığında beslemeyi kısıp brülörü artıran uyarlama.</li>
+            <li><code>FAULT_MITIGATION</code>: Siklon tıkanmasında 40 saniyede darbeli azot üfleyerek arızayı reaktörü durdurmadan çözen mekanizma.</li>
+            <li><code>EMERGENCY_SAFE_PARK</code>: Aşırı sıcaklık durumunda NFPA-86 inert soğutma süpürmesi.</li>
+          </ul>
+          <div class="code-block">python -m src.autonomous.run_autopilot --mission</div>
+        </section>
+
+        <section class="manual-section">
+          <h2>5. REST API Entegrasyonu</h2>
+          <p>Harici SCADA veya MES sistemleri ile JSON API üzerinden haberleşme örneği:</p>
+          <div class="code-block">POST /api/simulate
+Content-Type: application/json
+
+{
+  "feedstock": "olive_pomace",
+  "reactor_temp_c": 500.0,
+  "feed_rate_kg_h": 100.0,
+  "yield_mode": "hybrid"
+}</div>
+        </section>
+
+        <section class="manual-section">
+          <h2>8. Sorun Giderme ve SSS</h2>
+          <div class="callout callout-warning">
+            <strong>Port Çakışması:</strong> 8000 portu meşgulse farklı bir portla başlatın: <code>python -m src.web.run_server --port 8080</code>.
+          </div>
+        </section>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    function setLanguage(lang) {
+      const btnEn = document.getElementById('btn-lang-en');
+      const btnTr = document.getElementById('btn-lang-tr');
+      const navEn = document.getElementById('sidebar-nav-en');
+      const navTr = document.getElementById('sidebar-nav-tr');
+      const contentEn = document.getElementById('content-en');
+      const contentTr = document.getElementById('content-tr');
+
+      if (lang === 'tr') {
+        btnEn.classList.remove('active');
+        btnTr.classList.add('active');
+        navEn.style.display = 'none';
+        navTr.style.display = 'block';
+        contentEn.style.display = 'none';
+        contentTr.style.display = 'block';
+      } else {
+        btnTr.classList.remove('active');
+        btnEn.classList.add('active');
+        navTr.style.display = 'none';
+        navEn.style.display = 'block';
+        contentTr.style.display = 'none';
+        contentEn.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
