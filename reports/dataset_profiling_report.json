@@ -1,0 +1,600 @@
+{
+  "dataset_metadata": {
+    "dataset_path": "C:\\Users\\USER\\.gemini\\antigravity-ide\\scratch\\ai_biomass_plant\\data\\processed\\synthetic_process_dataset.csv",
+    "total_observations": 1000,
+    "total_features": 59,
+    "missing_values_count": 2000,
+    "mass_balance_closure_valid": true
+  },
+  "categorical_distributions": {
+    "feedstock_category_counts": {
+      "agricultural_residue": 500,
+      "woody_biomass": 250,
+      "energy_crop": 125,
+      "nut_shells": 125
+    },
+    "feedstock_name_counts": {
+      "Pine Sawdust": 125,
+      "Beech Wood": 125,
+      "Olive Pomace": 125,
+      "Wheat Straw": 125,
+      "Rice Husk": 125,
+      "Sugarcane Bagasse": 125,
+      "Miscanthus": 125,
+      "Almond Shells": 125
+    },
+    "source_type_counts": {
+      "SYNTHETIC_SIMULATED": 1000
+    }
+  },
+  "correlations_with_targets": {
+    "reactor_temp_c": {
+      "biochar_yield_dry_pct": -0.864,
+      "bio_oil_yield_dry_pct": -0.449,
+      "syngas_yield_dry_pct": 0.972,
+      "bio_oil_hhv_mj_kg": -0.33,
+      "thermal_self_sufficiency_index_pct": 0.936,
+      "net_thermal_efficiency_pct": -0.934
+    },
+    "heating_rate_c_min": {
+      "biochar_yield_dry_pct": -0.024,
+      "bio_oil_yield_dry_pct": 0.108,
+      "syngas_yield_dry_pct": -0.045,
+      "bio_oil_hhv_mj_kg": 0.093,
+      "thermal_self_sufficiency_index_pct": -0.044,
+      "net_thermal_efficiency_pct": 0.015
+    },
+    "residence_time_min": {
+      "biochar_yield_dry_pct": 0.002,
+      "bio_oil_yield_dry_pct": -0.185,
+      "syngas_yield_dry_pct": 0.109,
+      "bio_oil_hhv_mj_kg": -0.2,
+      "thermal_self_sufficiency_index_pct": 0.105,
+      "net_thermal_efficiency_pct": -0.083
+    },
+    "carbon_pct": {
+      "biochar_yield_dry_pct": -0.264,
+      "bio_oil_yield_dry_pct": 0.316,
+      "syngas_yield_dry_pct": 0.026,
+      "bio_oil_hhv_mj_kg": 0.737,
+      "thermal_self_sufficiency_index_pct": 0.045,
+      "net_thermal_efficiency_pct": 0.195
+    },
+    "ash_pct": {
+      "biochar_yield_dry_pct": 0.279,
+      "bio_oil_yield_dry_pct": -0.344,
+      "syngas_yield_dry_pct": -0.022,
+      "bio_oil_hhv_mj_kg": -0.705,
+      "thermal_self_sufficiency_index_pct": -0.045,
+      "net_thermal_efficiency_pct": -0.203
+    },
+    "volatile_matter_pct": {
+      "biochar_yield_dry_pct": -0.252,
+      "bio_oil_yield_dry_pct": 0.336,
+      "syngas_yield_dry_pct": 0.004,
+      "bio_oil_hhv_mj_kg": 0.587,
+      "thermal_self_sufficiency_index_pct": 0.031,
+      "net_thermal_efficiency_pct": 0.214
+    },
+    "fixed_carbon_pct": {
+      "biochar_yield_dry_pct": 0.0,
+      "bio_oil_yield_dry_pct": -0.065,
+      "syngas_yield_dry_pct": 0.039,
+      "bio_oil_hhv_mj_kg": 0.124,
+      "thermal_self_sufficiency_index_pct": 0.023,
+      "net_thermal_efficiency_pct": -0.076
+    }
+  },
+  "feature_statistics": {
+    "citation": {
+      "mean": NaN,
+      "std": NaN,
+      "min": NaN,
+      "p25": NaN,
+      "median": NaN,
+      "p75": NaN,
+      "max": NaN,
+      "skewness": 0.0
+    },
+    "doi": {
+      "mean": NaN,
+      "std": NaN,
+      "min": NaN,
+      "p25": NaN,
+      "median": NaN,
+      "p75": NaN,
+      "max": NaN,
+      "skewness": 0.0
+    },
+    "carbon_pct": {
+      "mean": 48.088,
+      "std": 3.59,
+      "min": 39.5,
+      "p25": 47.625,
+      "median": 49.0,
+      "p75": 50.4,
+      "max": 51.5,
+      "skewness": -1.518
+    },
+    "hydrogen_pct": {
+      "mean": 5.888,
+      "std": 0.352,
+      "min": 5.1,
+      "p25": 5.775,
+      "median": 5.95,
+      "p75": 6.125,
+      "max": 6.3,
+      "skewness": -1.106
+    },
+    "oxygen_pct": {
+      "mean": 41.062,
+      "std": 2.264,
+      "min": 36.5,
+      "p25": 39.725,
+      "median": 41.4,
+      "p75": 42.825,
+      "max": 43.8,
+      "skewness": -0.67
+    },
+    "nitrogen_pct": {
+      "mean": 0.538,
+      "std": 0.367,
+      "min": 0.2,
+      "p25": 0.275,
+      "median": 0.45,
+      "p75": 0.625,
+      "max": 1.4,
+      "skewness": 1.399
+    },
+    "sulfur_pct": {
+      "mean": 0.071,
+      "std": 0.03,
+      "min": 0.02,
+      "p25": 0.05,
+      "median": 0.075,
+      "p75": 0.1,
+      "max": 0.1,
+      "skewness": -0.311
+    },
+    "ash_pct": {
+      "mean": 4.354,
+      "std": 5.529,
+      "min": 0.35,
+      "p25": 1.82,
+      "median": 2.425,
+      "p75": 3.612,
+      "max": 18.4,
+      "skewness": 1.944
+    },
+    "moisture_ar_pct": {
+      "mean": 17.0,
+      "std": 6.354,
+      "min": 6.0,
+      "p25": 11.511,
+      "median": 17.001,
+      "p75": 22.487,
+      "max": 27.996,
+      "skewness": 0.0
+    },
+    "volatile_matter_pct": {
+      "mean": 76.938,
+      "std": 6.129,
+      "min": 63.5,
+      "p25": 74.625,
+      "median": 78.0,
+      "p75": 81.375,
+      "max": 84.0,
+      "skewness": -1.016
+    },
+    "fixed_carbon_pct": {
+      "mean": 18.709,
+      "std": 2.43,
+      "min": 15.62,
+      "p25": 17.025,
+      "median": 18.05,
+      "p75": 19.85,
+      "max": 23.55,
+      "skewness": 0.757
+    },
+    "particle_size_mm": {
+      "mean": 2.0,
+      "std": 0.0,
+      "min": 2.0,
+      "p25": 2.0,
+      "median": 2.0,
+      "p75": 2.0,
+      "max": 2.0,
+      "skewness": 0.0
+    },
+    "bulk_density_kg_m3": {
+      "mean": 356.25,
+      "std": 133.29,
+      "min": 180.0,
+      "p25": 215.0,
+      "median": 380.0,
+      "p75": 465.0,
+      "max": 550.0,
+      "skewness": -0.068
+    },
+    "feedstock_hhv_dry_mj_kg": {
+      "mean": 19.386,
+      "std": 1.627,
+      "min": 15.64,
+      "p25": 18.984,
+      "median": 19.56,
+      "p75": 20.672,
+      "max": 21.095,
+      "skewness": -1.259
+    },
+    "feedstock_lhv_ar_mj_kg": {
+      "mean": 14.613,
+      "std": 1.872,
+      "min": 9.784,
+      "p25": 13.317,
+      "median": 14.71,
+      "p75": 16.035,
+      "max": 18.377,
+      "skewness": -0.337
+    },
+    "feed_rate_wet_kg_h": {
+      "mean": 274.996,
+      "std": 129.973,
+      "min": 50.247,
+      "p25": 162.796,
+      "median": 275.041,
+      "p75": 387.487,
+      "max": 499.567,
+      "skewness": -0.0
+    },
+    "dryer_temp_c": {
+      "mean": 105.0,
+      "std": 0.0,
+      "min": 105.0,
+      "p25": 105.0,
+      "median": 105.0,
+      "p75": 105.0,
+      "max": 105.0,
+      "skewness": 0.0
+    },
+    "dried_biomass_moisture_pct": {
+      "mean": 7.909,
+      "std": 0.336,
+      "min": 6.0,
+      "p25": 8.0,
+      "median": 8.0,
+      "p75": 8.0,
+      "max": 8.0,
+      "skewness": -3.965
+    },
+    "reactor_temp_c": {
+      "mean": 550.099,
+      "std": 115.614,
+      "min": 347.96,
+      "p25": 449.22,
+      "median": 550.115,
+      "p75": 649.895,
+      "max": 750.62,
+      "skewness": 0.001
+    },
+    "heating_rate_c_min": {
+      "mean": 156.656,
+      "std": 196.38,
+      "min": 5.02,
+      "p25": 17.802,
+      "median": 63.21,
+      "p75": 224.468,
+      "max": 797.76,
+      "skewness": 1.549
+    },
+    "residence_time_min": {
+      "mean": 7.35,
+      "std": 10.576,
+      "min": 0.1,
+      "p25": 0.46,
+      "median": 2.125,
+      "p75": 9.768,
+      "max": 44.93,
+      "skewness": 1.792
+    },
+    "biochar_yield_dry_pct": {
+      "mean": 28.401,
+      "std": 14.793,
+      "min": 12.17,
+      "p25": 15.998,
+      "median": 23.01,
+      "p75": 38.39,
+      "max": 69.81,
+      "skewness": 0.891
+    },
+    "bio_oil_yield_dry_pct": {
+      "mean": 36.181,
+      "std": 10.86,
+      "min": 3.76,
+      "p25": 28.76,
+      "median": 36.845,
+      "p75": 45.672,
+      "max": 52.86,
+      "skewness": -0.556
+    },
+    "syngas_yield_dry_pct": {
+      "mean": 35.418,
+      "std": 18.161,
+      "min": 11.67,
+      "p25": 18.09,
+      "median": 32.57,
+      "p75": 51.56,
+      "max": 79.75,
+      "skewness": 0.38
+    },
+    "recovered_biochar_kg_h": {
+      "mean": 64.06,
+      "std": 48.909,
+      "min": 5.338,
+      "p25": 29.546,
+      "median": 49.973,
+      "p75": 84.738,
+      "max": 286.094,
+      "skewness": 1.506
+    },
+    "recovered_bio_oil_kg_h": {
+      "mean": 98.188,
+      "std": 54.294,
+      "min": 8.0,
+      "p25": 52.995,
+      "median": 90.776,
+      "p75": 136.515,
+      "max": 257.432,
+      "skewness": 0.486
+    },
+    "clean_syngas_kg_h": {
+      "mean": 84.44,
+      "std": 59.855,
+      "min": 6.605,
+      "p25": 39.214,
+      "median": 67.935,
+      "p75": 115.802,
+      "max": 357.094,
+      "skewness": 1.065
+    },
+    "dryer_exhaust_water_kg_h": {
+      "mean": 27.238,
+      "std": 24.359,
+      "min": 0.0,
+      "p25": 7.342,
+      "median": 20.214,
+      "p75": 41.408,
+      "max": 104.39,
+      "skewness": 0.954
+    },
+    "mass_balance_closure_pct": {
+      "mean": 100.0,
+      "std": 0.0,
+      "min": 100.0,
+      "p25": 100.0,
+      "median": 100.0,
+      "p75": 100.0,
+      "max": 100.0,
+      "skewness": 0.0
+    },
+    "syngas_co_vol_pct": {
+      "mean": 43.565,
+      "std": 4.869,
+      "min": 32.01,
+      "p25": 40.338,
+      "median": 46.69,
+      "p75": 47.12,
+      "max": 47.45,
+      "skewness": -1.085
+    },
+    "syngas_co2_vol_pct": {
+      "mean": 28.951,
+      "std": 13.161,
+      "min": 14.67,
+      "p25": 16.877,
+      "median": 24.445,
+      "p75": 40.363,
+      "max": 55.02,
+      "skewness": 0.588
+    },
+    "syngas_ch4_vol_pct": {
+      "mean": 12.849,
+      "std": 2.904,
+      "min": 6.73,
+      "p25": 10.465,
+      "median": 14.165,
+      "p75": 15.38,
+      "max": 15.65,
+      "skewness": -0.758
+    },
+    "syngas_h2_vol_pct": {
+      "mean": 8.303,
+      "std": 5.553,
+      "min": 0.97,
+      "p25": 2.648,
+      "median": 7.845,
+      "p75": 14.012,
+      "max": 16.53,
+      "skewness": 0.109
+    },
+    "syngas_c2h6_vol_pct": {
+      "mean": 4.227,
+      "std": 0.465,
+      "min": 3.08,
+      "p25": 3.94,
+      "median": 4.51,
+      "p75": 4.57,
+      "max": 4.59,
+      "skewness": -1.123
+    },
+    "syngas_mw_kg_kmol": {
+      "mean": 28.823,
+      "std": 3.822,
+      "min": 24.09,
+      "p25": 25.127,
+      "median": 28.06,
+      "p75": 32.385,
+      "max": 35.6,
+      "skewness": 0.338
+    },
+    "syngas_volume_flow_nm3_h": {
+      "mean": 70.759,
+      "std": 56.086,
+      "min": 4.15,
+      "p25": 28.325,
+      "median": 52.775,
+      "p75": 99.535,
+      "max": 330.6,
+      "skewness": 1.18
+    },
+    "syngas_lhv_vol_mj_nm3": {
+      "mean": 13.687,
+      "std": 2.483,
+      "min": 8.52,
+      "p25": 11.635,
+      "median": 14.705,
+      "p75": 15.89,
+      "max": 16.2,
+      "skewness": -0.709
+    },
+    "bio_oil_water_pct": {
+      "mean": 30.344,
+      "std": 6.744,
+      "min": 22.03,
+      "p25": 25.918,
+      "median": 28.625,
+      "p75": 32.192,
+      "max": 73.44,
+      "skewness": 2.81
+    },
+    "bio_oil_hhv_mj_kg": {
+      "mean": 12.165,
+      "std": 1.931,
+      "min": 2.19,
+      "p25": 11.52,
+      "median": 12.64,
+      "p75": 13.45,
+      "max": 15.14,
+      "skewness": -1.654
+    },
+    "bio_oil_predicted_ph": {
+      "mean": 2.232,
+      "std": 0.036,
+      "min": 2.19,
+      "p25": 2.21,
+      "median": 2.22,
+      "p75": 2.25,
+      "max": 2.47,
+      "skewness": 2.511
+    },
+    "bio_oil_tan_mg_koh_g": {
+      "mean": 92.638,
+      "std": 12.768,
+      "min": 31.1,
+      "p25": 85.5,
+      "median": 97.1,
+      "p75": 102.225,
+      "max": 111.1,
+      "skewness": -1.555
+    },
+    "bio_oil_density_kg_m3": {
+      "mean": 1153.245,
+      "std": 14.837,
+      "min": 1058.4,
+      "p25": 1149.175,
+      "median": 1157.0,
+      "p75": 1163.0,
+      "max": 1171.5,
+      "skewness": -2.81
+    },
+    "bio_oil_kinematic_viscosity_cst": {
+      "mean": 15.343,
+      "std": 5.186,
+      "min": 5.0,
+      "p25": 11.675,
+      "median": 15.8,
+      "p75": 19.9,
+      "max": 27.7,
+      "skewness": -0.336
+    },
+    "drying_thermal_duty_kw": {
+      "mean": 36.814,
+      "std": 27.232,
+      "min": 0.0,
+      "p25": 16.55,
+      "median": 30.905,
+      "p75": 52.262,
+      "max": 118.21,
+      "skewness": 0.747
+    },
+    "reactor_thermal_duty_kw": {
+      "mean": 109.975,
+      "std": 62.565,
+      "min": 12.61,
+      "p25": 58.552,
+      "median": 102.075,
+      "p75": 147.225,
+      "max": 335.94,
+      "skewness": 0.671
+    },
+    "gross_thermal_demand_kw": {
+      "mean": 146.789,
+      "std": 77.856,
+      "min": 17.76,
+      "p25": 83.11,
+      "median": 141.335,
+      "p75": 201.043,
+      "max": 367.63,
+      "skewness": 0.43
+    },
+    "combustor_heat_recovered_kw": {
+      "mean": 245.991,
+      "std": 217.008,
+      "min": 8.37,
+      "p25": 72.512,
+      "median": 173.135,
+      "p75": 360.688,
+      "max": 1245.39,
+      "skewness": 1.199
+    },
+    "thermal_self_sufficiency_index_pct": {
+      "mean": 153.237,
+      "std": 82.829,
+      "min": 27.72,
+      "p25": 73.3,
+      "median": 148.57,
+      "p75": 221.575,
+      "max": 380.76,
+      "skewness": 0.234
+    },
+    "energy_recovery_ratio_pct": {
+      "mean": 78.36,
+      "std": 11.195,
+      "min": 59.56,
+      "p25": 68.852,
+      "median": 76.165,
+      "p75": 86.532,
+      "max": 105.96,
+      "skewness": 0.527
+    },
+    "net_thermal_efficiency_pct": {
+      "mean": 76.378,
+      "std": 9.516,
+      "min": 59.07,
+      "p25": 68.338,
+      "median": 75.245,
+      "p75": 83.392,
+      "max": 100.33,
+      "skewness": 0.431
+    },
+    "second_law_exergy_efficiency_pct": {
+      "mean": 77.581,
+      "std": 10.596,
+      "min": 58.42,
+      "p25": 68.462,
+      "median": 76.505,
+      "p75": 85.46,
+      "max": 103.36,
+      "skewness": 0.389
+    }
+  }
+}
