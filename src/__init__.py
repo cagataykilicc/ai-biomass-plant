@@ -3,4 +3,4 @@
 A modular chemical engineering and digital twin platform for biomass conversion.
 """
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"

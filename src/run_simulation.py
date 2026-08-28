@@ -1,9 +1,9 @@
-"""Command-line interface (CLI) entry point for the Virtual Biomass Conversion Plant (V0.4).
+"""Command-line interface (CLI) entry point for the Virtual Biomass Conversion Plant (V0.5).
 
 Usage:
     python -m src.run_simulation
-    python -m src.run_simulation --config configs/scenarios/olive_pomace_standard.yaml
-    python -m src.run_simulation --yield-mode ml --feedstock pine_sawdust --temp 520
+    python -m src.run_simulation --yield-mode ml --model-type champion --feedstock pine_sawdust
+    python -m src.run_simulation --yield-mode ml --model-type mlp --temp 520
 """
 
 from __future__ import annotations
@@ -16,6 +16,7 @@ from typing import Optional
 
 from src.simulation.plant_simulator import BiomassPlantSimulator, SimulationReport
 from src.utils.config import ConfigManager, PlantScenarioConfig
+from src.ml.yield_predictor import YieldPredictorModel
 
 
 def print_simulation_dashboard(report: SimulationReport) -> None:
@@ -37,8 +38,8 @@ def print_simulation_dashboard(report: SimulationReport) -> None:
     sub_border = "-" * w
 
     print(f"\n{border}")
-    print(f"       AI-INTEGRATED BIOMASS CONVERSION PLANT - V0.4")
-    print(f" (Physics-Constrained ML Surrogate & Thermodynamic Balances)")
+    print(f"       AI-INTEGRATED BIOMASS CONVERSION PLANT - V0.5")
+    print(f" (Multi-Model AI Benchmark, Explainability & Hybrid Digital Twin)")
     print(f"{border}")
     print(f"Feedstock            : {feedstock.name} ({feedstock.category})")
     print(f"Yield Engine         : [{reactor.yield_engine_used}]")
@@ -124,7 +125,7 @@ def print_simulation_dashboard(report: SimulationReport) -> None:
 def build_parser() -> argparse.ArgumentParser:
     """Build command-line parser."""
     parser = argparse.ArgumentParser(
-        description="AI-Integrated Biomass Pyrolysis Plant Simulation Platform (V0.4)"
+        description="AI-Integrated Biomass Pyrolysis Plant Simulation Platform (V0.5)"
     )
     parser.add_argument(
         "--config",
@@ -144,6 +145,12 @@ def build_parser() -> argparse.ArgumentParser:
         default="deterministic",
         choices=["deterministic", "ml"],
         help="Yield engine mode: 'deterministic' (kinetic model) or 'ml' (trained ML surrogate).",
+    )
+    parser.add_argument(
+        "--model-type",
+        type=str,
+        default="champion",
+        help="ML surrogate model candidate: champion, random_forest, extra_trees, gradient_boosting, mlp, ridge.",
     )
     parser.add_argument(
         "--feed-rate",
@@ -206,7 +213,22 @@ def main() -> None:
         else:
             scenario = ConfigManager.get_default_config()
 
-    simulator = BiomassPlantSimulator()
+    # Load requested ML model architecture if in ML mode
+    ml_model = None
+    if args.yield_mode.lower() == "ml":
+        chk_dir = Path(__file__).resolve().parent.parent / "models" / "checkpoints"
+        target_path = chk_dir / f"yield_predictor_{args.model_type.lower()}.joblib"
+        if not target_path.is_file():
+            target_path = chk_dir / "yield_predictor_champion.joblib"
+        if not target_path.is_file():
+            target_path = chk_dir / "yield_predictor_rf.joblib"
+        if target_path.is_file():
+            try:
+                ml_model = YieldPredictorModel.load(target_path)
+            except Exception:
+                ml_model = None
+
+    simulator = BiomassPlantSimulator(ml_yield_predictor=ml_model)
     mode_str = "ML_SURROGATE" if args.yield_mode.lower() == "ml" else "DETERMINISTIC"
 
     try:

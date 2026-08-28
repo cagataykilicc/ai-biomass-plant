@@ -88,14 +88,20 @@ class BiomassPlantSimulator:
         self.energy_balance_engine = EnergyBalanceEngine()
         self.ml_yield_predictor = ml_yield_predictor or self._try_load_default_ml_model()
 
-    def _try_load_default_ml_model(self) -> Optional[YieldPredictorModel]:
-        """Try loading default trained ML yield surrogate if present."""
-        default_ckpt = Path(__file__).resolve().parent.parent.parent / "models" / "checkpoints" / "yield_predictor_rf.joblib"
-        if default_ckpt.is_file():
-            try:
-                return YieldPredictorModel.load(default_ckpt)
-            except Exception:
-                return None
+    def _try_load_default_ml_model(self, model_name: str = "champion") -> Optional[YieldPredictorModel]:
+        """Try loading trained ML yield surrogate checkpoint if present."""
+        chk_dir = Path(__file__).resolve().parent.parent.parent / "models" / "checkpoints"
+        candidates = [
+            chk_dir / f"yield_predictor_{model_name}.joblib",
+            chk_dir / "yield_predictor_champion.joblib",
+            chk_dir / "yield_predictor_rf.joblib",
+        ]
+        for ckpt in candidates:
+            if ckpt.is_file():
+                try:
+                    return YieldPredictorModel.load(ckpt)
+                except Exception:
+                    continue
         return None
 
     def run_simulation(
