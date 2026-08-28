@@ -1,0 +1,23 @@
+name: "Pine Sawdust"
+category: "woody_biomass"
+description: "Clean softwood pine sawdust from timber processing"
+
+ultimate:
+  carbon: 51.5
+  hydrogen: 6.3
+  oxygen: 41.6
+  nitrogen: 0.2
+  sulfur: 0.05
+  ash: 0.35
+
+proximate:
+  moisture: 12.0
+  volatile_matter: 82.5
+  fixed_carbon: 17.15
+  ash: 0.35
+
+physical:
+  particle_size_mm: 1.5
+  bulk_density_kg_m3: 420.0
+  skeletal_density_kg_m3: 1450.0
+  porosity: 0.50

@@ -1,0 +1,23 @@
+name: "Olive Pomace"
+category: "agricultural_residue"
+description: "By-product of olive oil extraction containing olive pulp and crushed stone fragments"
+
+ultimate:
+  carbon: 50.2
+  hydrogen: 6.2
+  oxygen: 39.8
+  nitrogen: 1.4
+  sulfur: 0.1
+  ash: 2.3
+
+proximate:
+  moisture: 15.0
+  volatile_matter: 76.5
+  fixed_carbon: 21.2
+  ash: 2.3
+
+physical:
+  particle_size_mm: 2.0
+  bulk_density_kg_m3: 550.0
+  skeletal_density_kg_m3: 1380.0
+  porosity: 0.45

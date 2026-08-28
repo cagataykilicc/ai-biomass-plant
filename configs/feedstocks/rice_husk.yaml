@@ -1,0 +1,23 @@
+name: "Rice Husk"
+category: "agricultural_residue"
+description: "Silica-rich outer protective hull of rice grains"
+
+ultimate:
+  carbon: 39.5
+  hydrogen: 5.1
+  oxygen: 36.5
+  nitrogen: 0.4
+  sulfur: 0.1
+  ash: 18.4
+
+proximate:
+  moisture: 10.0
+  volatile_matter: 63.5
+  fixed_carbon: 18.1
+  ash: 18.4
+
+physical:
+  particle_size_mm: 2.5
+  bulk_density_kg_m3: 340.0
+  skeletal_density_kg_m3: 1390.0
+  porosity: 0.52

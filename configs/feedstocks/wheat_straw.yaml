@@ -1,0 +1,23 @@
+name: "Wheat Straw"
+category: "agricultural_residue"
+description: "Agricultural wheat cereal crop residue"
+
+ultimate:
+  carbon: 46.5
+  hydrogen: 5.9
+  oxygen: 41.2
+  nitrogen: 0.7
+  sulfur: 0.1
+  ash: 5.6
+
+proximate:
+  moisture: 14.0
+  volatile_matter: 75.0
+  fixed_carbon: 19.4
+  ash: 5.6
+
+physical:
+  particle_size_mm: 3.0
+  bulk_density_kg_m3: 220.0
+  skeletal_density_kg_m3: 1320.0
+  porosity: 0.60
