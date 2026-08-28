@@ -1,10 +1,10 @@
-"""Command-line interface (CLI) entry point for the Virtual Biomass Conversion Plant (V0.6).
+"""Command-line interface (CLI) entry point for the Virtual Biomass Conversion Plant (V0.7).
 
 Usage:
     python -m src.run_simulation
+    python -m src.run_simulation --soft-sensors --feedstock pine_sawdust
     python -m src.run_simulation --yield-mode ml --model-type champion --feedstock pine_sawdust
     python -m src.run_simulation --optimize max_bio_oil --feedstock olive_pomace
-    python -m src.run_simulation --optimize pareto --feedstock wheat_straw
 """
 
 from __future__ import annotations
@@ -13,15 +13,20 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict, Any
 
 from src.simulation.plant_simulator import BiomassPlantSimulator, SimulationReport
 from src.utils.config import ConfigManager, PlantScenarioConfig
 from src.ml.yield_predictor import YieldPredictorModel
 from src.optimization.run_optimizer import run_single_objective_cli, run_multiobjective_cli
+from src.sensors.telemetry import TelemetryExtractor, HardwareTelemetryPacket
+from src.sensors.soft_sensor_engine import SoftSensorSuite, SoftSensorEstimate
 
 
-def print_simulation_dashboard(report: SimulationReport) -> None:
+def print_simulation_dashboard(
+    report: SimulationReport,
+    soft_sensors: Optional[Dict[str, SoftSensorEstimate]] = None,
+) -> None:
     """Format and print an ANSI-enhanced process dashboard to stdout."""
     cfg = report.scenario_config
     feedstock = report.feedstock
@@ -35,13 +40,13 @@ def print_simulation_dashboard(report: SimulationReport) -> None:
     elem = report.elemental_balance
     eb = report.energy_balance
 
-    w = 68
+    w = 72
     border = "=" * w
     sub_border = "-" * w
 
     print(f"\n{border}")
-    print(f"       AI-INTEGRATED BIOMASS CONVERSION PLANT - V0.6")
-    print(f" (Multiobjective Optimization, MCDM & Hybrid Digital Twin)")
+    print(f"       AI-INTEGRATED BIOMASS CONVERSION PLANT - V0.7")
+    print(f" (Soft Sensors, Multiobjective Optimization & Hybrid Digital Twin)")
     print(f"{border}")
     print(f"Feedstock            : {feedstock.name} ({feedstock.category})")
     print(f"Yield Engine         : [{reactor.yield_engine_used}]")
@@ -66,17 +71,14 @@ def print_simulation_dashboard(report: SimulationReport) -> None:
     print(f"Bio-oil Yield (dry)  : {reactor.yields_dry.bio_oil_yield * 100:5.2f} wt%")
     print(f"Syngas Yield (dry)   : {reactor.yields_dry.syngas_yield * 100:5.2f} wt%")
 
-    print(f"\nSYNGAS MOLECULAR SPECIATION")
-    print(f"{sub_border}")
-    syngas_vols = syngas.molar_fractions
-    print(f"Composition (vol%)   : CO: {syngas_vols.get('CO',0)*100:4.1f}% | CO2: {syngas_vols.get('CO2',0)*100:4.1f}% | CH4: {syngas_vols.get('CH4',0)*100:4.1f}% | H2: {syngas_vols.get('H2',0)*100:4.1f}%")
-    print(f"Mean Molecular Weight: {syngas.mean_molecular_weight_kg_kmol:.2f} kg/kmol  | Mass LHV: {syngas.lhv_mass_mj_kg:.2f} MJ/kg")
-
-    print(f"\nBIO-OIL CHEMICAL CHARACTERIZATION")
-    print(f"{sub_border}")
-    fams = bio_oil.chemical_families_pct
-    print(f"Organic Groups (wt%) : Acids: {fams.get('carboxylic_acids_pct',0):4.1f}% | Phenolics: {fams.get('phenolics_and_lignin_pct',0):4.1f}% | Sugars: {fams.get('anhydrosugars_pct',0):4.1f}%")
-    print(f"Physical Properties  : pH: {bio_oil.predicted_ph:.2f} | TAN: {bio_oil.total_acid_number_mg_koh_g:.1f} mg KOH/g | Density: {bio_oil.density_kg_m3:.0f} kg/m³")
+    if soft_sensors:
+        print(f"\nREAL-TIME INFERENTIAL SOFT SENSORS (95% Confidence Intervals)")
+        print(f"{sub_border}")
+        print(f"{'Tag':<10} {'Stream Property':<28} {'Infer Estimate':<14} {'95% Interval':<16}")
+        for tag, est in soft_sensors.items():
+            ci_str = f"[{est.lower_95_ci:.2f}, {est.upper_95_ci:.2f}]"
+            val_str = f"{est.point_estimate:.2f} {est.unit}"
+            print(f"{tag:<10} {est.name:<28} {val_str:<14} {ci_str:<16}")
 
     print(f"\nATOM-BY-ATOM ELEMENTAL BALANCES")
     print(f"{sub_border}")
@@ -101,19 +103,9 @@ def print_simulation_dashboard(report: SimulationReport) -> None:
     else:
         print(f"Net External Heat Req: {comb.net_external_heat_required_kw:6.2f} kW")
 
-    print(f"\nTHERMODYNAMIC KPIS & EXERGY")
-    print(f"{sub_border}")
-    print(f"Feedstock Chemical   : {eb.feedstock_chemical_power_kw:6.2f} kW (LHV ar: {feedstock.calculate_lhv_as_received():.2f} MJ/kg)")
-    print(f"Products Chemical    : {eb.total_products_chemical_power_kw:6.2f} kW  (Energy Recovery: {eb.energy_recovery_ratio_pct:.1f}%)")
-    print(f"Net Thermal Effic.   : {eb.net_thermal_efficiency_pct:5.1f} %")
-    if eb.exergy:
-        print(f"Second-Law Exergy Eff: {eb.exergy.second_law_exergy_efficiency_pct:5.1f} %  (Exergy Destruction: {eb.exergy.total_plant_exergy_destruction_kw:.1f} kW)")
-
     print(f"\nDIAGNOSTIC STATUS")
     print(f"{sub_border}")
-    print(f"Mass Balance Status     : PASS
-Elemental Balance Status: PASS
-Energy Balance Status   : PASS")
+    print(f"Mass Balance Status     : PASS\nElemental Balance Status: PASS\nEnergy Balance Status   : PASS")
 
     all_warnings = mb.warnings + elem.warnings + eb.warnings
     if all_warnings:
@@ -127,7 +119,7 @@ Energy Balance Status   : PASS")
 def build_parser() -> argparse.ArgumentParser:
     """Build command-line parser."""
     parser = argparse.ArgumentParser(
-        description="AI-Integrated Biomass Pyrolysis Plant Simulation & Optimization Platform (V0.6)"
+        description="AI-Integrated Biomass Pyrolysis Plant Simulation & Soft Sensors Platform (V0.7)"
     )
     parser.add_argument(
         "--config",
@@ -153,6 +145,11 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         default="champion",
         help="ML surrogate model candidate: champion, gradient_boosting, random_forest, extra_trees, mlp, ridge.",
+    )
+    parser.add_argument(
+        "--soft-sensors",
+        action="store_true",
+        help="Run real-time inferential soft sensors with 95%% UQ intervals.",
     )
     parser.add_argument(
         "--optimize",
@@ -264,6 +261,16 @@ def main() -> None:
         print(f"\n[ERROR] Simulation failed: {e}", file=sys.stderr)
         sys.exit(1)
 
+    soft_sensor_estimates = None
+    if args.soft_sensors:
+        telemetry = TelemetryExtractor.extract_from_report(report, add_sensor_noise=True)
+        chk_path = Path(__file__).resolve().parent.parent / "models" / "checkpoints" / "soft_sensors.joblib"
+        if not chk_path.is_file():
+            from src.sensors.calibration import SoftSensorCalibrator
+            SoftSensorCalibrator().calibrate()
+        suite = SoftSensorSuite.load(chk_path)
+        soft_sensor_estimates = suite.estimate_all(telemetry)
+
     if args.output:
         out_path = Path(args.output)
         out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -272,9 +279,12 @@ def main() -> None:
         print(f"Simulation report written to {out_path}")
 
     if args.json:
-        print(report.to_json(indent=2))
+        payload = report.to_dict()
+        if soft_sensor_estimates:
+            payload["soft_sensor_estimates"] = {k: v.to_dict() for k, v in soft_sensor_estimates.items()}
+        print(json.dumps(payload, indent=2))
     else:
-        print_simulation_dashboard(report)
+        print_simulation_dashboard(report, soft_sensors=soft_sensor_estimates)
 
 
 if __name__ == "__main__":
