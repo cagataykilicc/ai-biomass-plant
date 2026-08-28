@@ -1,10 +1,12 @@
 {
   "metadata": {
-    "version": "0.1.0",
-    "timestamp": "2026-08-28T12:21:49.812586+00:00",
+    "version": "0.2.0",
+    "timestamp": "2026-08-28T13:58:00.880226+00:00",
     "plant_status": "OPERATIONAL",
     "mass_balance_status": "PASS",
-    "energy_balance_status": "PASS"
+    "elemental_balance_status": "PASS",
+    "energy_balance_status": "PASS",
+    "thermal_self_sufficiency": true
   },
   "feedstock": {
     "name": "Olive Pomace",
@@ -101,6 +103,91 @@
     "liquid_bio_oil_hhv_mj_kg": 14.05,
     "cyclone_efficiency": 0.985,
     "condenser_efficiency": 0.96
+  },
+  "syngas_speciation": {
+    "total_mass_flow_kg_h": 22.807,
+    "standard_volume_flow_nm3_h": 16.927,
+    "mean_molecular_weight_kg_kmol": 30.199,
+    "lhv_mass_mj_kg": 9.93,
+    "lhv_vol_mj_nm3": 13.38,
+    "hhv_vol_mj_nm3": 14.24,
+    "molar_fractions_pct": {
+      "CO2": 31.63,
+      "CO": 44.5,
+      "CH4": 12.59,
+      "H2": 4.74,
+      "C2H6": 4.31,
+      "H2O": 2.23,
+      "N2": 0.0
+    },
+    "mass_fractions_pct": {
+      "CO2": 46.1,
+      "CO": 41.28,
+      "CH4": 6.69,
+      "H2": 0.32,
+      "C2H6": 4.29,
+      "H2O": 1.33,
+      "N2": 0.0
+    },
+    "mass_flow_rates_kg_h": {
+      "CO2": 10.514,
+      "CO": 9.414,
+      "CH4": 1.526,
+      "H2": 0.072,
+      "C2H6": 0.978,
+      "H2O": 0.303,
+      "N2": 0.0
+    },
+    "elemental_mass_flow_kg_h": {
+      "carbon_kg_h": 8.83,
+      "hydrogen_kg_h": 0.686,
+      "oxygen_kg_h": 13.29,
+      "nitrogen_kg_h": 0.0
+    }
+  },
+  "bio_oil_characterization": {
+    "total_liquid_mass_flow_kg_h": 46.334,
+    "organics_mass_flow_kg_h": 34.53,
+    "water_mass_flow_kg_h": 11.804,
+    "water_content_pct": 25.48,
+    "predicted_ph": 2.21,
+    "total_acid_number_mg_koh_g": 100.6,
+    "density_kg_m3": 1164.0,
+    "kinematic_viscosity_cst_40c": 20.6,
+    "higher_heating_value_mj_kg": 14.05,
+    "chemical_families_pct": {
+      "carboxylic_acids_pct": 14.45,
+      "phenolics_and_lignin_pct": 32.03,
+      "furans_and_pyrones_pct": 10.51,
+      "anhydrosugars_pct": 23.78,
+      "aldehydes_and_ketones_pct": 19.22
+    },
+    "elemental_composition_organics_pct": {
+      "carbon_pct": 55.22,
+      "hydrogen_pct": 6.94,
+      "oxygen_pct": 36.74,
+      "nitrogen_pct": 1.05,
+      "sulfur_pct": 0.05
+    }
+  },
+  "combustor_heat_integration": {
+    "thermal_heat_released_kw": 61.97,
+    "thermal_heat_recovered_kw": 52.67,
+    "stoichiometric_air_rate_kg_h": 67.57,
+    "actual_combustion_air_rate_kg_h": 81.08,
+    "flue_gas_mass_flow_kg_h": 103.89,
+    "flue_gas_actual_temp_c": 1400.0,
+    "flue_gas_stack_temp_c": 140.0,
+    "thermal_self_sufficiency_index_pct": 111.79,
+    "net_external_heat_required_kw": 0.0,
+    "surplus_heat_available_kw": 5.56,
+    "is_thermally_self_sufficient": true,
+    "flue_gas_composition_vol_pct": {
+      "CO2": 21.72,
+      "H2O": 10.05,
+      "N2": 65.34,
+      "O2": 2.89
+    }
   },
   "mass_balance": {
     "total_input_kg_h": 100.0,
@@ -201,13 +288,137 @@
       }
     }
   },
+  "elemental_balance": {
+    "overall_status": "PASS",
+    "carbon_partitioning_pct": {
+      "biochar_carbon_pct": 34.62,
+      "bio_oil_carbon_pct": 44.69,
+      "syngas_carbon_pct": 20.69
+    },
+    "closures": {
+      "C": {
+        "element": "C",
+        "mass_in_kg_h": 42.67,
+        "mass_out_kg_h": 42.67,
+        "closure_pct": 100.0,
+        "closure_error_pct": 0.0,
+        "status": "PASS"
+      },
+      "H": {
+        "element": "H",
+        "mass_in_kg_h": 6.9486,
+        "mass_out_kg_h": 6.9486,
+        "closure_pct": 100.0,
+        "closure_error_pct": 0.0,
+        "status": "PASS"
+      },
+      "O": {
+        "element": "O",
+        "mass_in_kg_h": 47.1514,
+        "mass_out_kg_h": 47.1514,
+        "closure_pct": 100.0,
+        "closure_error_pct": 0.0,
+        "status": "PASS"
+      },
+      "N": {
+        "element": "N",
+        "mass_in_kg_h": 1.19,
+        "mass_out_kg_h": 1.19,
+        "closure_pct": 100.0,
+        "closure_error_pct": 0.0,
+        "status": "PASS"
+      },
+      "S": {
+        "element": "S",
+        "mass_in_kg_h": 0.085,
+        "mass_out_kg_h": 0.085,
+        "closure_pct": 100.0,
+        "closure_error_pct": 0.0,
+        "status": "PASS"
+      },
+      "Ash": {
+        "element": "Ash",
+        "mass_in_kg_h": 1.955,
+        "mass_out_kg_h": 1.955,
+        "closure_pct": 100.0,
+        "closure_error_pct": 0.0,
+        "status": "PASS"
+      }
+    },
+    "streams": {
+      "S105_DRYER_WATER_EXHAUST": {
+        "stream_id": "S105",
+        "name": "Dryer Water Exhaust",
+        "carbon_kg_h": 0.0,
+        "hydrogen_kg_h": 0.851,
+        "oxygen_kg_h": 6.757,
+        "nitrogen_kg_h": 0.0,
+        "sulfur_kg_h": 0.0,
+        "ash_kg_h": 0.0,
+        "total_mass_kg_h": 7.609
+      },
+      "S108_CLEAN_SYNGAS": {
+        "stream_id": "S108",
+        "name": "Clean Syngas",
+        "carbon_kg_h": 8.83,
+        "hydrogen_kg_h": 0.686,
+        "oxygen_kg_h": 13.29,
+        "nitrogen_kg_h": 0.0,
+        "sulfur_kg_h": 0.0,
+        "ash_kg_h": 0.0,
+        "total_mass_kg_h": 22.807
+      },
+      "S107_BIO_OIL": {
+        "stream_id": "S107",
+        "name": "Liquid Bio-Oil",
+        "carbon_kg_h": 19.067,
+        "hydrogen_kg_h": 3.719,
+        "oxygen_kg_h": 23.168,
+        "nitrogen_kg_h": 0.363,
+        "sulfur_kg_h": 0.017,
+        "ash_kg_h": 0.0,
+        "total_mass_kg_h": 46.334
+      },
+      "S106_BIOCHAR": {
+        "stream_id": "S106",
+        "name": "Recovered Biochar",
+        "carbon_kg_h": 14.551,
+        "hydrogen_kg_h": 1.667,
+        "oxygen_kg_h": 3.877,
+        "nitrogen_kg_h": 0.815,
+        "sulfur_kg_h": 0.067,
+        "ash_kg_h": 1.926,
+        "total_mass_kg_h": 22.902
+      },
+      "S109_CYCLONE_FINES": {
+        "stream_id": "S109",
+        "name": "Cyclone Fines",
+        "carbon_kg_h": 0.222,
+        "hydrogen_kg_h": 0.025,
+        "oxygen_kg_h": 0.059,
+        "nitrogen_kg_h": 0.012,
+        "sulfur_kg_h": 0.001,
+        "ash_kg_h": 0.029,
+        "total_mass_kg_h": 0.349
+      }
+    },
+    "warnings": []
+  },
   "energy_balance": {
     "duties_kw": {
       "drying_thermal_duty_kw": 11.727,
       "reactor_thermal_duty_kw": 35.388,
       "condenser_cooling_duty_kw": 32.684,
       "auxiliary_electrical_power_kw": 3.0,
-      "total_external_energy_input_kw": 50.115
+      "gross_thermal_demand_kw": 47.115,
+      "heat_recovered_from_syngas_kw": 52.672,
+      "net_external_heat_required_kw": 0.0,
+      "surplus_thermal_power_kw": 5.556,
+      "total_net_external_power_kw": 3.0
+    },
+    "heat_integration": {
+      "thermal_self_sufficiency_index_pct": 111.79,
+      "is_thermally_self_sufficient": true
     },
     "chemical_energy_rates_kw": {
       "feedstock_chemical_power_kw": 445.556,
@@ -221,10 +432,21 @@
       "bio_oil_energy_share_pct": 36.53,
       "biochar_energy_share_pct": 31.65,
       "syngas_energy_share_pct": 13.72,
-      "net_thermal_efficiency_pct": 70.66,
-      "specific_energy_demand_kwh_kg_feed": 0.5012
+      "net_thermal_efficiency_pct": 81.23,
+      "specific_energy_demand_kwh_kg_feed": 0.03
+    },
+    "exergy": {
+      "feedstock_chemical_exergy_kw": 457.16,
+      "total_products_exergy_kw": 378.67,
+      "biochar_exergy_kw": 149.5,
+      "bio_oil_exergy_kw": 169.26,
+      "syngas_exergy_kw": 59.92,
+      "total_plant_exergy_destruction_kw": 58.34,
+      "second_law_exergy_efficiency_pct": 82.29
     },
     "status": "PASS",
-    "warnings": []
+    "warnings": [
+      "Plant operates in full thermal self-sufficiency via syngas heat recovery."
+    ]
   }
 }

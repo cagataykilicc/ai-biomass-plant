@@ -13,6 +13,7 @@ import yaml
 from src.process.drying import DryingConfig
 from src.process.reactor import ReactorConfig
 from src.process.separation import SeparationConfig
+from src.process.combustor import CombustorConfig
 
 
 @dataclass
@@ -27,6 +28,7 @@ class PlantScenarioConfig:
     drying: DryingConfig = field(default_factory=DryingConfig)
     reactor: ReactorConfig = field(default_factory=ReactorConfig)
     separation: SeparationConfig = field(default_factory=SeparationConfig)
+    combustor: CombustorConfig = field(default_factory=CombustorConfig)
 
     def validate(self) -> None:
         """Validate scenario bounds."""
@@ -76,6 +78,16 @@ class PlantScenarioConfig:
             cooling_water_outlet_c=float(sep_data.get("cooling_water_outlet_c", 32.0)),
         )
 
+        # Combustor section
+        comb_data = data.get("combustor", {})
+        combustor = CombustorConfig(
+            excess_air_ratio=float(comb_data.get("excess_air_ratio", 1.20)),
+            combustion_efficiency=float(comb_data.get("combustion_efficiency", 0.985)),
+            heat_recovery_efficiency=float(comb_data.get("heat_recovery_efficiency", 0.850)),
+            flue_gas_exit_temp_c=float(comb_data.get("flue_gas_exit_temp_c", 140.0)),
+            ambient_air_temp_c=float(comb_data.get("ambient_air_temp_c", 25.0)),
+        )
+
         cfg = cls(
             feedstock_name=feedstock_name,
             feed_rate_kg_h=feed_rate,
@@ -84,6 +96,7 @@ class PlantScenarioConfig:
             drying=drying,
             reactor=reactor,
             separation=separation,
+            combustor=combustor,
         )
         cfg.validate()
         return cfg

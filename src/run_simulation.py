@@ -1,4 +1,4 @@
-"""Command-line interface (CLI) entry point for the Virtual Biomass Pyrolysis Plant.
+"""Command-line interface (CLI) entry point for the Virtual Biomass Conversion Plant (V0.2).
 
 Usage:
     python -m src.run_simulation
@@ -25,15 +25,20 @@ def print_simulation_dashboard(report: SimulationReport) -> None:
     drying = report.drying
     reactor = report.reactor
     sep = report.separation
+    syngas = report.syngas
+    bio_oil = report.bio_oil
+    comb = report.combustion
     mb = report.mass_balance
+    elem = report.elemental_balance
     eb = report.energy_balance
 
-    w = 60
+    w = 68
     border = "=" * w
     sub_border = "-" * w
 
     print(f"\n{border}")
-    print(f"       AI-INTEGRATED BIOMASS CONVERSION PLANT - V0.1")
+    print(f"       AI-INTEGRATED BIOMASS CONVERSION PLANT - V0.2")
+    print(f"   (Thermodynamics, Elemental Balances & Heat Integration)")
     print(f"{border}")
     print(f"Feedstock            : {feedstock.name} ({feedstock.category})")
     print(f"Feed Rate (Wet)      : {cfg.feed_rate_kg_h:.1f} kg/h")
@@ -47,50 +52,64 @@ def print_simulation_dashboard(report: SimulationReport) -> None:
     print(f"{sub_border}")
     print(f"Recovered Bio-oil    : {sep.recovered_bio_oil_liquid_kg_h:6.2f} kg/h  (HHV: {sep.liquid_bio_oil_hhv_mj_kg:.1f} MJ/kg, Water: {sep.bio_oil_water_content_pct:.1f}%)")
     print(f"Recovered Biochar    : {sep.recovered_biochar_kg_h:6.2f} kg/h  (HHV: {reactor.char_hhv_mj_kg:.1f} MJ/kg)")
-    print(f"Clean Syngas         : {sep.clean_syngas_kg_h:6.2f} kg/h  (LHV: {reactor.syngas_lhv_mj_kg:.1f} MJ/kg)")
+    print(f"Clean Syngas         : {sep.clean_syngas_kg_h:6.2f} kg/h  ({syngas.standard_volume_flow_nm3_h:.1f} Nm³/h, LHV: {syngas.lhv_vol_mj_nm3:.1f} MJ/Nm³)")
     print(f"Dryer Exhaust Water  : {drying.water_evaporated_kg_h:6.2f} kg/h")
     print(f"Cyclone Fines Loss   : {sep.cyclone_fines_loss_kg_h:6.2f} kg/h")
 
-    print(f"\nYIELDS (Dry Basis)")
+    print(f"\nSYNGAS MOLECULAR SPECIATION")
     print(f"{sub_border}")
-    print(f"Bio-oil Yield        : {reactor.yields_dry.bio_oil_yield * 100:5.1f} wt%")
-    print(f"Biochar Yield        : {reactor.yields_dry.bio_char_yield * 100 if hasattr(reactor.yields_dry, 'bio_char_yield') else reactor.yields_dry.biochar_yield * 100:5.1f} wt%")
-    print(f"Syngas Yield         : {reactor.yields_dry.syngas_yield * 100:5.1f} wt%")
+    syngas_vols = syngas.molar_fractions
+    print(f"Composition (vol%)   : CO: {syngas_vols.get('CO',0)*100:4.1f}% | CO2: {syngas_vols.get('CO2',0)*100:4.1f}% | CH4: {syngas_vols.get('CH4',0)*100:4.1f}% | H2: {syngas_vols.get('H2',0)*100:4.1f}%")
+    print(f"Mean Molecular Weight: {syngas.mean_molecular_weight_kg_kmol:.2f} kg/kmol  | Mass LHV: {syngas.lhv_mass_mj_kg:.2f} MJ/kg")
 
-    print(f"\nMASS BALANCE")
+    print(f"\nBIO-OIL CHEMICAL CHARACTERIZATION")
     print(f"{sub_border}")
-    print(f"Total Input          : {mb.total_input_kg_h:6.2f} kg/h")
-    print(f"Total Output         : {mb.total_output_kg_h:6.2f} kg/h")
-    print(f"Closure              : {mb.closure_pct:6.2f} %  (Deviation: {mb.closure_error_pct:.4f}%)")
+    fams = bio_oil.chemical_families_pct
+    print(f"Organic Groups (wt%) : Acids: {fams.get('carboxylic_acids_pct',0):4.1f}% | Phenolics: {fams.get('phenolics_and_lignin_pct',0):4.1f}% | Sugars: {fams.get('anhydrosugars_pct',0):4.1f}%")
+    print(f"Physical Properties  : pH: {bio_oil.predicted_ph:.2f} | TAN: {bio_oil.total_acid_number_mg_koh_g:.1f} mg KOH/g | Density: {bio_oil.density_kg_m3:.0f} kg/m³")
 
-    print(f"\nENERGY & THERMAL DUTIES")
+    print(f"\nATOM-BY-ATOM ELEMENTAL BALANCES")
     print(f"{sub_border}")
-    print(f"Drying Thermal Duty  : {eb.drying_thermal_duty_kw:6.2f} kW  ({eb.drying_thermal_duty_kw * 3.6:6.1f} MJ/h)")
-    print(f"Reactor Thermal Duty : {eb.reactor_thermal_duty_kw:6.2f} kW  ({eb.reactor_thermal_duty_kw * 3.6:6.1f} MJ/h)")
-    print(f"Condenser Cooling    : {eb.condenser_cooling_duty_kw:6.2f} kW")
-    print(f"Auxiliary Electrical : {eb.auxiliary_electrical_power_kw:6.2f} kW")
-    print(f"Total External Power : {eb.total_external_energy_input_kw:6.2f} kW")
+    print(f"Element | In (kg/h) | Out (kg/h) | Closure % | Status")
+    for el_name, el_c in elem.closures.items():
+        print(f"  {el_name:4s}  |  {el_c.mass_in_kg_h:7.3f}  |   {el_c.mass_out_kg_h:7.3f}  |  {el_c.closure_pct:6.2f} %  | {el_c.status}")
+    c_part = elem.carbon_partitioning_pct
+    print(f"Carbon Partitioning  : Biochar: {c_part.get('biochar_carbon_pct',0):4.1f}% | Bio-oil: {c_part.get('bio_oil_carbon_pct',0):4.1f}% | Syngas: {c_part.get('syngas_carbon_pct',0):4.1f}%")
 
-    print(f"\nPROCESS THERMODYNAMIC KPIS")
+    print(f"\nMASS & OVERALL BALANCE")
     print(f"{sub_border}")
-    print(f"Feedstock Chem Power : {eb.feedstock_chemical_power_kw:6.2f} kW (LHV ar: {feedstock.calculate_lhv_as_received():.2f} MJ/kg)")
-    print(f"Products Chem Power  : {eb.total_products_chemical_power_kw:6.2f} kW")
-    print(f"Energy Recovery      : {eb.energy_recovery_ratio_pct:5.1f} %")
-    print(f"Bio-oil Energy Share : {eb.bio_oil_energy_share_pct:5.1f} %")
-    print(f"Biochar Energy Share : {eb.biochar_energy_share_pct:5.1f} %")
-    print(f"Syngas Energy Share  : {eb.syngas_energy_share_pct:5.1f} %")
+    print(f"Total Mass In / Out  : {mb.total_input_kg_h:6.2f} kg/h  /  {mb.total_output_kg_h:6.2f} kg/h  (Closure: {mb.closure_pct:.2f}%)")
+
+    print(f"\nHEAT INTEGRATION & COMBUSTOR (Burner B101)")
+    print(f"{sub_border}")
+    print(f"Gross Thermal Demand : {eb.gross_thermal_demand_kw:6.2f} kW  (Drying: {eb.drying_thermal_duty_kw:.1f} kW, Reactor: {eb.reactor_thermal_duty_kw:.1f} kW)")
+    print(f"Syngas Heat Released : {comb.thermal_heat_released_kw:6.2f} kW  (Flue Gas Temp: {comb.flue_gas_actual_temp_c:.0f} °C, Air: {comb.actual_combustion_air_rate_kg_h:.1f} kg/h)")
+    print(f"Exchanger Heat Recov.: {comb.thermal_heat_recovered_kw:6.2f} kW  (HX101 Efficiency: {comb.assumptions.get('heat_recovery_efficiency',0.85)*100:.0f}%)")
+    print(f"Self-Sufficiency (TSI: {comb.thermal_self_sufficiency_index_pct:6.1f} %  -> {'[AUTONOMOUS / NET SURPLUS]' if comb.is_thermally_self_sufficient else '[SUPPLEMENTAL FUEL NEEDED]'}")
+    if comb.is_thermally_self_sufficient:
+        print(f"Net Surplus Thermal  : {comb.surplus_heat_available_kw:6.2f} kW")
+    else:
+        print(f"Net External Heat Req: {comb.net_external_heat_required_kw:6.2f} kW")
+
+    print(f"\nTHERMODYNAMIC KPIS & EXERGY")
+    print(f"{sub_border}")
+    print(f"Feedstock Chemical   : {eb.feedstock_chemical_power_kw:6.2f} kW (LHV ar: {feedstock.calculate_lhv_as_received():.2f} MJ/kg)")
+    print(f"Products Chemical    : {eb.total_products_chemical_power_kw:6.2f} kW  (Energy Recovery: {eb.energy_recovery_ratio_pct:.1f}%)")
     print(f"Net Thermal Effic.   : {eb.net_thermal_efficiency_pct:5.1f} %")
+    if eb.exergy:
+        print(f"Second-Law Exergy Eff: {eb.exergy.second_law_exergy_efficiency_pct:5.1f} %  (Exergy Destruction: {eb.exergy.total_plant_exergy_destruction_kw:.1f} kW)")
 
     print(f"\nDIAGNOSTIC STATUS")
     print(f"{sub_border}")
-    print(f"Input Validation     : PASS")
-    print(f"Mass Balance Status  : {mb.status}")
-    print(f"Energy Balance Status: {eb.status}")
+    print(f"Mass Balance Status     : {mb.status}")
+    print(f"Elemental Balance Status: {elem.overall_status}")
+    print(f"Energy Balance Status   : {eb.status}")
 
-    if mb.warnings or eb.warnings:
-        print(f"\nWARNINGS & ADVISORIES:")
-        for w_msg in mb.warnings + eb.warnings:
-            print(f" [!] {w_msg}")
+    all_warnings = mb.warnings + elem.warnings + eb.warnings
+    if all_warnings:
+        print(f"\nADVISORIES & NOTICES:")
+        for w_msg in all_warnings:
+            print(f" [*] {w_msg}")
 
     print(f"{border}\n")
 
@@ -98,7 +117,7 @@ def print_simulation_dashboard(report: SimulationReport) -> None:
 def build_parser() -> argparse.ArgumentParser:
     """Build command-line parser."""
     parser = argparse.ArgumentParser(
-        description="AI-Integrated Biomass Pyrolysis Plant Simulation Platform (V0.1)"
+        description="AI-Integrated Biomass Pyrolysis Plant Simulation Platform (V0.2)"
     )
     parser.add_argument(
         "--config",
@@ -167,7 +186,6 @@ def main() -> None:
     if args.config:
         scenario = ConfigManager.load_config_file(args.config)
     else:
-        # Check if default_plant.yaml exists
         default_yaml = Path(__file__).resolve().parent.parent / "configs" / "default_plant.yaml"
         if default_yaml.is_file():
             scenario = ConfigManager.load_config_file(default_yaml)
