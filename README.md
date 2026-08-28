@@ -1,88 +1,71 @@
-# AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V0.9)
+# AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V1.0)
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Web Platform: Glassmorphism GUI](https://img.shields.io/badge/Web%20Platform-Interactive%20Dark%20Glassmorphism-cyan.svg)]()
+[![REST API: Zero--Dependency](https://img.shields.io/badge/REST%20API-Zero--Dependency%20HTTP-blueviolet.svg)]()
 [![Predictive Maintenance: 95% RUL](https://img.shields.io/badge/PdM-RUL%20Prognostics%20%26%20Work%20Orders-darkgreen.svg)]()
 [![Diagnostics: Tri--Layer FDD](https://img.shields.io/badge/Diagnostics-Tri--Layer%20FDD%20%26%20Alarms-critical.svg)]()
 [![Soft Sensors: 6 Virtual Gauges](https://img.shields.io/badge/Soft%20Sensors-6%20Inferential%20Gauges%20(95%25%20UQ)-blueviolet.svg)]()
 [![Optimization: NSGA--II Pareto & TOPSIS](https://img.shields.io/badge/Optimization-Pareto%20%26%20TOPSIS%20MCDM-blue.svg)]()
 [![Champion ML: Gradient Boosting](https://img.shields.io/badge/Champion%20Model-Gradient%20Boosting%20(R%C2%B2%200.9981)-blueviolet.svg)]()
 [![Physics: 100% Mass Conserved](https://img.shields.io/badge/Physics%20Constraint-Simplex%20Projection%20(100%25)-darkgreen.svg)]()
-[![Tests: 100% Passed](https://img.shields.io/badge/Tests-77%2F77%20Passed-brightgreen.svg)]()
+[![Tests: 100% Passed](https://img.shields.io/badge/Tests-84%2F84%20Passed-brightgreen.svg)]()
 [![Thermal Status: Self--Sufficient](https://img.shields.io/badge/Thermal%20Status-Autonomous%20(TSI%20111.3%25)-darkgreen.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)]()
 
-A modular, first-principles chemical engineering and digital twin platform for biomass thermal conversion, predictive maintenance (PdM) with 95% Remaining Useful Life (RUL) estimation, real-time inferential soft sensors, process anomaly detection, equipment fault diagnosis, and multiobjective process optimization.
+A complete, full-stack, first-principles chemical engineering and machine learning **Digital Twin Web Platform** for biomass thermochemical recycling and conversion.
 
 ---
 
-## 1. Project Objective
+## 1. Digital Twin Architecture & Features
 
-The objective is to develop an industrial-grade digital twin of a commercial biomass conversion plant that progressively unifies:
+The **V1.0 Digital Twin Platform** integrates the complete hierarchy of industrial plant operations into a single interactive web application:
 
-* Rigorous chemical engineering calculations & thermodynamics
-* Multi-stage unit operations (drying, pyrolysis reactor, cyclone, condenser train, syngas combustor)
-* Atom-by-atom elemental mass conservation ($C, H, O, N, S, Ash$)
-* Molecular syngas speciation ($CO, CO_2, CH_4, H_2, C_2H_6, H_2O, N_2$)
-* Bio-oil chemical grouping (phenolics, acids, furans, sugars) & acidity ($TAN, \text{pH}$)
-* Syngas burner heat integration & Thermal Self-Sufficiency Index (TSI)
-* Second-Law Exergy analysis and destruction tracking
-* **Multi-Model Machine Learning Benchmarking**: Gradient Boosting Champion ($R^2 = 0.9981$)
-* **Physics-Informed Constraint Projection**: Exact $100.00\%$ mass conservation
-* **AI-Driven Process Optimization & Pareto Frontier Engine**: SLSQP, Differential Evolution, NSGA-II, and TOPSIS MCDM
-* **Industrial Soft Sensors with 95% UQ**: Real-time inferential estimation of unmeasured lab stream properties
-* **Tri-Layer Anomaly Detection & Fault Diagnosis**: Isolation Forest, PCA reconstruction error ($Q$ & $T^2$), and NFPA/IEC safety alarms
-* **Predictive Maintenance & RUL Prognostics**: Physics-informed degradation models for infeed augers, refractory liners, particulate filters, and condensers with automated work order generation
+1. **Process Flowsheet & Control Room**: Live setpoint sliders ($T_{reactor}$, $\dot{m}_{feed}$, heating rate, moisture), animated P&ID flowsheet, mass & elemental closures, and energy self-sufficiency gauge (TSI).
+2. **Industrial Soft Sensor Suite (95% UQ)**: 6 real-time virtual instruments estimating unmeasured lab properties (Bio-Oil TAN, Moisture, HHV, Syngas LHV, Biochar Yield, TSI) directly from physical telemetry.
+3. **Multiobjective Optimization & Pareto Frontier**: Interactive NSGA-II non-dominated trade-off surface (Bio-Oil vs Biochar vs Profit vs Thermal Efficiency) and TOPSIS MCDM stakeholder decision profiles.
+4. **Tri-Layer Anomaly Diagnostics & Alarms**: Physical balance residual checks, Isolation Forest, and PCA reconstruction error ($Q$-statistic & Hotelling's $T^2$) diagnosing 5 industrial fault modes with automated NFPA/SIL-2 safety interlocks.
+5. **Predictive Maintenance & Fleet RUL**: Physics-informed degradation models for infeed augers, refractory liners, particulate filters, and condensers with automated work orders (parts BOM, labor, and safety LOTO).
 
 ---
 
-## 2. Predictive Maintenance & Asset Prognostics (V0.9)
+## 2. Interactive Web Platform UI Preview
 
 ```text
-  +-----------------------------------------------------------------------------------+
-  |                       OPERATING ASSET WEAR & DEGRADATION                          |
-  |  Auger Flight Thinning, Refractory Spalling, Filter Blinding, Condenser Corrosion  |
-  +---------------------------------------+-------------------------------------------+
-                                          |
-                                          v
-               +----------------------------------------------------+
-               |         PHYSICS-INFORMED DEGRADATION KINETICS      |
-               |  * Archard Abrasive Wear: dW/dt = f(m, Ash, Vib)   |
-               |  * Refractory Spalling: dD/dt = f(T_bed, N_cycles) |
-               |  * Filter Blinding: dP(t) = dP_0 * (1 + k*t)^1.35  |
-               |  * Acid Corrosion: dC/dt = f(TAN, Moisture)        |
-               +--------------------------+-------------------------+
-                                          |
-                                          v
-               +----------------------------------------------------+
-               |      HEALTH INDEX & RUL PROGNOSTICS ENGINE (95% UQ)|
-               |  * Dynamic Health Index HI(t) in [100%, 0%]        |
-               |  * Remaining Useful Life (RUL in Operating Hours)  |
-               |  * Calibrated 95% Confidence Interval [Lo, Hi]     |
-               |  * Fleet Bottleneck Identification                 |
-               +--------------------------+-------------------------+
-                                          |
-                                          v
-               +----------------------------------------------------+
-               |       PRESCRIPTIVE WORK ORDER & LOTO MANAGER       |
-               |  * Urgency Triage: HEALTHY, PLANNED, URGENT, CRIT  |
-               |  * Spare Parts Bill of Materials (BOM) & Inventory |
-               |  * Estimated Labor Hours & Technician Crew Sizing  |
-               |  * Safety Lockout / Tagout (LOTO) Protocols        |
-               +----------------------------------------------------+
++----------------------------------------------------------------------------------------------------+
+|  BIOPLANT AI (V1.0) | TI-103: 500.0 °C | FI-101: 100.0 kg/h | TSI: 111.3% [AUTONOMOUS] | MODEL: GB   |
++----------------------------------------------------------------------------------------------------+
+| [Control Room]       |  [LIVE ANIMATED PROCESS FLOWSHEET]                                          |
+|                      |                                                                             |
+|  * Feedstock Selector|   [DRYER D101] ---> [REACTOR R101] ---> [CYCLONE C101] ---> [CONDENSER]    |
+|  * Temp Slider       |        ^                 |                     |                  |         |
+|  * Feed Rate Slider  |        +-----------------+---------------------+---------[BURNER B101]     |
+|  * Moisture Slider   |                                                                             |
+|  * Yield Engine (ML) |  Bio-Oil: 48.1 kg/h (48.1%) | Biochar: 27.4 kg/h (27.4%) | TSI: 111.3%     |
++----------------------+-----------------------------------------------------------------------------+
+| [Soft Sensors]       |  SS_101 (TAN): 97.5 mg KOH/g [93.4-101.7] | SS_104 (LHV): 13.96 MJ/Nm³     |
+| [Pareto Optimizer]   |  Interactive Pareto Curve & TOPSIS Optimal Setpoint ($18.42/h Profit)       |
+| [Fault Diagnostics]  |  Injected Fault: Cyclone Blockage -> [WARNING: Trigger N2 Pulse-Jet]        |
+| [Predictive Maint]   |  4,500 Hours -> Bottleneck: Reactor Refractory (RUL: 2,826 h) [WO-REACT]    |
++----------------------------------------------------------------------------------------------------+
 ```
 
 ---
 
-## 3. Fleet Health & RUL Summary at 4,500 Operating Hours
+## 3. REST API Specification
 
-From `reports/predictive_maintenance_report.json`:
+The built-in multi-threaded HTTP server serves standard JSON REST endpoints on port 8000:
 
-| Asset ID | Component Name | Current Health ($HI\%$) | Physical Wear State | Estimated RUL | 95% Confidence Interval | Urgency Level |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
-| **`AUGER_A101`** | **Biomass Infeed Auger Screw** | $49.3\%$ | $3.04\text{ / }6.0\text{ mm}$ wear | $4,376\text{ h}$ | $[3,697 - 5,054]\text{ h}$ | `PLANNED_MAINTENANCE` |
-| **`REACTOR_R101_LINER`** | **Refractory Bed Liner [BOTTLENECK]** | **$38.6\%$** | $24.57\text{ / }40.0\text{ mm}$ loss | **$2,826\text{ h}$** | **$[2,360 - 3,292]\text{ h}$** | **`PLANNED_MAINTENANCE`** |
-| **`FILTER_F101`** | **Syngas Ceramic Filter** | $48.3\%$ | $7.17\text{ / }12.0\text{ kPa}$ $\Delta P$ | $4,204\text{ h}$ | $[3,549 - 4,859]\text{ h}$ | `PLANNED_MAINTENANCE` |
-| **`CONDENSER_HX102`** | **Condenser Tube Bundle** | $55.0\%$ | $0.68\text{ / }1.5\text{ mm}$ corrosion | $5,500\text{ h}$ | $[4,667 - 6,333]\text{ h}$ | `PLANNED_MAINTENANCE` |
+| HTTP Method | Route | Description |
+| :--- | :--- | :--- |
+| **`GET`** | **`/`** | Serves single-page Dark Glassmorphism Web GUI application |
+| **`GET`** | **`/api/status`** | System health status, version `1.0.0`, and active modules |
+| **`GET`** | **`/api/feedstocks`** | Feedstock proximate and ultimate analysis library |
+| **`POST`** | **`/api/simulate`** | Executes digital twin simulation flowsheet (deterministic or ML) |
+| **`POST`** | **`/api/soft-sensors`** | Extracts hardware telemetry and evaluates 6 soft sensors with 95% UQ |
+| **`POST`** | **`/api/optimize`** | Solves single-objective or multiobjective Pareto optimization |
+| **`POST`** | **`/api/diagnostics`** | Injects equipment fault and returns anomaly scores and alarms |
+| **`POST`** | **`/api/maintenance`** | Computes asset wear, 95% RUL, and dispatches work orders |
 
 ---
 
@@ -91,19 +74,17 @@ From `reports/predictive_maintenance_report.json`:
 ```text
 ai_biomass_plant/
 │
-├── reports/
-│   ├── predictive_maintenance_report.json    # Fleet health, RUL & prescriptive work orders
-│   ├── fault_detection_report.json           # Anomaly scores, root cause & alarm dispatch report
-│   ├── soft_sensor_calibration_report.json   # Soft sensor R², RMSE & 95% UQ coverage
-│   ├── process_optimization_report.json      # Optimal operational setpoints
-│   └── pareto_frontier.json                  # Non-dominated Pareto frontier points
-│
 ├── src/
-│   ├── maintenance/
-│   │   ├── degradation_models.py             # Wear trajectory models for 4 critical assets
-│   │   ├── rul_estimator.py                  # Health index & RUL with 95% confidence intervals
-│   │   ├── work_order_manager.py             # Work order generator with BOM & safety LOTO
-│   │   └── run_maintenance.py                # Predictive maintenance CLI dashboard
+│   ├── api/
+│   │   ├── handlers.py                       # REST API business logic and route handlers
+│   │   └── server.py                         # Multi-threaded HTTP server & static asset host
+│   ├── web/
+│   │   ├── run_server.py                     # Web GUI server launcher CLI
+│   │   └── static/
+│   │       ├── index.html                    # Modern 5-tab digital twin dashboard
+│   │       ├── styles.css                    # Dark Glassmorphism design system
+│   │       └── app.js                        # Reactive frontend controller
+│   ├── maintenance/                          # Degradation kinematics & RUL prognostics
 │   ├── diagnostics/                          # Fault simulation, anomaly detector & alarms
 │   ├── sensors/                              # Hardware telemetry & 6 Soft Sensors (95% UQ)
 │   ├── optimization/                         # SLSQP, Differential Evolution, Pareto & TOPSIS
@@ -113,14 +94,14 @@ ai_biomass_plant/
 │   │   └── plant_simulator.py                # Hybrid simulation engine orchestrator
 │   └── run_simulation.py                     # CLI application entry point
 │
-├── tests/                                    # 77 Automated Unit & Integration Tests
+├── tests/                                    # 84 Automated Unit & Integration Tests
+│   ├── test_api.py
 │   ├── test_degradation_models.py
 │   ├── test_rul_estimator.py
 │   ├── test_work_orders.py
 │   ├── test_fault_simulator.py
 │   ├── test_anomaly_detector.py
 │   ├── test_fault_diagnostics.py
-│   ├── test_alarm_manager.py
 │   └── ...
 │
 ├── pyproject.toml
@@ -129,21 +110,24 @@ ai_biomass_plant/
 
 ---
 
-## 5. How to Run the Platform
+## 5. How to Launch the Web Platform
 
-### A. Run Predictive Maintenance & RUL Dashboard
+### A. Start Digital Twin Web Platform (Interactive Dashboard)
+```bash
+python -m src.run_simulation --web
+# Or directly via web launcher:
+python -m src.web.run_server --port 8000 --open-browser
+```
+Open **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)** in your browser.
+
+### B. Run Predictive Maintenance & RUL Dashboard
 ```bash
 python -m src.maintenance.run_maintenance --operating-hours 4500
 ```
 
-### B. Run Simulation with Integrated Maintenance Health Assessment
-```bash
-python -m src.run_simulation --predictive-maintenance --operating-hours 5200 --feedstock pine_sawdust
-```
-
 ### C. Run Fault Diagnostics & Alarm Triage
 ```bash
-python -m src.diagnostics.run_diagnostics --simulate-fault cyclone_blockage --severity 0.85
+python -m src.diagnostics.run_diagnostics --simulate-fault cyclone_blockage
 ```
 
 ### D. Run Real-Time Inferential Soft Sensor Dashboard
@@ -174,8 +158,8 @@ pytest tests/ -v
 * [x] **V0.7: Soft Sensors for Real-Time State Estimation (95% UQ)** *(Completed)*
 * [x] **V0.8: Process Anomaly & Fault Detection (Autoencoders, Isolation Forests & Alarms)** *(Completed)*
 * [x] **V0.9: Predictive Maintenance (RUL Estimation & Prescriptive Work Orders)** *(Completed)*
-* [ ] **V1.0: Real-Time Digital Twin Prototype (FastAPI Backend + Streamlit Web GUI Dashboard)**
-  * Unified interactive web interface with live flowsheet visualization, real-time PID controls, scenario analysis, and live soft sensor telemetry.
-* [ ] **V1.1: Dynamic Closed-Loop Process Control Simulation (MPC / PID)**
+* [x] **V1.0: Real-Time Digital Twin Platform & Web GUI Dashboard** *(Completed)*
+* [ ] **V1.1: Dynamic Closed-Loop Process Control Simulation (MPC / PID Control)**
+  * Transient dynamic modeling, feedback PID control loops for reactor temperature and auger speed, and Model Predictive Control (MPC) trajectory tracking.
 * [ ] **V1.2: Plant-Level AI Decision Support (Techno-Economic & LCA Carbon Accounting)**
 * [ ] **V2.0: Fully Autonomous AI Biomass Recycling Plant Platform**

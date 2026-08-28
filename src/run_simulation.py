@@ -1,7 +1,8 @@
-"""Command-line interface (CLI) entry point for the Virtual Biomass Conversion Plant (V0.9).
+"""Command-line interface (CLI) entry point for the Virtual Biomass Conversion Plant (V1.0).
 
 Usage:
     python -m src.run_simulation
+    python -m src.run_simulation --web
     python -m src.run_simulation --soft-sensors --feedstock pine_sawdust
     python -m src.run_simulation --predictive-maintenance --operating-hours 4500
     python -m src.run_simulation --simulate-fault cyclone_blockage
@@ -50,8 +51,8 @@ def print_simulation_dashboard(
     sub_border = "-" * w
 
     print(f"\n{border}")
-    print(f"       AI-INTEGRATED BIOMASS CONVERSION PLANT - V0.9")
-    print(f" (Predictive Maintenance, Diagnostics, Soft Sensors & Hybrid Digital Twin)")
+    print(f"       AI-INTEGRATED BIOMASS CONVERSION PLANT - V1.0")
+    print(f" (Web Platform, Predictive Maintenance, Diagnostics & Digital Twin)")
     print(f"{border}")
     print(f"Feedstock            : {feedstock.name} ({feedstock.category})")
     print(f"Yield Engine         : [{reactor.yield_engine_used}]")
@@ -123,7 +124,18 @@ def print_simulation_dashboard(
 def build_parser() -> argparse.ArgumentParser:
     """Build command-line parser."""
     parser = argparse.ArgumentParser(
-        description="AI-Integrated Biomass Pyrolysis Plant Simulation, Diagnostics & Predictive Maintenance (V0.9)"
+        description="AI-Integrated Biomass Pyrolysis Plant Digital Twin Web Platform & Simulation (V1.0)"
+    )
+    parser.add_argument(
+        "--web",
+        action="store_true",
+        help="Launch interactive Digital Twin Web GUI dashboard on http://127.0.0.1:8000/",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=8000,
+        help="Port number for web server (default: 8000)",
     )
     parser.add_argument(
         "--config",
@@ -230,6 +242,13 @@ def main() -> None:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = build_parser()
     args = parser.parse_args()
+
+    # Route to web GUI launcher if --web flag passed
+    if args.web:
+        from src.api.server import run_server
+        print(f"[*] Starting Digital Twin Web Platform on http://127.0.0.1:{args.port}/ ...")
+        run_server(port=args.port)
+        return
 
     # Route to fault diagnostics runner if fault simulation requested
     if args.simulate_fault:
