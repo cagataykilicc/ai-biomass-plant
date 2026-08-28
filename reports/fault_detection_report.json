@@ -1,0 +1,76 @@
+{
+  "simulation_context": {
+    "fault_injected": "REACTOR_THERMAL_RUNAWAY",
+    "severity": 0.9,
+    "timestamp": "2026-08-28T20:18:11.183202"
+  },
+  "telemetry": {
+    "timestamp": "2026-08-28T20:18:11.183202",
+    "feedstock_name": "Pine Sawdust",
+    "TI_101": 180.37,
+    "TI_102": 104.17,
+    "TI_103": 663.13,
+    "TI_104": 648.41,
+    "TI_105": 34.02,
+    "TI_106": 1396.09,
+    "FI_101": 100.06,
+    "FI_102": 1862.38,
+    "FI_103": 280.89,
+    "PI_101": 4.457
+  },
+  "anomaly_detection": {
+    "is_anomaly": true,
+    "overall_anomaly_score": 0.6989,
+    "isolation_forest_anomaly": false,
+    "isolation_forest_score": 0.4973,
+    "pca_q_statistic": 4.3161,
+    "pca_q_limit_99": 0.0,
+    "pca_q_exceeded": true,
+    "pca_t2_statistic": 55.7205,
+    "pca_t2_limit_99": 12.097,
+    "pca_t2_exceeded": true,
+    "physical_residual_violation": false,
+    "top_contributing_sensors": [
+      {
+        "sensor_tag": "FI_103",
+        "squared_residual": 1.6883
+      },
+      {
+        "sensor_tag": "TI_105",
+        "squared_residual": 0.9537
+      },
+      {
+        "sensor_tag": "TI_102",
+        "squared_residual": 0.6889
+      },
+      {
+        "sensor_tag": "PI_101",
+        "squared_residual": 0.442
+      }
+    ]
+  },
+  "fault_diagnosis": {
+    "predicted_fault": "REACTOR_THERMAL_RUNAWAY",
+    "confidence_probability": 1.0,
+    "fault_probabilities": {
+      "CONDENSER_TAR_FOULING": 0.0,
+      "CYCLONE_DIPLEG_BLOCKAGE": 0.0,
+      "FEED_AUGER_JAMMING": 0.0,
+      "NONE": 0.0,
+      "REACTOR_THERMAL_RUNAWAY": 1.0,
+      "THERMOCOUPLE_SENSOR_DRIFT": 0.0
+    },
+    "affected_equipment_tag": "REACTOR_R101",
+    "root_cause_explanation": "Uncontrolled exothermic temperature excursion in pyrolysis bed core."
+  },
+  "alarm_protocol": {
+    "alarm_id": "ALM-REACTO-69",
+    "priority": "CRITICAL_EMERGENCY",
+    "fault_type": "REACTOR_THERMAL_RUNAWAY",
+    "affected_equipment": "REACTOR_R101",
+    "headline_message": "CRITICAL: Pyrolysis Reactor R101 Thermal Excursion (>650\u00b0C)",
+    "recommended_operator_action": "Immediate emergency shutdown (ESD). Evacuate unit perimeter. Verify nitrogen inerting.",
+    "automated_interlock_action": "Trip Emergency Starve: Stop biomass feed auger, open combustor flue bypass, inject continuous N2 purge.",
+    "safety_standard_reference": "NFPA 86 Standard for Ovens and Furnaces / IEC 61508 SIL-2"
+  }
+}

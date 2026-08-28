@@ -1,9 +1,9 @@
-"""Command-line interface (CLI) entry point for the Virtual Biomass Conversion Plant (V0.7).
+"""Command-line interface (CLI) entry point for the Virtual Biomass Conversion Plant (V0.8).
 
 Usage:
     python -m src.run_simulation
     python -m src.run_simulation --soft-sensors --feedstock pine_sawdust
-    python -m src.run_simulation --yield-mode ml --model-type champion --feedstock pine_sawdust
+    python -m src.run_simulation --simulate-fault cyclone_blockage
     python -m src.run_simulation --optimize max_bio_oil --feedstock olive_pomace
 """
 
@@ -21,6 +21,7 @@ from src.ml.yield_predictor import YieldPredictorModel
 from src.optimization.run_optimizer import run_single_objective_cli, run_multiobjective_cli
 from src.sensors.telemetry import TelemetryExtractor, HardwareTelemetryPacket
 from src.sensors.soft_sensor_engine import SoftSensorSuite, SoftSensorEstimate
+from src.diagnostics.run_diagnostics import main as run_diagnostics_main
 
 
 def print_simulation_dashboard(
@@ -45,8 +46,8 @@ def print_simulation_dashboard(
     sub_border = "-" * w
 
     print(f"\n{border}")
-    print(f"       AI-INTEGRATED BIOMASS CONVERSION PLANT - V0.7")
-    print(f" (Soft Sensors, Multiobjective Optimization & Hybrid Digital Twin)")
+    print(f"       AI-INTEGRATED BIOMASS CONVERSION PLANT - V0.8")
+    print(f" (Diagnostics, Soft Sensors, Optimization & Hybrid Digital Twin)")
     print(f"{border}")
     print(f"Feedstock            : {feedstock.name} ({feedstock.category})")
     print(f"Yield Engine         : [{reactor.yield_engine_used}]")
@@ -119,7 +120,7 @@ def print_simulation_dashboard(
 def build_parser() -> argparse.ArgumentParser:
     """Build command-line parser."""
     parser = argparse.ArgumentParser(
-        description="AI-Integrated Biomass Pyrolysis Plant Simulation & Soft Sensors Platform (V0.7)"
+        description="AI-Integrated Biomass Pyrolysis Plant Simulation, Diagnostics & Soft Sensors Platform (V0.8)"
     )
     parser.add_argument(
         "--config",
@@ -150,6 +151,13 @@ def build_parser() -> argparse.ArgumentParser:
         "--soft-sensors",
         action="store_true",
         help="Run real-time inferential soft sensors with 95%% UQ intervals.",
+    )
+    parser.add_argument(
+        "--simulate-fault",
+        type=str,
+        default=None,
+        choices=["cyclone_blockage", "condenser_fouling", "thermal_runaway", "sensor_drift", "feed_jam"],
+        help="Simulate an industrial fault mode and run anomaly diagnostics.",
     )
     parser.add_argument(
         "--optimize",
@@ -208,6 +216,15 @@ def main() -> None:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = build_parser()
     args = parser.parse_args()
+
+    # Route to fault diagnostics runner if fault simulation requested
+    if args.simulate_fault:
+        from src.diagnostics.run_diagnostics import main as run_diag
+        sys.argv = [sys.argv[0], "--simulate-fault", args.simulate_fault]
+        if args.output:
+            sys.argv += ["--output", args.output]
+        run_diag()
+        return
 
     # If --optimize flag is provided, route directly to optimization runner
     if args.optimize:
