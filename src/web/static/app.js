@@ -629,6 +629,11 @@ async function runEconomics() {
 
 function renderEconomicsUI(data) {
   const container = document.getElementById('econ-results-container');
+  if (!data || data.error || !data.life_cycle_assessment_lca) {
+    container.innerHTML = `<div class="text-danger" style="padding:16px;">Economics Evaluation Error: ${data?.error || 'Invalid response received from server.'}</div>`;
+    return;
+  }
+
   const cap = data.capital_expenditure_capex;
   const op = data.operational_expenditure_opex;
   const fin = data.financial_viability_dcf;
