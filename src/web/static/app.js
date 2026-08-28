@@ -1,5 +1,5 @@
 /**
- * AI-Integrated Biomass Conversion Plant - Real-Time Digital Twin Frontend Controller (V1.1)
+ * AI-Integrated Biomass Conversion Plant - Real-Time Digital Twin Frontend Controller (V1.2)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initDiagnosticsHandlers();
   initMaintenanceHandlers();
   initControlHandlers();
+  initEconomicsHandlers();
 
   // Run initial simulation on load
   runSimulation();
@@ -35,6 +36,7 @@ function initNavigation() {
       if (targetTab === 'diagnostics-tab') runDiagnostics();
       if (targetTab === 'maintenance-tab') runMaintenance();
       if (targetTab === 'control-tab') runControlSimulation();
+      if (targetTab === 'economics-tab') runEconomics();
     });
   });
 }
@@ -434,7 +436,6 @@ function renderMaintenance(data) {
   `;
 
   for (const [aId, a] of Object.entries(fleet.assets)) {
-    const deg = a.degradation_state;
     html += `
       <div class="metric-item">
         <div style="display:flex; justify-content:space-between;">
@@ -585,4 +586,108 @@ function drawControlChart(trajectory) {
   ctx.fillText('Time (0 - 60 Minutes)', canvas.width / 2 - 40, canvas.height - 10);
   ctx.fillText('450°C', 10, canvas.height - padding);
   ctx.fillText('600°C', 10, padding + 10);
+}
+
+/* Tab 7: Techno-Economic & LCA Carbon Accounting */
+function initEconomicsHandlers() {
+  const btnEcon = document.getElementById('btn-run-economics');
+  if (btnEcon) {
+    btnEcon.addEventListener('click', runEconomics);
+  }
+}
+
+async function runEconomics() {
+  const feedstock = document.getElementById('feedstock-select').value;
+  const temp = parseFloat(document.getElementById('slider-temp').value);
+  const feed = parseFloat(document.getElementById('slider-feed').value);
+  const oilPrice = parseFloat(document.getElementById('econ-oil-price').value) || 0.65;
+  const charPrice = parseFloat(document.getElementById('econ-char-price').value) || 0.45;
+  const corcPrice = parseFloat(document.getElementById('econ-corc-price').value) || 65.0;
+
+  const container = document.getElementById('econ-results-container');
+  container.innerHTML = '<div>Evaluating 20-year Discounted Cash Flow and Scope 1-2-3 emissions...</div>';
+
+  try {
+    const res = await fetch('/api/economics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        feedstock,
+        reactor_temp_c: temp,
+        feed_rate_kg_h: feed,
+        oil_price: oilPrice,
+        char_price: charPrice,
+        corc_price: corcPrice,
+      }),
+    });
+    const data = await res.json();
+    renderEconomicsUI(data);
+  } catch (err) {
+    container.innerHTML = `<div class="text-danger">Economics error: ${err.message}</div>`;
+  }
+}
+
+function renderEconomicsUI(data) {
+  const container = document.getElementById('econ-results-container');
+  const cap = data.capital_expenditure_capex;
+  const op = data.operational_expenditure_opex;
+  const fin = data.financial_viability_dcf;
+  const lca = data.life_cycle_assessment_lca;
+  const seq = lca.sequestration;
+
+  container.innerHTML = `
+    <div class="card-header">
+      <h3>Financial Valuation & Carbon Removal Overview</h3>
+      <span class="badge ${fin.is_financially_viable ? 'badge-success' : 'badge-warning'}">${fin.is_financially_viable ? 'COMMERCIALLY VIABLE' : 'DEFICIT'}</span>
+    </div>
+
+    <!-- Financial Key Metrics Grid -->
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:8px;">
+      <div class="metric-item">
+        <span class="m-title">Net Present Value (NPV @ 10%)</span>
+        <span class="m-val text-green">$${fin.net_present_value_usd.toLocaleString()}</span>
+        <span class="m-sub">20-Year Project Life</span>
+      </div>
+      <div class="metric-item">
+        <span class="m-title">Internal Rate of Return (IRR)</span>
+        <span class="m-val text-cyan">${fin.internal_rate_of_return_pct.toFixed(1)}%</span>
+        <span class="m-sub">Discounted Payback: <strong>${fin.discounted_payback_years.toFixed(1)} yrs</strong></span>
+      </div>
+      <div class="metric-item">
+        <span class="m-title">Levelized Cost of Bio-Oil (LCOB)</span>
+        <span class="m-val">$${fin.levelized_cost_bio_oil_usd_kg.toFixed(3)}/kg</span>
+        <span class="m-sub">$${fin.levelized_cost_bio_oil_usd_mj.toFixed(4)}/MJ</span>
+      </div>
+    </div>
+
+    <!-- Capital vs Operating Cost Summary -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
+      <div class="work-order-card">
+        <div style="font-weight:700; color:var(--primary-cyan); margin-bottom:4px;">Capital Investment (Guthrie TCI)</div>
+        <div style="font-size:0.85rem;">Total Purchased Equipment: <strong>$${cap.purchased_equipment_cost_usd.toLocaleString()}</strong></div>
+        <div style="font-size:0.85rem;">Fixed Capital Investment (FCI): <strong>$${cap.fixed_capital_investment_usd.toLocaleString()}</strong></div>
+        <div style="font-size:0.85rem; color:var(--text-main);"><strong>Total Capital Investment (TCI): $${cap.total_capital_investment_usd.toLocaleString()}</strong></div>
+      </div>
+      <div class="work-order-card">
+        <div style="font-weight:700; color:var(--accent-amber); margin-bottom:4px;">Annual Operating Cost (OPEX)</div>
+        <div style="font-size:0.85rem;">Feedstock Supply: <strong>$${op.feedstock_cost_usd_yr.toLocaleString()}/yr</strong></div>
+        <div style="font-size:0.85rem;">Maintenance & Insurance: <strong>$${(op.maintenance_and_repairs_usd_yr + op.insurance_and_taxes_usd_yr).toLocaleString()}/yr</strong></div>
+        <div style="font-size:0.85rem; color:var(--text-main);"><strong>Total OPEX: $${op.total_opex_usd_yr.toLocaleString()}/yr ($${op.unit_opex_usd_per_tonne_feed.toFixed(1)}/t)</strong></div>
+      </div>
+    </div>
+
+    <!-- Carbon Intensity & Removal Profile -->
+    <div class="work-order-card" style="margin-top:12px; border-color:rgba(0,255,136,0.3);">
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+        <span style="font-weight:700; color:var(--accent-green);">ISO 14040/14044 Carbon Balance</span>
+        <span class="badge ${lca.is_carbon_negative ? 'badge-success' : 'badge-danger'}">${lca.is_carbon_negative ? 'NET CARBON NEGATIVE' : 'NET EMITTER'}</span>
+      </div>
+      <div style="font-size:0.85rem; display:grid; grid-template-columns:repeat(2, 1fr); gap:6px;">
+        <div>Gross Scope 1+2+3 Emissions: <strong>${lca.scope_emissions.total_gross_emissions_co2e_kg_yr.toLocaleString()} kg/yr</strong></div>
+        <div>Permanent Biochar Sequestration: <strong>-${seq.co2_sequestered_kg_yr.toLocaleString()} kg CO2/yr</strong></div>
+        <div>Certified CORC Revenue: <strong>+$${seq.annual_carbon_credit_revenue_usd.toLocaleString()}/yr</strong></div>
+        <div>Net Carbon Intensity: <strong>${lca.carbon_intensity_g_co2e_per_mj_bio_oil.toFixed(1)} g CO2eq/MJ</strong></div>
+      </div>
+    </div>
+  `;
 }

@@ -55,7 +55,7 @@ class APIRequestHandler:
         """System status and module availability."""
         return {
             "status": "ONLINE",
-            "version": "1.0.0",
+            "version": "1.2.0",
             "modules": {
                 "thermodynamic_flowsheet": "ACTIVE",
                 "ml_yield_surrogate": "ACTIVE",
@@ -63,6 +63,8 @@ class APIRequestHandler:
                 "inferential_soft_sensors": "ACTIVE",
                 "fault_anomaly_diagnostics": "ACTIVE",
                 "predictive_maintenance_rul": "ACTIVE",
+                "dynamic_process_control_mpc": "ACTIVE",
+                "techno_economic_lca_carbon": "ACTIVE",
             },
             "available_feedstocks": ["pine_sawdust", "olive_pomace", "wheat_straw", "rice_husk"],
         }
@@ -281,3 +283,23 @@ class APIRequestHandler:
             "trajectory_points": len(sub_states),
             "trajectory": sub_states,
         }
+
+    @classmethod
+    def handle_economics(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute Techno-Economic Analysis and LCA carbon accounting."""
+        from src.economics.run_economics import evaluate_plant_economics_and_lca
+        fs_name = data.get("feedstock", "olive_pomace")
+        feed_rate = float(data.get("feed_rate_kg_h", 100.0))
+        temp = float(data.get("reactor_temp_c", 500.0))
+        oil_price = float(data.get("oil_price", 0.65))
+        char_price = float(data.get("char_price", 0.45))
+        corc_price = float(data.get("corc_price", 65.0))
+
+        return evaluate_plant_economics_and_lca(
+            feedstock_name=fs_name,
+            feed_rate_kg_h=feed_rate,
+            reactor_temp_c=temp,
+            bio_oil_price_usd_kg=oil_price,
+            biochar_price_usd_kg=char_price,
+            corc_price_usd_tonne=corc_price,
+        )
