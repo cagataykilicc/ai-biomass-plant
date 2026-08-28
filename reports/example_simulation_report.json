@@ -1,0 +1,230 @@
+{
+  "metadata": {
+    "version": "0.1.0",
+    "timestamp": "2026-08-28T12:21:49.812586+00:00",
+    "plant_status": "OPERATIONAL",
+    "mass_balance_status": "PASS",
+    "energy_balance_status": "PASS"
+  },
+  "feedstock": {
+    "name": "Olive Pomace",
+    "category": "agricultural_residue",
+    "description": "By-product of olive oil extraction containing olive pulp and crushed stone fragments",
+    "ultimate": {
+      "carbon": 50.2,
+      "hydrogen": 6.2,
+      "oxygen": 39.8,
+      "nitrogen": 1.4,
+      "sulfur": 0.1,
+      "ash": 2.3
+    },
+    "proximate": {
+      "moisture": 15.0,
+      "volatile_matter": 76.5,
+      "fixed_carbon": 21.2,
+      "ash": 2.3
+    },
+    "physical": {
+      "particle_size_mm": 2.0,
+      "bulk_density_kg_m3": 550.0,
+      "skeletal_density_kg_m3": 1380.0,
+      "porosity": 0.45
+    },
+    "measured_hhv_mj_kg": null,
+    "calculated_properties": {
+      "hhv_dry_mj_kg": 20.655,
+      "lhv_dry_mj_kg": 19.302,
+      "hhv_ar_mj_kg": 17.557,
+      "lhv_ar_mj_kg": 16.04
+    }
+  },
+  "drying_section": {
+    "feed_rate_in_kg_h": 100.0,
+    "dried_feed_rate_out_kg_h": 92.391,
+    "water_evaporated_kg_h": 7.609,
+    "initial_moisture_pct": 15.0,
+    "final_moisture_pct": 8.0,
+    "dry_matter_kg_h": 85.0,
+    "thermal_duty_actual_kw": 11.727,
+    "thermal_duty_actual_mj_h": 42.216,
+    "electrical_power_kw": 1.5,
+    "specific_energy_kj_per_kg_water": 5548.38,
+    "dryer_temperature_c": 105.0,
+    "assumptions": {
+      "cp_liquid_water_kj_kg_k": 4.184,
+      "cp_steam_kj_kg_k": 2.01,
+      "latent_heat_vap_kj_kg": 2257.0,
+      "ambient_temp_c": 25.0,
+      "dryer_thermal_efficiency": 0.75,
+      "dry_matter_conservation": true
+    }
+  },
+  "reactor_section": {
+    "feed_rate_in_kg_h": 92.391,
+    "char_mass_rate_kg_h": 23.251,
+    "bio_oil_organics_kg_h": 35.968,
+    "pyrolytic_water_kg_h": 4.905,
+    "total_bio_oil_vapors_kg_h": 48.264,
+    "syngas_mass_rate_kg_h": 20.876,
+    "total_product_rate_kg_h": 92.391,
+    "yields_dry": {
+      "biochar_yield": 0.27354,
+      "bio_oil_yield": 0.48086,
+      "syngas_yield": 0.2456
+    },
+    "yields_daf": {
+      "biochar_yield": 0.25644,
+      "bio_oil_yield": 0.49218,
+      "syngas_yield": 0.25138
+    },
+    "reactor_thermal_duty_kw": 35.388,
+    "reactor_thermal_duty_mj_h": 127.399,
+    "operating_temperature_c": 500.0,
+    "product_heating_values": {
+      "char_hhv_mj_kg": 23.34,
+      "dry_bio_oil_hhv_mj_kg": 19.69,
+      "syngas_lhv_mj_kg": 9.65
+    }
+  },
+  "separation_section": {
+    "recovered_biochar_kg_h": 22.902,
+    "cyclone_fines_loss_kg_h": 0.349,
+    "recovered_bio_oil_liquid_kg_h": 46.334,
+    "bio_oil_organics_kg_h": 34.53,
+    "bio_oil_water_kg_h": 11.804,
+    "bio_oil_water_content_pct": 25.48,
+    "clean_syngas_kg_h": 22.807,
+    "uncondensed_vapors_in_syngas_kg_h": 1.931,
+    "condenser_cooling_duty_kw": 32.684,
+    "condenser_cooling_duty_mj_h": 117.662,
+    "cooling_water_rate_kg_h": 2343.5,
+    "liquid_bio_oil_hhv_mj_kg": 14.05,
+    "cyclone_efficiency": 0.985,
+    "condenser_efficiency": 0.96
+  },
+  "mass_balance": {
+    "total_input_kg_h": 100.0,
+    "total_output_kg_h": 100.0,
+    "total_losses_kg_h": -0.0,
+    "closure_pct": 100.0,
+    "closure_error_pct": 0.0,
+    "status": "PASS",
+    "is_balanced": true,
+    "warnings": [],
+    "products_summary": {
+      "biochar_recovered_kg_h": 22.902,
+      "bio_oil_recovered_kg_h": 46.334,
+      "syngas_recovered_kg_h": 22.807,
+      "dryer_water_evaporated_kg_h": 7.609,
+      "cyclone_fines_kg_h": 0.349
+    },
+    "streams": {
+      "S101_RAW_BIOMASS": {
+        "stream_id": "S101",
+        "name": "Raw Biomass Feed",
+        "source_unit": "BATTERY_LIMITS",
+        "destination_unit": "DRYER_D101",
+        "phase": "solid",
+        "mass_rate_kg_h": 100.0,
+        "temperature_c": 25.0,
+        "description": "As-received raw biomass with initial moisture"
+      },
+      "S103_DRIED_BIOMASS": {
+        "stream_id": "S103",
+        "name": "Dried Biomass",
+        "source_unit": "DRYER_D101",
+        "destination_unit": "REACTOR_R101",
+        "phase": "solid",
+        "mass_rate_kg_h": 92.391,
+        "temperature_c": 105.0,
+        "description": "Pretreated biomass solids at reduced moisture"
+      },
+      "S104_REACTOR_EFFLUENT": {
+        "stream_id": "S104",
+        "name": "Pyrolysis Reactor Effluent",
+        "source_unit": "REACTOR_R101",
+        "destination_unit": "SEPARATION_S101",
+        "phase": "multiphase",
+        "mass_rate_kg_h": 92.391,
+        "temperature_c": 500.0,
+        "description": "Combined hot vapors and char particulate exiting reactor"
+      },
+      "S105_DRYER_EXHAUST_WATER": {
+        "stream_id": "S105",
+        "name": "Dryer Water Vapor Exhaust",
+        "source_unit": "DRYER_D101",
+        "destination_unit": "BATTERY_LIMITS",
+        "phase": "vapor",
+        "mass_rate_kg_h": 7.609,
+        "temperature_c": 105.0,
+        "description": "Evaporated moisture from raw feedstock drying"
+      },
+      "S106_BIOCHAR_PRODUCT": {
+        "stream_id": "S106",
+        "name": "Recovered Biochar Product",
+        "source_unit": "CYCLONE_C101",
+        "destination_unit": "STORAGE_TK101",
+        "phase": "solid",
+        "mass_rate_kg_h": 22.902,
+        "temperature_c": 500.0,
+        "description": "Solid biochar product recovered in cyclone"
+      },
+      "S107_BIO_OIL_PRODUCT": {
+        "stream_id": "S107",
+        "name": "Liquid Bio-oil Product",
+        "source_unit": "CONDENSER_E101",
+        "destination_unit": "STORAGE_TK102",
+        "phase": "liquid",
+        "mass_rate_kg_h": 46.334,
+        "temperature_c": 35.0,
+        "description": "Condensed liquid pyrolytic oil (organics + pyrolytic water)"
+      },
+      "S108_CLEAN_SYNGAS": {
+        "stream_id": "S108",
+        "name": "Clean Product Syngas",
+        "source_unit": "CONDENSER_E101",
+        "destination_unit": "BATTERY_LIMITS",
+        "phase": "gas",
+        "mass_rate_kg_h": 22.807,
+        "temperature_c": 35.0,
+        "description": "Non-condensable fuel gas stream"
+      },
+      "S109_CYCLONE_FINES_LOSS": {
+        "stream_id": "S109",
+        "name": "Cyclone Particulate Fines Loss",
+        "source_unit": "CYCLONE_C101",
+        "destination_unit": "EFFLUENT_TREATMENT",
+        "phase": "solid",
+        "mass_rate_kg_h": 0.349,
+        "temperature_c": 500.0,
+        "description": "Uncaptured char particulate carried over in gas stream"
+      }
+    }
+  },
+  "energy_balance": {
+    "duties_kw": {
+      "drying_thermal_duty_kw": 11.727,
+      "reactor_thermal_duty_kw": 35.388,
+      "condenser_cooling_duty_kw": 32.684,
+      "auxiliary_electrical_power_kw": 3.0,
+      "total_external_energy_input_kw": 50.115
+    },
+    "chemical_energy_rates_kw": {
+      "feedstock_chemical_power_kw": 445.556,
+      "biochar_chemical_power_kw": 141.035,
+      "bio_oil_chemical_power_kw": 162.748,
+      "syngas_chemical_power_kw": 61.141,
+      "total_products_chemical_power_kw": 364.925
+    },
+    "kpis": {
+      "energy_recovery_ratio_pct": 81.9,
+      "bio_oil_energy_share_pct": 36.53,
+      "biochar_energy_share_pct": 31.65,
+      "syngas_energy_share_pct": 13.72,
+      "net_thermal_efficiency_pct": 70.66,
+      "specific_energy_demand_kwh_kg_feed": 0.5012
+    },
+    "status": "PASS",
+    "warnings": []
+  }
+}
