@@ -17,7 +17,7 @@
 
 **An industrial-grade, physics-informed digital twin, autonomous AI autopilot, and real-time operations platform for thermochemical biomass pyrolysis plants.**
 
-[Overview](#-1-system-overview) • [Screenshots](#-2-interactive-web-cockpit--screenshots) • [Architecture](#-3-system-architecture) • [Core Modules](#-4-the-8-operational-modules) • [Quick Start](#-5-quick-start--installation) • [REST API](#-6-rest-api-specification) • [Author](#-7-author--maintainer)
+[Overview](#-1-system-overview) • [Screenshots](#-2-interactive-web-cockpit--screenshots) • [Architecture](#-3-system-architecture) • [Core Modules](#-4-the-8-operational-modules) • [Quick Start](#-5-quick-start--installation) • [REST API](#-6-rest-api-specification) • [Roadmap](ROADMAP.md) • [Author](#-7-author--maintainer)
 
 </div>
 
@@ -178,7 +178,20 @@ curl -X POST http://127.0.0.1:8000/api/simulate \
 
 ---
 
-## 👨‍💻 7. Author & Maintainer
+---
+
+## 🗺️ 7. Product & Engineering Roadmap
+
+Detailed milestone planning, architectural specifications, and release timelines are documented in [**ROADMAP.md**](ROADMAP.md):
+
+* **`V2.1` (Near-Term)**: Dockerization & Compose, Cloud Demo Deployment (Hugging Face / Render), Interactive OpenAPI `/docs`, and Jupyter Tutorial Notebooks.
+* **`V2.2` (Edge & IoT)**: Industrial protocol bridges (MQTT Sparkplug B, OPC-UA, Modbus TCP), Hardware-in-the-Loop (HIL), and sub-50ms WebSocket telemetry streaming.
+* **`V2.5` (Fleet & Market AI)**: Multi-reactor regional fleet dispatching, dynamic CORC carbon credit arbitrage, and hybrid renewable grid integration.
+* **`V3.0` (Next-Gen AI & Spatial Twin)**: Deep Reinforcement Learning (PPO/SAC Gym), Three.js 3D WebGL Holographic Spatial Twin, and Generative AI SCADA Operator Copilot.
+
+---
+
+## 👨‍💻 8. Author & Maintainer
 
 <table align="center">
   <tr>
@@ -203,6 +216,6 @@ curl -X POST http://127.0.0.1:8000/api/simulate \
 
 ---
 
-## 📜 8. License
+## 📜 9. License
 
 This project is licensed under the terms of the **MIT License**. See the [LICENSE](LICENSE) file for complete details.
