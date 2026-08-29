@@ -1,23 +1,25 @@
-# 🌿 AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V2.0)
+# 🌿 AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V2.1)
 
 <div align="center">
 
 [![CI](https://github.com/cagataykilicc/ai-biomass-plant/actions/workflows/ci.yml/badge.svg)](https://github.com/cagataykilicc/ai-biomass-plant/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Docker Container](https://img.shields.io/badge/Docker-Ready%20(v2.1.0)-2496ED.svg?logo=docker&logoColor=white)](Dockerfile)
+[![Swagger OpenAPI](https://img.shields.io/badge/OpenAPI-3.0%20Swagger%20UI-85EA2D.svg?logo=swagger&logoColor=black)](http://127.0.0.1:8000/docs)
 [![Git LFS](https://img.shields.io/badge/Git%20LFS-Tracked%20Models-orange.svg)](https://git-lfs.com)
-[![Autonomous Platform](https://img.shields.io/badge/Autonomous%20Platform-AI%20Autopilot%20%26%20FSM%20(V2.0)-gold.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
+[![Autonomous Platform](https://img.shields.io/badge/Autonomous%20Platform-AI%20Autopilot%20%26%20FSM-gold.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
 [![Blackbox Flight Recorder](https://img.shields.io/badge/Blackbox-Flight%20Recorder%20%26%20Historian-blueviolet.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
 [![Economics TEA & DCF](https://img.shields.io/badge/Economics-Guthrie%20TEA%20%26%2020--Yr%20DCF-gold.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
 [![LCA Carbon Negative](https://img.shields.io/badge/LCA-ISO%2014040%2F14044%20Carbon%20Negative-darkgreen.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
 [![Process Control](https://img.shields.io/badge/Process%20Control-Dynamic%20MPC%20%26%20PID-blue.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
 [![Web Platform](https://img.shields.io/badge/Web%20Platform-Interactive%20Dark%20Glassmorphism-cyan.svg)](http://127.0.0.1:8000/)
-[![Tests](https://img.shields.io/badge/Tests-102%2F102%20Passed-brightgreen.svg)](https://github.com/cagataykilicc/ai-biomass-plant/actions)
+[![Tests](https://img.shields.io/badge/Tests-105%2F105%20Passed-brightgreen.svg)](https://github.com/cagataykilicc/ai-biomass-plant/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Author](https://img.shields.io/badge/Author-Çağatay%20Kılıç-blue.svg?logo=github)](https://github.com/cagataykilicc)
 
 **An industrial-grade, physics-informed digital twin, autonomous AI autopilot, and real-time operations platform for thermochemical biomass pyrolysis plants.**
 
-[Overview](#-1-system-overview) • [Screenshots](#-2-interactive-web-cockpit--screenshots) • [Architecture](#-3-system-architecture) • [Core Modules](#-4-the-8-operational-modules) • [Quick Start](#-5-quick-start--installation) • [REST API](#-6-rest-api-specification) • [Roadmap](ROADMAP.md) • [Author](#-7-author--maintainer)
+[Overview](#-1-system-overview) • [Screenshots](#-2-interactive-web-cockpit--screenshots) • [Architecture](#-3-system-architecture) • [Core Modules](#-4-the-8-operational-modules) • [Quick Start](#-5-quick-start--installation) • [Docker](#-6-docker-deployment) • [REST & Swagger API](#-7-rest-api--swagger-documentation) • [Tutorials](#-8-interactive-jupyter-tutorial-suite) • [Roadmap](ROADMAP.md) • [Author](#-9-author--maintainer)
 
 </div>
 
@@ -137,21 +139,45 @@ Access the interactive digital twin cockpit at **`http://127.0.0.1:8000/`**.
 python -m src.autonomous.run_autopilot --mission
 ```
 
-### Running Automated Test Suite (102 Tests)
+### Running Automated Test Suite (105 Tests)
 ```bash
 pytest tests/ -q
 ```
 
 ---
 
-## 📡 6. REST API Specification
+## 🐳 6. Docker Deployment
 
-The built-in multi-threaded server provides secure REST endpoints authenticated via `X-API-Key`:
+Deploy the digital twin platform instantly in a hardened, non-root Linux container:
+
+```bash
+# Option A: Run with Docker Compose (Recommended)
+docker compose up -d
+
+# Option B: Build and run with Docker CLI
+docker build -t cagataykilicc/bioplant-ai:2.1.0 .
+docker run -d -p 8000:8000 --name bioplant-twin cagataykilicc/bioplant-ai:2.1.0
+```
+
+Access the containerized web control room at **`http://127.0.0.1:8000/`**.
+
+---
+
+## 📡 7. REST API & Swagger Documentation
+
+The platform provides a secure zero-dependency multithreaded REST server with built-in interactive OpenAPI 3.0 interfaces:
+
+* **Interactive Swagger UI**: **[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)**
+* **Interactive ReDoc**: **[http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)**
+* **Raw OpenAPI 3.0 JSON**: **[http://127.0.0.1:8000/openapi.json](http://127.0.0.1:8000/openapi.json)**
 
 | Method | Route | Description |
 | :--- | :--- | :--- |
 | **`GET`** | **`/`** | Serves the single-page Dark Glassmorphism Web GUI application |
-| **`GET`** | **`/api/status`** | System health status, version `2.0.0`, and active module availability |
+| **`GET`** | **`/docs`** | Interactive OpenAPI Swagger UI 5.x documentation |
+| **`GET`** | **`/redoc`** | ReDoc responsive API documentation |
+| **`GET`** | **`/openapi.json`** | Machine-readable OpenAPI 3.0.3 specification JSON |
+| **`GET`** | **`/api/status`** | System health status, version `2.1.0`, and active module availability |
 | **`GET`** | **`/api/feedstocks`** | Proximate and ultimate analysis catalog (Olive Pomace, Pine, Straw, Husk) |
 | **`POST`** | **`/api/simulate`** | Executes digital twin flowsheet simulation (Deterministic or ML) |
 | **`POST`** | **`/api/autopilot/step`** | Advances closed-loop autonomous autopilot FSM by one step |
@@ -178,20 +204,29 @@ curl -X POST http://127.0.0.1:8000/api/simulate \
 
 ---
 
+## 📓 8. Interactive Jupyter Tutorial Suite
+
+Explore step-by-step interactive Jupyter notebooks located in [`notebooks/`](notebooks/):
+
+1. **[`01_quickstart_and_thermodynamics.ipynb`](notebooks/01_quickstart_and_thermodynamics.ipynb)**: First-principles flowsheet simulation, multi-feedstock chemical fingerprints, and mass/energy conservation analysis.
+2. **[`02_surrogate_models_and_soft_sensors.ipynb`](notebooks/02_surrogate_models_and_soft_sensors.ipynb)**: Physics-constrained ML surrogate predictions and 6 Bayesian soft sensors with 95% Confidence Intervals.
+3. **[`03_pareto_optimization_and_tea_lca.ipynb`](notebooks/03_pareto_optimization_and_tea_lca.ipynb)**: NSGA-II 2D Pareto frontiers, TOPSIS MCDM stakeholder ranking, 20-yr DCF valuation, and ISO 14040 carbon negative accounting.
+4. **[`04_autonomous_autopilot_flight_telemetry.ipynb`](notebooks/04_autonomous_autopilot_flight_telemetry.ipynb)**: Running the 4-hour autonomous qualification mission and parsing blackbox flight logs with trajectory charts.
+
 ---
 
-## 🗺️ 7. Product & Engineering Roadmap
+## 🗺️ 9. Product & Engineering Roadmap
 
 Detailed milestone planning, architectural specifications, and release timelines are documented in [**ROADMAP.md**](ROADMAP.md):
 
-* **`V2.1` (Near-Term)**: Dockerization & Compose, Cloud Demo Deployment (Hugging Face / Render), Interactive OpenAPI `/docs`, and Jupyter Tutorial Notebooks.
+* **`V2.1` (Completed)**: Dockerization & Compose, Interactive OpenAPI Swagger `/docs`, ReDoc, and 4-Part Jupyter Tutorial Suite.
 * **`V2.2` (Edge & IoT)**: Industrial protocol bridges (MQTT Sparkplug B, OPC-UA, Modbus TCP), Hardware-in-the-Loop (HIL), and sub-50ms WebSocket telemetry streaming.
 * **`V2.5` (Fleet & Market AI)**: Multi-reactor regional fleet dispatching, dynamic CORC carbon credit arbitrage, and hybrid renewable grid integration.
 * **`V3.0` (Next-Gen AI & Spatial Twin)**: Deep Reinforcement Learning (PPO/SAC Gym), Three.js 3D WebGL Holographic Spatial Twin, and Generative AI SCADA Operator Copilot.
 
 ---
 
-## 👨‍💻 8. Author & Maintainer
+## 👨‍💻 10. Author & Maintainer
 
 <table align="center">
   <tr>
@@ -216,6 +251,6 @@ Detailed milestone planning, architectural specifications, and release timelines
 
 ---
 
-## 📜 9. License
+## 📜 11. License
 
 This project is licensed under the terms of the **MIT License**. See the [LICENSE](LICENSE) file for complete details.

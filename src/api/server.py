@@ -13,12 +13,13 @@ from typing import Optional, Dict, Any
 from urllib.parse import urlparse, parse_qs
 
 from src.api.handlers import APIRequestHandler
+from src.api.openapi import get_openapi_spec, get_swagger_ui_html, get_redoc_html
 
 
 class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
     """Handles REST API calls and serves modern static Web GUI assets."""
 
-    server_version = "DigitalTwinHTTP/2.0"
+    server_version = "DigitalTwinHTTP/2.1"
 
     def _set_cors_headers(self, content_type: str = "application/json") -> None:
         self.send_header("Content-Type", content_type)
@@ -42,6 +43,29 @@ class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         parsed_url = urlparse(self.path)
         path = parsed_url.path
+
+        if path == "/openapi.json":
+            spec = get_openapi_spec()
+            self._send_json(200, spec)
+            return
+
+        if path in ("/docs", "/docs/"):
+            html = get_swagger_ui_html().encode("utf-8")
+            self.send_response(200)
+            self._set_cors_headers("text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(html)))
+            self.end_headers()
+            self.wfile.write(html)
+            return
+
+        if path in ("/redoc", "/redoc/"):
+            html = get_redoc_html().encode("utf-8")
+            self.send_response(200)
+            self._set_cors_headers("text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(html)))
+            self.end_headers()
+            self.wfile.write(html)
+            return
 
         if path.startswith("/api/"):
             if not self._is_authorized():

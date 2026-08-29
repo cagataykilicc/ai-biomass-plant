@@ -54,48 +54,29 @@ timeline
 - [x] **V2.0**: 4-hour multi-phase mission qualification stress test with 100% mission success rate.
 - [x] **Security & CI**: Fail-closed API-key authorization, input bounds validation, path traversal protection, Git LFS tracking, and GitHub Actions CI workflow (102/102 tests passed).
 
+### 🔹 V2.1: Enterprise Deployment & Developer Experience
+- [x] **Dockerization**: Multi-stage production `Dockerfile` (Python 3.11-slim) with unprivileged non-root user and automated container healthcheck probes.
+- [x] **Docker Compose**: `docker-compose.yml` service with persistent `./reports` volume mount.
+- [x] **OpenAPI 3.0.3 & Swagger UI**: Auto-generated interactive API documentation at `/docs` (Swagger UI), `/redoc`, and `/openapi.json`.
+- [x] **Jupyter Tutorial Suite**: 4 interactive `.ipynb` tutorials covering thermodynamics, ML surrogates, Pareto optimization, and 4-hour autopilot telemetry.
+- [x] **Test Coverage**: 105 automated unit and integration tests passing (`100% pass rate`).
+
 </details>
 
 ---
 
-## 🚀 Future Development Roadmap (V2.1 – V3.0+)
+## 🚀 Future Development Roadmap (V2.2 – V3.0+)
 
 ```
   ┌────────────────────────────────────────────────────────────────────────┐
   │                           PHASED ROADMAP                               │
   ├───────────────────┬───────────────────┬────────────────────────────────┤
-  │   V2.1 Enterprise │   V2.2 Edge & IoT │   V2.5 Fleet & Grid AI         │
-  │   - Docker & Cloud│   - MQTT & OPC-UA │   - Multi-Plant Dispatch       │
-  │   - OpenAPI Specs │   - WebSocket Bus │   - Dynamic CORC Trading       │
-  │   - Jupyter Lab   │   - HIL Hardware  │   - Hybrid Renewable Coupling  │
+  │   V2.2 Edge & IoT │   V2.5 Fleet & Grid AI│   V3.0 Next-Gen Twin       │
+  │   - MQTT & OPC-UA │   - Multi-Plant   │   - Deep RL (PPO/SAC)          │
+  │   - WebSocket Bus │   - CORC Arbitrage│   - 3D WebGL (Three.js)        │
+  │   - HIL Hardware  │   - Renewable Grid│   - GenAI SCADA Copilot        │
   └───────────────────┴───────────────────┴────────────────────────────────┘
-                                  │
-                                  ▼
-  ┌────────────────────────────────────────────────────────────────────────┐
-  │                  V3.0 NEXT-GEN AUTONOMOUS TWIN                         │
-  │   - Deep Reinforcement Learning (PPO/SAC Transients)                   │
-  │   - 3D WebGL Interactive Holographic Twin (Three.js)                   │
-  │   - Generative AI Operator Copilot (Natural Language SCADA Assistant)  │
-  └────────────────────────────────────────────────────────────────────────┘
 ```
-
----
-
-### 📦 Phase 1: Enterprise Deployment & Developer Experience (Version 2.1)
-**Goal:** Make BIOPLANT AI cloud-deployable in 1 click and developer-friendly with interactive notebooks and API schemas.
-
-- [ ] **Dockerization & Multi-Stage Container**:
-  - Add production `Dockerfile` (distroless/Alpine Python 3.11 image < 150MB).
-  - Add `docker-compose.yml` defining web server, background workers, and persistent volume mounts for logs/models.
-- [ ] **Cloud Demo Deployment**:
-  - Deploy public live demo container to **Hugging Face Spaces** or **Render Cloud** for instant web preview.
-- [ ] **Interactive OpenAPI / Swagger Documentation**:
-  - Expose self-documenting interactive API interface at `/docs` (Swagger UI) and `/redoc`.
-- [ ] **Jupyter Notebook Tutorial Suite (`notebooks/`)**:
-  - `01_chemical_kinetics_simulation.ipynb`: Thermodynamic flowsheet deep dive.
-  - `02_surrogate_model_benchmarks.ipynb`: Machine learning training and physics validation.
-  - `03_pareto_optimization_decision_making.ipynb`: Interactive Pareto frontier exploration.
-  - `04_autonomous_autopilot_flight_log.ipynb`: 4-hour flight log telemetry visualization with Plotly.
 
 ---
 

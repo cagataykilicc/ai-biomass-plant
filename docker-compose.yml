@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  bioplant-twin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: cagataykilicc/bioplant-ai:2.1.0
+    container_name: bioplant-digital-twin
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - BIOPLANT_API_KEY=bioplant-default-dev-key
+      - HOST=0.0.0.0
+      - PORT=8000
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./reports:/app/reports
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; req = urllib.request.Request('http://127.0.0.1:8000/api/status', headers={'X-API-Key': 'bioplant-default-dev-key'}); urllib.request.urlopen(req)\" || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    resources:
+      limits:
+        cpus: '2.0'
+        memory: 2048M
