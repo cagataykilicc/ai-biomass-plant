@@ -29,22 +29,26 @@ function initThemeSwitcher() {
 
   function applyTheme(theme, save = true) {
     document.documentElement.setAttribute('data-theme', theme);
+    if (document.body) document.body.setAttribute('data-theme', theme);
     if (save) localStorage.setItem('bioplant_theme', theme);
 
     if (sunIcon && moonIcon && themeText) {
       if (theme === 'light') {
         sunIcon.style.display = 'block';
         moonIcon.style.display = 'none';
-        themeText.textContent = 'Light Mode';
+        themeText.textContent = 'Light';
       } else {
         sunIcon.style.display = 'none';
         moonIcon.style.display = 'block';
-        themeText.textContent = 'Dark Mode';
+        themeText.textContent = 'Dark';
       }
     }
 
     // Re-draw 2D canvas charts with theme-adaptive styling
     if (typeof drawParetoChart === 'function') drawParetoChart();
+    if (typeof tabLoaded !== 'undefined' && tabLoaded && tabLoaded['control-tab'] && typeof runControl === 'function') {
+      runControl();
+    }
 
     // Adapt 3D Scene fog if Three.js is loaded
     if (typeof scene !== 'undefined' && scene && scene.fog) {
@@ -58,7 +62,8 @@ function initThemeSwitcher() {
   applyTheme(savedTheme, false);
 
   if (toggleBtn) {
-    toggleBtn.addEventListener('click', () => {
+    toggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       const current = document.documentElement.getAttribute('data-theme') || 'dark';
       const next = current === 'dark' ? 'light' : 'dark';
       applyTheme(next, true);
