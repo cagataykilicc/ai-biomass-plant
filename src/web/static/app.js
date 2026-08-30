@@ -15,44 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initIoTHandlers();
   initFleetHandlers();
   initV3Handlers();
-  initLanguageSwitcher();
 
   // Run initial simulation on load
   runSimulation();
 });
 
-function initLanguageSwitcher() {
-  const langBtns = document.querySelectorAll('.btn-lang');
-  langBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const lang = btn.getAttribute('data-lang');
-      if (typeof setLanguage === 'function') {
-        setLanguage(lang);
-      }
-    });
-  });
-
-  window.addEventListener('languageChanged', (e) => {
-    // Re-render currently active tab data if loaded
-    const activeTab = document.querySelector('.tab-pane.active');
-    if (activeTab) {
-      const tabId = activeTab.id;
-      if (tabId === 'soft-sensors-tab' && tabLoaded['soft-sensors-tab']) runSoftSensors();
-      else if (tabId === 'optimization-tab' && tabLoaded['optimization-tab']) {
-        drawParetoChart();
-        renderBestSolution(currentTopSolution, currentTopsisScore);
-      }
-      else if (tabId === 'diagnostics-tab' && tabLoaded['diagnostics-tab']) runDiagnostics();
-      else if (tabId === 'maintenance-tab' && tabLoaded['maintenance-tab']) runMaintenance();
-      else if (tabId === 'economics-tab' && tabLoaded['economics-tab']) runEconomics();
-      else if (tabId === 'iot-tab' && tabLoaded['iot-tab']) pollModbusRegisters();
-      else if (tabId === 'fleet-tab' && tabLoaded['fleet-tab']) loadFleetStatus();
-    }
-  });
-
-  if (typeof setLanguage === 'function' && typeof getCurrentLanguage === 'function') {
-    setLanguage(getCurrentLanguage());
-  }
+function t(key, fallback) {
+  return fallback;
 }
 
 function getApiKey() {
@@ -782,7 +751,7 @@ function renderMaintenance(data) {
   const container = document.getElementById('maint-results-container');
   const fleet = data.fleet_summary;
   const orders = data.work_orders;
-  const hoursLabel = getCurrentLanguage() === 'tr' ? 'Saat' : 'Hours';
+  const hoursLabel = 'Hours';
 
   let html = `
     <div class="card-header">
@@ -1157,10 +1126,7 @@ async function runFullMission() {
       body: JSON.stringify({ dt: 2.0 }),
     });
     const data = await res.json();
-    const alertMsg = getCurrentLanguage() === 'tr'
-      ? `Otonom Görev Tamamlandı: ${data.phases_executed_count} uçuş aşaması boyunca ${data.overall_status}! Seyir kaydı kaydedildi.`
-      : `Autonomous Mission Completed: ${data.overall_status} across ${data.phases_executed_count} flight phases! Log saved.`;
-    alert(alertMsg);
+    alert(`Autonomous Mission Completed: ${data.overall_status} across ${data.phases_executed_count} flight phases! Log saved.`);
     stepAutopilot();
   } catch (err) {
     alert(`Mission failed: ${err.message}`);
@@ -1278,10 +1244,7 @@ async function injectHILFault(channelKey, faultType) {
     });
     const data = await res.json();
     updateHILScope(data);
-    const alertMsg = getCurrentLanguage() === 'tr'
-      ? `HIL Devre Hatası '${faultType}' ${channelKey} kanalına uygulandı.`
-      : `HIL Circuit Fault '${faultType}' applied to ${channelKey}.`;
-    alert(alertMsg);
+    alert(`HIL Circuit Fault '${faultType}' applied to ${channelKey}.`);
   } catch (err) {
     alert(`Failed to inject HIL fault: ${err.message}`);
   }
@@ -1390,17 +1353,9 @@ async function dispatchSeason(seasonName) {
     });
     const data = await res.json();
     const seasonEl = document.getElementById('fleet-active-season');
-    const seasonLabels = {
-      AUTUMN: getCurrentLanguage() === 'tr' ? 'SONBAHAR ZEYTİN HASAT PROGRAMI' : 'AUTUMN HARVEST SCHEDULE',
-      SUMMER: getCurrentLanguage() === 'tr' ? 'YAZ SAMAN HASAT PROGRAMI' : 'SUMMER HARVEST SCHEDULE',
-      SPRING: getCurrentLanguage() === 'tr' ? 'İLKBAHAR ÇAM HASAT PROGRAMI' : 'SPRING HARVEST SCHEDULE',
-    };
-    if (seasonEl) seasonEl.textContent = seasonLabels[seasonName] || `${seasonName} HARVEST SCHEDULE`;
+    if (seasonEl) seasonEl.textContent = `${seasonName} HARVEST SCHEDULE`;
     if (data.fleet_summary) updateFleetUI(data.fleet_summary);
-    const alertMsg = getCurrentLanguage() === 'tr'
-      ? `${seasonName} mevsimsel hasat tahsisi güncellendi. Tesis kapasitesi dinamik olarak dengelendi.`
-      : `Seasonal Harvest Allocation updated for ${seasonName}. Throughput dynamically balanced.`;
-    alert(alertMsg);
+    alert(`Seasonal Harvest Allocation updated for ${seasonName}. Throughput dynamically balanced.`);
   } catch (err) {
     alert(`Failed to dispatch season: ${err.message}`);
   }
@@ -1439,10 +1394,7 @@ async function runSolarDispatch() {
     });
     const data = await res.json();
     const m = data.daily_metrics || {};
-    const alertMsg = getCurrentLanguage() === 'tr'
-      ? `24 Saatlik Güneş Enerjisi Sevkiyatı Optimize Edildi:\n- Üretilen Güneş Enerjisi: ${m.total_solar_generated_kwh} kWh\n- Şebekeden Çekilen: ${m.total_grid_imported_kwh} kWh\n- Günlük Tasarruf: $${m.daily_cost_savings_usd}\n- Öngörülen Yıllık Tasarruf: $${m.projected_annual_power_savings_usd.toLocaleString()}/yıl`
-      : `24h Solar Dispatch Optimized:\n- Solar Generated: ${m.total_solar_generated_kwh} kWh\n- Grid Import: ${m.total_grid_imported_kwh} kWh\n- Daily Savings: $${m.daily_cost_savings_usd}\n- Projected Annual Savings: $${m.projected_annual_power_savings_usd.toLocaleString()}/yr`;
-    alert(alertMsg);
+    alert(`24h Solar Dispatch Optimized:\n- Solar Generated: ${m.total_solar_generated_kwh} kWh\n- Grid Import: ${m.total_grid_imported_kwh} kWh\n- Daily Savings: $${m.daily_cost_savings_usd}\n- Projected Annual Savings: $${m.projected_annual_power_savings_usd.toLocaleString()}/yr`);
   } catch (err) {
     alert(`Solar dispatch failed: ${err.message}`);
   }
@@ -1476,34 +1428,22 @@ function initV3Handlers() {
   // Quick prompt buttons
   const qCyclone = document.getElementById('quick-sop-cyclone');
   if (qCyclone) qCyclone.addEventListener('click', () => {
-    const q = getCurrentLanguage() === 'tr'
-      ? 'Siklon basınç farkı 28 mbar değerine yükseliyor. Standart işletme prosedürü (SOP) nedir?'
-      : 'Cyclone DP is spiking to 28 mbar. What is the SOP?';
-    sendCopilotQuickQuery(q);
+    sendCopilotQuickQuery('Cyclone DP is spiking to 28 mbar. What is the SOP?');
   });
 
   const qMoist = document.getElementById('quick-sop-moisture');
   if (qMoist) qMoist.addEventListener('click', () => {
-    const q = getCurrentLanguage() === 'tr'
-      ? 'Hammadde nem oranı %20 seviyesine yükseldi. Brülör ayarlarını nasıl düzenlemeliyim?'
-      : 'Feedstock moisture increased to 20%. Adjust burner setpoints.';
-    sendCopilotQuickQuery(q);
+    sendCopilotQuickQuery('Feedstock moisture increased to 20%. Adjust burner setpoints.');
   });
 
   const qStartup = document.getElementById('quick-sop-startup');
   if (qStartup) qStartup.addEventListener('click', () => {
-    const q = getCurrentLanguage() === 'tr'
-      ? 'Reaktör termal ön ısıtma ve başlatma adımlarını açıkla.'
-      : 'Give me the thermal preheat and startup procedure.';
-    sendCopilotQuickQuery(q);
+    sendCopilotQuickQuery('Give me the thermal preheat and startup procedure.');
   });
 
   const qEmergency = document.getElementById('quick-sop-emergency');
   if (qEmergency) qEmergency.addEventListener('click', () => {
-    const q = getCurrentLanguage() === 'tr'
-      ? 'SIL-2 acil güvenli duruş prosedürünü başlat.'
-      : 'Initiate SIL-2 emergency safe park trip.';
-    sendCopilotQuickQuery(q);
+    sendCopilotQuickQuery('Initiate SIL-2 emergency safe park trip.');
   });
 
   const btnReset3D = document.getElementById('btn-reset-3d-cam');
@@ -1746,10 +1686,7 @@ async function trainDRLEpisode() {
       body: JSON.stringify({ max_steps: 30 }),
     });
     const data = await res.json();
-    const alertMsg = getCurrentLanguage() === 'tr'
-      ? `PPO Eğitimi Bölüm ${data.episode} Tamamlandı:\n- Ödül: ${data.total_episode_reward}\n- Ortalama Sıcaklık Hatası: ${data.mean_temperature_error_c} °C\n- Durum: ${data.convergence_status}`
-      : `PPO Training Episode ${data.episode} Complete:\n- Reward: ${data.total_episode_reward}\n- Mean Temp Error: ${data.mean_temperature_error_c} °C\n- Status: ${data.convergence_status}`;
-    alert(alertMsg);
+    alert(`PPO Training Episode ${data.episode} Complete:\n- Reward: ${data.total_episode_reward}\n- Mean Temp Error: ${data.mean_temperature_error_c} °C\n- Status: ${data.convergence_status}`);
   } catch (err) {
     alert(`Training failed: ${err.message}`);
   } finally {
