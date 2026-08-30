@@ -21,7 +21,7 @@
         </div>
         <div class="brand-text">
           <h2>BIOPLANT AI</h2>
-          <span class="version-tag">V2.2 INDUSTRIAL IOT & EDGE</span>
+          <span class="version-tag">V2.5 FLEET & CARBON AI</span>
         </div>
       </div>
 
@@ -61,6 +61,10 @@
         <button class="nav-btn" data-tab="iot-tab" id="btn-tab-iot">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
           <span>Industrial IoT & Edge</span>
+        </button>
+        <button class="nav-btn" data-tab="fleet-tab" id="btn-tab-fleet">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span>Fleet & Carbon Trading</span>
         </button>
       </nav>
 
@@ -604,6 +608,114 @@
                   <tr><td colspan="5" style="text-align:center; padding:12px; color:var(--text-muted);">Click 'Poll Modbus' to fetch registers</td></tr>
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 10: MULTI-PLANT FLEET & CARBON ARBITRAGE -->
+      <section class="tab-pane" id="fleet-tab">
+        <div class="dashboard-grid">
+          <!-- Fleet Allocation & CORC Arbitrage Controls -->
+          <div class="glass-card control-card">
+            <div class="card-header">
+              <h3>CORC Carbon Market & Fleet Dispatch</h3>
+              <span class="badge badge-cyan" id="fleet-active-season">AUTUMN HARVEST PEAK</span>
+            </div>
+
+            <div class="control-group">
+              <label for="slider-corc-spot">Puro.earth CORC Spot Price: <strong id="disp-corc-spot">$65.0 / t CO2</strong></label>
+              <input type="range" id="slider-corc-spot" min="30" max="180" step="5" value="65" class="custom-range">
+            </div>
+
+            <div class="control-group">
+              <label for="slider-oil-spot">Bio-Oil Market Price: <strong id="disp-oil-spot">$0.65 / kg</strong></label>
+              <input type="range" id="slider-oil-spot" min="0.30" max="1.50" step="0.05" value="0.65" class="custom-range">
+            </div>
+
+            <div class="control-group">
+              <label>Seasonal Agricultural Dispatch</label>
+              <div style="display:flex; gap:6px;">
+                <button class="btn btn-secondary" id="btn-season-autumn" style="flex:1; font-size:0.75rem;">Autumn (Olive)</button>
+                <button class="btn btn-secondary" id="btn-season-summer" style="flex:1; font-size:0.75rem;">Summer (Straw)</button>
+                <button class="btn btn-secondary" id="btn-season-spring" style="flex:1; font-size:0.75rem;">Spring (Pine)</button>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label>Execute Arbitrage & Grid Optimization</label>
+              <div style="display:flex; gap:8px;">
+                <button class="btn btn-primary" id="btn-calc-corc" style="flex:1;">Run Arbitrage</button>
+                <button class="btn btn-secondary" id="btn-solar-dispatch" style="flex:1;">Solar 24h Sim</button>
+              </div>
+            </div>
+
+            <div class="work-order-card" style="margin-top:8px;" id="corc-decision-box">
+              <div style="font-weight:700; color:var(--primary-cyan);" id="corc-rec-mode">BALANCED_SUSTAINABILITY (490°C)</div>
+              <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;" id="corc-rec-rationale">Operating in balanced hybrid mode generates optimal combined biofuel and carbon removal revenue.</div>
+            </div>
+          </div>
+
+          <!-- Regional Plant Hubs Cards & Fleet Metrics -->
+          <div class="glass-card flowsheet-card">
+            <div class="card-header">
+              <h3>Decentralized Regional Plant Nodes (3 Active Hubs)</h3>
+              <span class="badge badge-success" id="fleet-oee-badge">FLEET OEE: 94.2%</span>
+            </div>
+
+            <!-- Fleet Aggregate KPIs -->
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-top:8px;">
+              <div class="metric-item">
+                <span class="m-title">Total Fleet Feed</span>
+                <span class="m-val text-cyan" id="fleet-total-feed">490.0 kg/h</span>
+                <span class="m-sub"><strong id="fleet-daily-feed">11.76 t/day</strong></span>
+              </div>
+              <div class="metric-item">
+                <span class="m-title">Combined Bio-Oil</span>
+                <span class="m-val" id="fleet-total-oil">6.45 m³/d</span>
+                <span class="m-sub">Revenue: <strong id="fleet-daily-rev">$4,250/d</strong></span>
+              </div>
+              <div class="metric-item">
+                <span class="m-title">Permanent CO2e Sinks</span>
+                <span class="m-val text-green" id="fleet-total-co2">13.52 t/d</span>
+                <span class="m-sub">CORC: <strong id="fleet-daily-corc">$878/d</strong></span>
+              </div>
+            </div>
+
+            <!-- 3 Plant Cards Grid -->
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-top:14px;" id="plant-nodes-grid">
+              <!-- Plant 1 -->
+              <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(0,240,255,0.2); border-radius:6px; padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:var(--primary-cyan); font-size:0.85rem;">Plant 01: Aegean</strong>
+                  <span class="badge badge-success" style="font-size:0.65rem;">ONLINE</span>
+                </div>
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Olive Pomace • 150 kg/h</div>
+                <div style="font-size:0.8rem; margin-top:6px;">Temp: <strong>500°C</strong> | OEE: <strong>94.5%</strong></div>
+                <div style="font-size:0.75rem; color:var(--primary-green); margin-top:4px;">+4.12 t CO2e/d sequestered</div>
+              </div>
+
+              <!-- Plant 2 -->
+              <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(0,255,136,0.2); border-radius:6px; padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:var(--primary-green); font-size:0.85rem;">Plant 02: Nordic</strong>
+                  <span class="badge badge-success" style="font-size:0.65rem;">ONLINE</span>
+                </div>
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Pine Sawdust • 220 kg/h</div>
+                <div style="font-size:0.8rem; margin-top:6px;">Temp: <strong>520°C</strong> | OEE: <strong>96.8%</strong></div>
+                <div style="font-size:0.75rem; color:var(--primary-green); margin-top:4px;">+5.95 t CO2e/d sequestered</div>
+              </div>
+
+              <!-- Plant 3 -->
+              <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,184,0,0.2); border-radius:6px; padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <strong style="color:var(--accent-amber); font-size:0.85rem;">Plant 03: Anatolia</strong>
+                  <span class="badge badge-success" style="font-size:0.65rem;">ONLINE</span>
+                </div>
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Wheat Straw • 120 kg/h</div>
+                <div style="font-size:0.8rem; margin-top:6px;">Temp: <strong>480°C</strong> | OEE: <strong>91.2%</strong></div>
+                <div style="font-size:0.75rem; color:var(--primary-green); margin-top:4px;">+3.45 t CO2e/d sequestered</div>
+              </div>
             </div>
           </div>
         </div>

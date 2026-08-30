@@ -15,7 +15,7 @@ def test_api_status_and_feedstocks() -> None:
     """Verify status and feedstock catalog API endpoints."""
     status = APIRequestHandler.handle_status()
     assert status["status"] == "ONLINE"
-    assert status["version"] == "2.2.0"
+    assert status["version"] == "2.5.0"
     assert "pine_sawdust" in status["available_feedstocks"]
 
     feedstocks = APIRequestHandler.handle_feedstocks()
@@ -143,7 +143,7 @@ def test_live_http_server_endpoints() -> None:
         with urllib.request.urlopen(req_status) as response:
             assert response.status == 200
             data = json.loads(response.read().decode())
-            assert data["version"] == "2.2.0"
+            assert data["version"] == "2.5.0"
             assert data["status"] == "ONLINE"
 
         # 2. Test GET / (HTML frontend static asset)

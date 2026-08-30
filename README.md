@@ -1,11 +1,12 @@
-# 🌿 AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V2.2)
+# 🌿 AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V2.5)
 
 <div align="center">
 
 [![CI](https://github.com/cagataykilicc/ai-biomass-plant/actions/workflows/ci.yml/badge.svg)](https://github.com/cagataykilicc/ai-biomass-plant/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Multi-Plant Fleet AI](https://img.shields.io/badge/Multi--Plant%20Fleet-3%20Regional%20Hubs%20%7C%20CORC%20Arbitrage-gold.svg)](src/fleet/)
 [![Industrial IoT](https://img.shields.io/badge/Industrial%20IoT-Modbus%20%7C%20MQTT%20%7C%20OPC--UA%20%7C%20HIL-9cf.svg)](src/iot/)
-[![Docker Container](https://img.shields.io/badge/Docker-Ready%20(v2.2.0)-2496ED.svg?logo=docker&logoColor=white)](Dockerfile)
+[![Docker Container](https://img.shields.io/badge/Docker-Ready%20(v2.5.0)-2496ED.svg?logo=docker&logoColor=white)](Dockerfile)
 [![Swagger OpenAPI](https://img.shields.io/badge/OpenAPI-3.0%20Swagger%20UI-85EA2D.svg?logo=swagger&logoColor=black)](http://127.0.0.1:8000/docs)
 [![Git LFS](https://img.shields.io/badge/Git%20LFS-Tracked%20Models-orange.svg)](https://git-lfs.com)
 [![Autonomous Platform](https://img.shields.io/badge/Autonomous%20Platform-AI%20Autopilot%20%26%20FSM-gold.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
@@ -14,13 +15,13 @@
 [![LCA Carbon Negative](https://img.shields.io/badge/LCA-ISO%2014040%2F14044%20Carbon%20Negative-darkgreen.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
 [![Process Control](https://img.shields.io/badge/Process%20Control-Dynamic%20MPC%20%26%20PID-blue.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
 [![Web Platform](https://img.shields.io/badge/Web%20Platform-Interactive%20Dark%20Glassmorphism-cyan.svg)](http://127.0.0.1:8000/)
-[![Tests](https://img.shields.io/badge/Tests-110%2F110%20Passed-brightgreen.svg)](https://github.com/cagataykilicc/ai-biomass-plant/actions)
+[![Tests](https://img.shields.io/badge/Tests-115%2F115%20Passed-brightgreen.svg)](https://github.com/cagataykilicc/ai-biomass-plant/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Author](https://img.shields.io/badge/Author-Çağatay%20Kılıç-blue.svg?logo=github)](https://github.com/cagataykilicc)
 
 **An industrial-grade, physics-informed digital twin, autonomous AI autopilot, and real-time operations platform for thermochemical biomass pyrolysis plants.**
 
-[Overview](#-1-system-overview) • [Screenshots](#-2-interactive-web-cockpit--screenshots) • [Architecture](#-3-system-architecture) • [Core Modules](#-4-the-8-operational-modules) • [Quick Start](#-5-quick-start--installation) • [Docker](#-6-docker-deployment) • [REST & Swagger API](#-7-rest-api--swagger-documentation) • [Tutorials](#-8-interactive-jupyter-tutorial-suite) • [Industrial IoT](#-9-industrial-iot--edge-gateways) • [Roadmap](ROADMAP.md) • [Author](#-11-author--maintainer)
+[Overview](#-1-system-overview) • [Screenshots](#-2-interactive-web-cockpit--screenshots) • [Architecture](#-3-system-architecture) • [Core Modules](#-4-the-8-operational-modules) • [Quick Start](#-5-quick-start--installation) • [Docker](#-6-docker-deployment) • [REST & Swagger API](#-7-rest-api--swagger-documentation) • [Tutorials](#-8-interactive-jupyter-tutorial-suite) • [Industrial IoT](#-9-industrial-iot--edge-gateways) • [Fleet & Carbon AI](#-10-multi-plant-fleet--carbon-arbitrage-version-25) • [Roadmap](ROADMAP.md) • [Author](#-12-author--maintainer)
 
 </div>
 
@@ -178,7 +179,10 @@ The platform provides a secure zero-dependency multithreaded REST server with bu
 | **`GET`** | **`/docs`** | Interactive OpenAPI Swagger UI 5.x documentation |
 | **`GET`** | **`/redoc`** | ReDoc responsive API documentation |
 | **`GET`** | **`/openapi.json`** | Machine-readable OpenAPI 3.0.3 specification JSON |
-| **`GET`** | **`/api/status`** | System health status, version `2.2.0`, and active module availability |
+| **`GET`** | **`/docs`** | Interactive OpenAPI Swagger UI 5.x documentation |
+| **`GET`** | **`/redoc`** | ReDoc responsive API documentation |
+| **`GET`** | **`/openapi.json`** | Machine-readable OpenAPI 3.0.3 specification JSON |
+| **`GET`** | **`/api/status`** | System health status, version `2.5.0`, and active module availability |
 | **`GET`** | **`/api/feedstocks`** | Proximate and ultimate analysis catalog (Olive Pomace, Pine, Straw, Husk) |
 | **`POST`** | **`/api/simulate`** | Executes digital twin flowsheet simulation (Deterministic or ML) |
 | **`POST`** | **`/api/autopilot/step`** | Advances closed-loop autonomous autopilot FSM by one step |
@@ -194,6 +198,10 @@ The platform provides a secure zero-dependency multithreaded REST server with bu
 | **`POST`** | **`/api/iot/modbus/write`** | Writes 16-bit word to Holding Register or boolean state to Coil |
 | **`POST`** | **`/api/iot/mqtt/publish`** | Publishes Sparkplug B payload (`DBIRTH`, `DDATA`) or handles `NCMD` commands |
 | **`POST`** | **`/api/iot/hil/step`** | Simulates 4-20mA current loop ADC conversion with NAMUR NE 43 fault injection |
+| **`GET`** | **`/api/fleet/status`** | Aggregated fleet KPIs and real-time status of 3 regional plant nodes |
+| **`POST`** | **`/api/fleet/dispatch`** | Dispatches remote setpoint targets or executes seasonal harvest scheduling |
+| **`POST`** | **`/api/fleet/corc-arbitrage`** | Calculates optimal reactor temp and gross margins from spot CORC market pricing |
+| **`POST`** | **`/api/fleet/renewable-dispatch`** | Optimizes 24-hour Solar PV generation and TOU grid tariff load-shifting balance |
 
 ### Example API Request (curl)
 ```bash
@@ -238,18 +246,34 @@ BIOPLANT AI integrates standard industrial edge communication protocols to inter
 
 ---
 
-## 🗺️ 10. Product & Engineering Roadmap
+## 🏭 10. Multi-Plant Fleet & Carbon Arbitrage (Version 2.5)
+
+BIOPLANT AI scales from single-facility operations to regional multi-plant fleet management and voluntary carbon credit arbitrage:
+
+* **Decentralized Regional Fleet Orchestrator ([`src/fleet/fleet_manager.py`](src/fleet/fleet_manager.py))**:
+  - Coordinates 3 distributed production nodes (*Plant 01: Aegean Olive Pomace Hub*, *Plant 02: Nordic Forestry Pine Hub*, *Plant 03: Anatolian Cereal Residue Hub*).
+  - Dynamically balances plant feed rates against seasonal harvest peaks (Autumn Olive harvest vs. Summer Cereal harvest).
+  - Aggregates fleet-wide throughput ($11.76\text{ t/d}$), bio-oil output ($6.45\text{ m}^3\text{/d}$), permanent carbon sinks ($13.52\text{ t CO}_2\text{e/d}$), and fleet OEE ($94.2\%$).
+* **Real-Time CORC Carbon Arbitrage Engine ([`src/fleet/corc_trader.py`](src/fleet/corc_trader.py))**:
+  - Monitors voluntary carbon market spot tickers (Puro.earth / Verra CORC $\$40 - \$180\text{/t CO}_2$).
+  - Evaluates gross margin trade-offs between liquid biofuel sales and permanent biochar carbon removal credits, automatically recommending optimal reactor temperature setpoints ($420^\circ\text{C}$ for maximum carbon removal vs. $530^\circ\text{C}$ for maximum bio-oil).
+* **Hybrid Solar PV & TOU Grid Dispatch ([`src/fleet/renewable_coupling.py`](src/fleet/renewable_coupling.py))**:
+  - 24-hour microgrid power balancer shifting electric biomass drying and auxiliary heater loads to peak solar generation hours ($10:00 - 15:00$), saving up to thousands in annual electricity bills.
+
+---
+
+## 🗺️ 11. Product & Engineering Roadmap
 
 Detailed milestone planning, architectural specifications, and release timelines are documented in [**ROADMAP.md**](ROADMAP.md):
 
 * **`V2.1` (Completed)**: Dockerization & Compose, Interactive OpenAPI Swagger `/docs`, ReDoc, and 4-Part Jupyter Tutorial Suite.
 * **`V2.2` (Completed)**: Industrial IoT protocol bridges (Modbus TCP, MQTT Sparkplug B, OPC-UA), Hardware-in-the-Loop (HIL), and real-time register monitoring.
-* **`V2.5` (Fleet & Market AI)**: Multi-reactor regional fleet dispatching, dynamic CORC carbon credit arbitrage, and hybrid renewable grid integration.
+* **`V2.5` (Completed)**: Multi-reactor regional fleet dispatching, dynamic CORC carbon credit arbitrage, and hybrid renewable grid integration.
 * **`V3.0` (Next-Gen AI & Spatial Twin)**: Deep Reinforcement Learning (PPO/SAC Gym), Three.js 3D WebGL Holographic Spatial Twin, and Generative AI SCADA Operator Copilot.
 
 ---
 
-## 👨‍💻 11. Author & Maintainer
+## 👨‍💻 12. Author & Maintainer
 
 <table align="center">
   <tr>
@@ -274,6 +298,6 @@ Detailed milestone planning, architectural specifications, and release timelines
 
 ---
 
-## 📜 12. License
+## 📜 13. License
 
 This project is licensed under the terms of the **MIT License**. See the [LICENSE](LICENSE) file for complete details.

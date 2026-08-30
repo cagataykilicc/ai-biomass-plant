@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initEconomicsHandlers();
   initAutopilotHandlers();
   initIoTHandlers();
+  initFleetHandlers();
 
   // Run initial simulation on load
   runSimulation();
@@ -67,6 +68,7 @@ function initNavigation() {
           else if (targetTab === 'economics-tab') runEconomics();
           else if (targetTab === 'autopilot-tab') stepAutopilot();
           else if (targetTab === 'iot-tab') pollModbusRegisters();
+          else if (targetTab === 'fleet-tab') loadFleetStatus();
         }, 10);
       }
     });
@@ -136,6 +138,22 @@ function initSliders() {
   if (sliderApMoist && dispApMoist) {
     sliderApMoist.addEventListener('input', (e) => {
       dispApMoist.textContent = `${e.target.value} %`;
+    });
+  }
+
+  const sliderCorc = document.getElementById('slider-corc-spot');
+  const dispCorc = document.getElementById('disp-corc-spot');
+  if (sliderCorc && dispCorc) {
+    sliderCorc.addEventListener('input', (e) => {
+      dispCorc.textContent = `$${parseFloat(e.target.value).toFixed(1)} / t CO2`;
+    });
+  }
+
+  const sliderOil = document.getElementById('slider-oil-spot');
+  const dispOil = document.getElementById('disp-oil-spot');
+  if (sliderOil && dispOil) {
+    sliderOil.addEventListener('input', (e) => {
+      dispOil.textContent = `$${parseFloat(e.target.value).toFixed(2)} / kg`;
     });
   }
 }
@@ -1001,5 +1019,111 @@ function updateHILScope(data) {
     const elAdc = document.getElementById('hil-adc-ai4');
     if (el) el.textContent = `${chs.AI_4.current_ma.toFixed(2)} mA`;
     if (elAdc) elAdc.textContent = `${chs.AI_4.adc_12bit} cts (${chs.AI_4.voltage_v.toFixed(2)}V)`;
+  }
+}
+
+/* =========================================================================
+ * Tab 10: Multi-Plant Fleet & Carbon Trading Controller
+ * ========================================================================= */
+function initFleetHandlers() {
+  const btnCalcCorc = document.getElementById('btn-calc-corc');
+  if (btnCalcCorc) btnCalcCorc.addEventListener('click', runCORCArbitrage);
+
+  const btnSolar = document.getElementById('btn-solar-dispatch');
+  if (btnSolar) btnSolar.addEventListener('click', runSolarDispatch);
+
+  const btnAutumn = document.getElementById('btn-season-autumn');
+  if (btnAutumn) btnAutumn.addEventListener('click', () => dispatchSeason('AUTUMN'));
+
+  const btnSummer = document.getElementById('btn-season-summer');
+  if (btnSummer) btnSummer.addEventListener('click', () => dispatchSeason('SUMMER'));
+
+  const btnSpring = document.getElementById('btn-season-spring');
+  if (btnSpring) btnSpring.addEventListener('click', () => dispatchSeason('SPRING'));
+}
+
+async function loadFleetStatus() {
+  try {
+    const res = await fetch('/api/fleet/status', {
+      headers: apiHeaders(),
+    });
+    const data = await res.json();
+    updateFleetUI(data);
+  } catch (err) {
+    console.error('Failed to load fleet status:', err);
+  }
+}
+
+function updateFleetUI(data) {
+  const kpis = data.fleet_kpis || {};
+  const feedEl = document.getElementById('fleet-total-feed');
+  if (feedEl) feedEl.textContent = `${kpis.total_current_throughput_kg_h.toFixed(1)} kg/h`;
+
+  const dailyFeedEl = document.getElementById('fleet-daily-feed');
+  if (dailyFeedEl) dailyFeedEl.textContent = `${kpis.daily_aggregated_feed_tonnes.toFixed(2)} t/day`;
+
+  const oilEl = document.getElementById('fleet-total-oil');
+  if (oilEl) oilEl.textContent = `${kpis.daily_aggregated_bio_oil_m3.toFixed(2)} m³/d`;
+
+  const co2El = document.getElementById('fleet-total-co2');
+  if (co2El) co2El.textContent = `${kpis.daily_permanent_co2e_sinks_tonnes.toFixed(2)} t/d`;
+
+  const oeeEl = document.getElementById('fleet-oee-badge');
+  if (oeeEl) oeeEl.textContent = `FLEET OEE: ${kpis.fleet_average_oee_pct.toFixed(1)}%`;
+}
+
+async function dispatchSeason(seasonName) {
+  try {
+    const res = await fetch('/api/fleet/dispatch', {
+      method: 'POST',
+      headers: apiHeaders(),
+      body: JSON.stringify({ season: seasonName }),
+    });
+    const data = await res.json();
+    const seasonEl = document.getElementById('fleet-active-season');
+    if (seasonEl) seasonEl.textContent = `${seasonName} HARVEST SCHEDULE`;
+    if (data.fleet_summary) updateFleetUI(data.fleet_summary);
+    alert(`Seasonal Harvest Allocation updated for ${seasonName}. Throughput dynamically balanced.`);
+  } catch (err) {
+    alert(`Failed to dispatch season: ${err.message}`);
+  }
+}
+
+async function runCORCArbitrage() {
+  const corcPrice = parseFloat(document.getElementById('slider-corc-spot')?.value || 65.0);
+  const oilPrice = parseFloat(document.getElementById('slider-oil-spot')?.value || 0.65);
+
+  try {
+    const res = await fetch('/api/fleet/corc-arbitrage', {
+      method: 'POST',
+      headers: apiHeaders(),
+      body: JSON.stringify({
+        corc_price: corcPrice,
+        oil_price: oilPrice,
+        feed_rate_kg_h: 100.0,
+      }),
+    });
+    const data = await res.json();
+    const modeEl = document.getElementById('corc-rec-mode');
+    const ratEl = document.getElementById('corc-rec-rationale');
+    if (modeEl) modeEl.textContent = `${data.recommended_mode} (${data.optimal_setpoint_temp_c}°C)`;
+    if (ratEl) ratEl.textContent = `${data.decision_rationale} | Projected Revenue: $${data.projected_hourly_revenue_usd.toFixed(2)}/h`;
+  } catch (err) {
+    alert(`Arbitrage calculation failed: ${err.message}`);
+  }
+}
+
+async function runSolarDispatch() {
+  try {
+    const res = await fetch('/api/fleet/renewable-dispatch', {
+      method: 'POST',
+      headers: apiHeaders(),
+      body: JSON.stringify({ shift_loads: true }),
+    });
+    const data = await res.json();
+    const m = data.daily_metrics || {};
+    alert(`24h Solar Dispatch Optimized:\n- Solar Generated: ${m.total_solar_generated_kwh} kWh\n- Grid Import: ${m.total_grid_imported_kwh} kWh\n- Daily Savings: $${m.daily_cost_savings_usd}\n- Projected Annual Savings: $${m.projected_annual_power_savings_usd.toLocaleString()}/yr`);
+  } catch (err) {
+    alert(`Solar dispatch failed: ${err.message}`);
   }
 }

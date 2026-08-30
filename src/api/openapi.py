@@ -18,7 +18,7 @@ def get_openapi_spec() -> Dict[str, Any]:
                 "Pareto optimization, tri-layer fault diagnostics, 20-year DCF techno-economics, "
                 "ISO 14040/14044 LCA carbon accounting, and 5-State Autonomous Autopilot supervision."
             ),
-            "version": "2.2.0",
+            "version": "2.5.0",
             "contact": {
                 "name": "Çağatay Kılıç",
                 "url": "https://github.com/cagataykilicc/ai-biomass-plant",
@@ -344,6 +344,46 @@ def get_openapi_spec() -> Dict[str, Any]:
                     "description": "Converts twin telemetry into 4-20mA current loops and 12-bit ADC quantization counts with fault injection.",
                     "responses": {
                         "200": {"description": "HIL analog channels and GPIO pin status"},
+                        "401": {"description": "Unauthorized"},
+                    },
+                }
+            },
+            "/api/fleet/status": {
+                "get": {
+                    "summary": "Regional Multi-Plant Fleet Status & KPIs",
+                    "description": "Returns operational status, utilization, OEE, daily throughput, bio-oil, and carbon sinks across all decentralized plant nodes.",
+                    "responses": {
+                        "200": {"description": "Fleet KPIs and plant node metrics"},
+                        "401": {"description": "Unauthorized"},
+                    },
+                }
+            },
+            "/api/fleet/dispatch": {
+                "post": {
+                    "summary": "Dispatch Fleet Setpoints or Seasonal Harvest Optimization",
+                    "description": "Allocates throughput setpoints across regional hubs based on seasonal agricultural biomass availability.",
+                    "responses": {
+                        "200": {"description": "Fleet dispatch schedule updated"},
+                        "401": {"description": "Unauthorized"},
+                    },
+                }
+            },
+            "/api/fleet/corc-arbitrage": {
+                "post": {
+                    "summary": "Evaluate Dynamic CORC Carbon Credit Arbitrage",
+                    "description": "Calculates revenue trade-offs across bio-oil and permanent carbon removal credits based on spot market prices.",
+                    "responses": {
+                        "200": {"description": "Optimal pyrolysis temperature and arbitrage revenue breakdown"},
+                        "401": {"description": "Unauthorized"},
+                    },
+                }
+            },
+            "/api/fleet/renewable-dispatch": {
+                "post": {
+                    "summary": "Compute Hybrid Solar PV & TOU Grid Energy Balance",
+                    "description": "Optimizes 24-hour microgrid power dispatch, shifting drying and auxiliary electric loads to peak solar generation.",
+                    "responses": {
+                        "200": {"description": "24-Hour hourly power schedule and annual cost savings"},
                         "401": {"description": "Unauthorized"},
                     },
                 }

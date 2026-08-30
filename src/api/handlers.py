@@ -78,7 +78,7 @@ class APIRequestHandler:
         """System status and module availability."""
         return {
             "status": "ONLINE",
-            "version": "2.2.0",
+            "version": "2.5.0",
             "modules": {
                 "thermodynamic_flowsheet": "ACTIVE",
                 "ml_yield_surrogate": "ACTIVE",
@@ -476,3 +476,63 @@ class APIRequestHandler:
             hil.inject_hardware_fault(str(data["fault_channel"]), str(data["fault_type"]))
 
         return hil.step_hardware_signals(telemetry, pulse_jet_command=pulse_jet)
+
+    _fleet_manager = None
+    _corc_trader = None
+    _renewable_dispatcher = None
+
+    @classmethod
+    def _get_fleet_instances(cls):
+        from src.fleet.fleet_manager import RegionalFleetManager
+        from src.fleet.corc_trader import CORCArbitrageEngine
+        from src.fleet.renewable_coupling import RenewableGridDispatcher
+
+        if cls._fleet_manager is None:
+            cls._fleet_manager = RegionalFleetManager()
+        if cls._corc_trader is None:
+            cls._corc_trader = CORCArbitrageEngine()
+        if cls._renewable_dispatcher is None:
+            cls._renewable_dispatcher = RenewableGridDispatcher()
+        return cls._fleet_manager, cls._corc_trader, cls._renewable_dispatcher
+
+    @classmethod
+    def handle_fleet_status(cls) -> Dict[str, Any]:
+        """Return operational KPIs and status across all regional plant nodes."""
+        fm, _, _ = cls._get_fleet_instances()
+        return fm.get_fleet_summary()
+
+    @classmethod
+    def handle_fleet_dispatch(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Dispatch setpoints or execute seasonal harvest scheduling."""
+        fm, _, _ = cls._get_fleet_instances()
+        if "season" in data:
+            return fm.optimize_seasonal_harvest_schedule(str(data["season"]))
+        
+        plant_id = str(data.get("plant_id", "PLANT_01"))
+        setpoints = data.get("setpoints", {})
+        return fm.dispatch_plant_setpoint(plant_id, setpoints)
+
+    @classmethod
+    def handle_corc_arbitrage(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Evaluate carbon removal (CORC) price arbitrage against bio-oil revenues."""
+        from src.fleet.corc_trader import CarbonMarketQuote, CORCArbitrageEngine
+        corc_p = _parse_bounded_float(data, "corc_price", 65.0, 0.0, 5000.0)
+        oil_p = _parse_bounded_float(data, "oil_price", 0.65, 0.0, 1000.0)
+        char_p = _parse_bounded_float(data, "char_price", 0.45, 0.0, 1000.0)
+        feed_rate = _parse_bounded_float(data, "feed_rate_kg_h", 100.0, 0.1, 100000.0)
+        feedstock = str(data.get("feedstock", "olive_pomace"))
+
+        quote = CarbonMarketQuote(
+            spot_corc_usd_tonne=corc_p,
+            bio_oil_usd_kg=oil_p,
+            biochar_usd_kg=char_p,
+        )
+        trader = CORCArbitrageEngine(quote)
+        return trader.evaluate_arbitrage_modes(feed_rate_kg_h=feed_rate, feedstock=feedstock)
+
+    @classmethod
+    def handle_renewable_dispatch(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Compute 24-hour solar PV and TOU grid tariff energy dispatch."""
+        _, _, rnd = cls._get_fleet_instances()
+        shift_loads = bool(data.get("shift_loads", True))
+        return rnd.compute_24h_dispatch(shift_loads_to_solar=shift_loads)

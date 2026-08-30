@@ -68,36 +68,43 @@ timeline
 - [x] **HIL Hardware Simulator**: 4.0 - 20.0 mA transmitter current loop scaling, 12-bit ADC quantization, and NAMUR NE 43 circuit fault injection.
 - [x] **Test Coverage**: 110 automated unit and integration tests passing (`100% pass rate`).
 
+### 🔹 V2.5: Multi-Plant Fleet Orchestration & CORC Carbon Arbitrage
+- [x] **Regional Fleet Manager**: Centralized orchestration across 3 agricultural hubs (Aegean Olive, Nordic Pine, Anatolian Straw) with dynamic seasonal harvest balancing.
+- [x] **Dynamic CORC Arbitrage**: Real-time Puro.earth / Verra spot market ticker ($40 - $180/t CO2) and automatic pyrolysis yield setpoint switching.
+- [x] **Hybrid Solar & TOU Grid Dispatch**: 24-hour microgrid power optimization shifting drying loads to solar generation hours.
+- [x] **Test Coverage**: 115 automated unit and integration tests passing (`100% pass rate`).
+
 </details>
 
 ---
 
-## 🚀 Future Development Roadmap (V2.5 – V3.0+)
+## 🚀 Future Development Roadmap (V3.0+)
 
 ```
   ┌────────────────────────────────────────────────────────────────────────┐
   │                           PHASED ROADMAP                               │
-  ├───────────────────────────────────┬────────────────────────────────────┤
-  │   V2.5 Fleet & Grid AI (Q2)       │   V3.0 Next-Gen Twin (Q3-Q4)       │
-  │   - Multi-Plant Dispatch          │   - Deep RL (PPO/SAC Transients)   │
-  │   - Dynamic CORC Market Trading   │   - 3D WebGL Holographic (Three.js)│
-  │   - Hybrid Renewable Grid Storage │   - Generative AI SCADA Copilot    │
-  └───────────────────────────────────┴────────────────────────────────────┘
+  ├────────────────────────────────────────────────────────────────────────┤
+  │   V3.0 Next-Gen AI & Spatial Twin (Q3-Q4)                              │
+  │   - Deep Reinforcement Learning (PPO / SAC Non-Linear Transient Gym)   │
+  │   - 3D WebGL Holographic Spatial Twin (Three.js WebGL Engine)          │
+  │   - Generative AI SCADA Operator Copilot (Multi-Modal LLM Assistant)   │
+  └────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-### 🌐 Phase 3: Multi-Plant Fleet & Carbon Market Optimization (Version 2.5)
-**Goal:** Scale from a single plant to regional multi-reactor decentralized fleet management and carbon trading.
+### 🧠 Phase 4: Next-Gen AI & Spatial Digital Twin (Version 3.0)
+**Goal:** Advance autonomy with Deep RL non-linear control, 3D WebGL spatial visualization, and interactive GenAI engineering copilot.
 
-- [ ] **Decentralized Multi-Reactor Fleet Orchestrator**:
-  - Centralized dashboard coordinating multiple distributed pyrolysis plants across different biomass collection hubs.
-  - Load balancing feed rates based on local agricultural harvest seasons (e.g., olive harvest vs. wheat harvesting).
-- [ ] **Real-Time Dynamic Carbon Credit (CORC) Arbitrage**:
-  - Real-time API integration with Puro.earth / Verra voluntary carbon marketplaces.
-  - Autonomous setpoint optimization switching between bio-oil profit maximization and biochar permanent carbon removal maximization based on spot carbon credit pricing.
-- [ ] **Hybrid Renewable Grid Integration**:
-  - Model coupling with on-site Solar PV, wind turbines, and industrial thermal energy storage (TES) to minimize grid power costs during peak electricity tariff hours.
+- [ ] **Deep Reinforcement Learning (DRL) Non-Linear Transient Gym**:
+  - Implement Gymnasium-compatible industrial biomass plant environment (`BioPlant-v1`).
+  - Train Soft Actor-Critic (SAC) and Proximal Policy Optimization (PPO) neural policies handling sudden feedstock moisture surges (+15%) and emergency gas flame loss without human operator intervention.
+- [ ] **3D WebGL Holographic Spatial Twin (Three.js)**:
+  - Interactive 3D spatial model of the biomass conversion plant (Fluidized Bed Reactor, Cyclone, Heat Exchangers, Condenser, Biochar Hopper).
+  - Real-time heat-map temperature particle effects, fluid flow particle animations, and clickable 3D asset telemetry inspection.
+- [ ] **Generative AI SCADA Operator Copilot**:
+  - LLM-powered industrial assistant fine-tuned on plant engineering P&ID drawings, SOP manuals, and historical maintenance incident logs.
+  - Interactive natural-language command dispatching (e.g. *"Diagnose the pressure drop in Cyclone CY-101 and recommend safe mitigation setpoints"*).
 
 ---
 

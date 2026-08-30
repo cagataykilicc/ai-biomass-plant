@@ -19,7 +19,7 @@ from src.api.openapi import get_openapi_spec, get_swagger_ui_html, get_redoc_htm
 class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
     """Handles REST API calls and serves modern static Web GUI assets."""
 
-    server_version = "DigitalTwinHTTP/2.2"
+    server_version = "DigitalTwinHTTP/2.5"
 
     def _set_cors_headers(self, content_type: str = "application/json") -> None:
         self.send_header("Content-Type", content_type)
@@ -90,6 +90,21 @@ class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
 
                 if path == "/api/iot/modbus/read":
                     res = APIRequestHandler.handle_modbus_read()
+                    self._send_json(200, res)
+                    return
+
+                if path == "/api/fleet/status":
+                    res = APIRequestHandler.handle_fleet_status()
+                    self._send_json(200, res)
+                    return
+
+                if path == "/api/fleet/corc-arbitrage":
+                    res = APIRequestHandler.handle_corc_arbitrage({})
+                    self._send_json(200, res)
+                    return
+
+                if path == "/api/fleet/renewable-dispatch":
+                    res = APIRequestHandler.handle_renewable_dispatch({})
                     self._send_json(200, res)
                     return
 
@@ -166,6 +181,18 @@ class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
                 self._send_json(200, res)
             elif path == "/api/iot/hil/step":
                 res = APIRequestHandler.handle_hil_step(data)
+                self._send_json(200, res)
+            elif path == "/api/fleet/status":
+                res = APIRequestHandler.handle_fleet_status()
+                self._send_json(200, res)
+            elif path == "/api/fleet/dispatch":
+                res = APIRequestHandler.handle_fleet_dispatch(data)
+                self._send_json(200, res)
+            elif path == "/api/fleet/corc-arbitrage":
+                res = APIRequestHandler.handle_corc_arbitrage(data)
+                self._send_json(200, res)
+            elif path == "/api/fleet/renewable-dispatch":
+                res = APIRequestHandler.handle_renewable_dispatch(data)
                 self._send_json(200, res)
             else:
                 self._send_json(404, {"error": f"Endpoint not found: {path}", "endpoint": path})
