@@ -15,10 +15,27 @@ document.addEventListener('DOMContentLoaded', () => {
   initIoTHandlers();
   initFleetHandlers();
   initV3Handlers();
+  initLanguageSwitcher();
 
   // Run initial simulation on load
   runSimulation();
 });
+
+function initLanguageSwitcher() {
+  const langBtns = document.querySelectorAll('.btn-lang');
+  langBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lang = btn.getAttribute('data-lang');
+      if (typeof setLanguage === 'function') {
+        setLanguage(lang);
+      }
+    });
+  });
+
+  if (typeof setLanguage === 'function' && typeof getCurrentLanguage === 'function') {
+    setLanguage(getCurrentLanguage());
+  }
+}
 
 function getApiKey() {
   const urlParams = new URLSearchParams(window.location.search);

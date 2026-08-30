@@ -23,9 +23,9 @@ class CopilotKnowledgeBase:
         self.documents: List[EngineeringDocument] = [
             EngineeringDocument(
                 doc_id="SOP-101",
-                title="Reactor Startup & Thermal Pre-Heating",
+                title="Reactor Startup & Thermal Pre-Heating / Reaktör Başlatma ve Ön Isıtma",
                 category="SOP",
-                keywords=["startup", "preheat", "ignition", "nitrogen", "fluidization"],
+                keywords=["startup", "preheat", "ignition", "nitrogen", "fluidization", "başlatma", "ön ısıtma", "ateşleme", "azot", "akışkanlaşma"],
                 content=(
                     "1. Verify carrier N2 flow >= 15.0 Nm3/h.\n"
                     "2. Ignite auxiliary burner B-101 and ramp reactor temp TI-103 at <= 5.0 °C/min.\n"
@@ -35,9 +35,9 @@ class CopilotKnowledgeBase:
             ),
             EngineeringDocument(
                 doc_id="SOP-204",
-                title="Cyclone DP Spikes & Pulse-Jet Blowback Clearing",
+                title="Cyclone DP Spikes & Pulse-Jet Blowback Clearing / Siklon Basınç Farkı ve Geri Üfleme",
                 category="TROUBLESHOOTING",
-                keywords=["cyclone", "pressure drop", "dp", "blockage", "pulse jet", "clog"],
+                keywords=["cyclone", "pressure drop", "dp", "blockage", "pulse jet", "clog", "siklon", "basınç", "fark", "tıkanma", "geri üfleme"],
                 content=(
                     "1. If cyclone DP (PI-102) exceeds 25.0 mbar, trigger pulsed N2 blowback valve XV-105.\n"
                     "2. Apply 3 pulses (6.0 bar N2 reservoir, 1.5s duration, 8s interval).\n"
@@ -47,9 +47,9 @@ class CopilotKnowledgeBase:
             ),
             EngineeringDocument(
                 doc_id="SOP-305",
-                title="Moisture Surge Disturbance Compensation",
+                title="Moisture Surge Disturbance Compensation / Nem Dalgalanması ve Bozulma Dengeleme",
                 category="TROUBLESHOOTING",
-                keywords=["moisture", "water", "wet", "temperature drop", "cold feed", "feedstock"],
+                keywords=["moisture", "water", "wet", "temperature drop", "cold feed", "feedstock", "nem", "ıslak", "su", "sıcaklık düşüşü", "hammadde"],
                 content=(
                     "1. When feedstock moisture surges from 10% to > 18%, reactor temp TI-103 drops rapidly.\n"
                     "2. The AI Autopilot immediately ramps burner duty +15% and increases rotary dryer heat.\n"
@@ -58,9 +58,9 @@ class CopilotKnowledgeBase:
             ),
             EngineeringDocument(
                 doc_id="SOP-400",
-                title="SIL-2 Emergency Safe Park Protocol",
+                title="SIL-2 Emergency Safe Park Protocol / SIL-2 Acil Güvenli Duruş Protokolü",
                 category="SAFETY_SIL2",
-                keywords=["emergency", "safe park", "trip", "overtemp", "flame failure", "shutdown"],
+                keywords=["emergency", "safe park", "trip", "overtemp", "flame failure", "shutdown", "acil", "duruş", "güvenli park", "kapatma", "trip"],
                 content=(
                     "1. Immediate emergency stop: Trip feed screw FT-101 and isolate burner fuel valve PY-101.\n"
                     "2. Flood reactor bed with high-volume N2 purge (35 Nm3/h) to inert flammable pyrolysis vapors.\n"
@@ -70,9 +70,9 @@ class CopilotKnowledgeBase:
             ),
             EngineeringDocument(
                 doc_id="TAG-INDEX",
-                title="Process Instrumentation & P&ID Loop Directory",
+                title="Process Instrumentation & P&ID Loop Directory / Enstrümantasyon Dizini",
                 category="PID_TAG",
-                keywords=["tags", "instrumentation", "ti-103", "pi-102", "ft-101", "py-101", "p&id"],
+                keywords=["tags", "instrumentation", "ti-103", "pi-102", "ft-101", "py-101", "p&id", "etiketler", "sensörler"],
                 content=(
                     "- TI-103: Fluidized Bed Thermocouple (0 - 800 °C, 4-20mA, SIL-2)\n"
                     "- PI-102: Cyclone Differential Pressure Transmitter (0 - 50 mbar, 4-20mA)\n"
