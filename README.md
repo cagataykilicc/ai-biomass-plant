@@ -1,12 +1,13 @@
-# 🌿 AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V2.5)
+# 🌿 AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V3.0)
 
 <div align="center">
 
 [![CI](https://github.com/cagataykilicc/ai-biomass-plant/actions/workflows/ci.yml/badge.svg)](https://github.com/cagataykilicc/ai-biomass-plant/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Next-Gen AI](https://img.shields.io/badge/Next--Gen%20AI-Deep%20RL%20%7C%203D%20Spatial%20%7C%20GenAI%20Copilot-magenta.svg)](src/drl/)
 [![Multi-Plant Fleet AI](https://img.shields.io/badge/Multi--Plant%20Fleet-3%20Regional%20Hubs%20%7C%20CORC%20Arbitrage-gold.svg)](src/fleet/)
 [![Industrial IoT](https://img.shields.io/badge/Industrial%20IoT-Modbus%20%7C%20MQTT%20%7C%20OPC--UA%20%7C%20HIL-9cf.svg)](src/iot/)
-[![Docker Container](https://img.shields.io/badge/Docker-Ready%20(v2.5.0)-2496ED.svg?logo=docker&logoColor=white)](Dockerfile)
+[![Docker Container](https://img.shields.io/badge/Docker-Ready%20(v3.0.0)-2496ED.svg?logo=docker&logoColor=white)](Dockerfile)
 [![Swagger OpenAPI](https://img.shields.io/badge/OpenAPI-3.0%20Swagger%20UI-85EA2D.svg?logo=swagger&logoColor=black)](http://127.0.0.1:8000/docs)
 [![Git LFS](https://img.shields.io/badge/Git%20LFS-Tracked%20Models-orange.svg)](https://git-lfs.com)
 [![Autonomous Platform](https://img.shields.io/badge/Autonomous%20Platform-AI%20Autopilot%20%26%20FSM-gold.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
@@ -15,13 +16,13 @@
 [![LCA Carbon Negative](https://img.shields.io/badge/LCA-ISO%2014040%2F14044%20Carbon%20Negative-darkgreen.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
 [![Process Control](https://img.shields.io/badge/Process%20Control-Dynamic%20MPC%20%26%20PID-blue.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
 [![Web Platform](https://img.shields.io/badge/Web%20Platform-Interactive%20Dark%20Glassmorphism-cyan.svg)](http://127.0.0.1:8000/)
-[![Tests](https://img.shields.io/badge/Tests-115%2F115%20Passed-brightgreen.svg)](https://github.com/cagataykilicc/ai-biomass-plant/actions)
+[![Tests](https://img.shields.io/badge/Tests-120%2F120%20Passed-brightgreen.svg)](https://github.com/cagataykilicc/ai-biomass-plant/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Author](https://img.shields.io/badge/Author-Çağatay%20Kılıç-blue.svg?logo=github)](https://github.com/cagataykilicc)
 
 **An industrial-grade, physics-informed digital twin, autonomous AI autopilot, and real-time operations platform for thermochemical biomass pyrolysis plants.**
 
-[Overview](#-1-system-overview) • [Screenshots](#-2-interactive-web-cockpit--screenshots) • [Architecture](#-3-system-architecture) • [Core Modules](#-4-the-8-operational-modules) • [Quick Start](#-5-quick-start--installation) • [Docker](#-6-docker-deployment) • [REST & Swagger API](#-7-rest-api--swagger-documentation) • [Tutorials](#-8-interactive-jupyter-tutorial-suite) • [Industrial IoT](#-9-industrial-iot--edge-gateways) • [Fleet & Carbon AI](#-10-multi-plant-fleet--carbon-arbitrage-version-25) • [Roadmap](ROADMAP.md) • [Author](#-12-author--maintainer)
+[Overview](#-1-system-overview) • [Screenshots](#-2-interactive-web-cockpit--screenshots) • [Architecture](#-3-system-architecture) • [Core Modules](#-4-the-8-operational-modules) • [Quick Start](#-5-quick-start--installation) • [Docker](#-6-docker-deployment) • [REST & Swagger API](#-7-rest-api--swagger-documentation) • [Tutorials](#-8-interactive-jupyter-tutorial-suite) • [Industrial IoT](#-9-industrial-iot--edge-gateways) • [Fleet & Carbon AI](#-10-multi-plant-fleet--carbon-arbitrage-version-25) • [Next-Gen AI & 3D Twin](#-11-next-gen-ai-deep-rl-3d-spatial-twin--genai-copilot-version-30) • [Roadmap](ROADMAP.md) • [Author](#-13-author--maintainer)
 
 </div>
 
@@ -182,7 +183,10 @@ The platform provides a secure zero-dependency multithreaded REST server with bu
 | **`GET`** | **`/docs`** | Interactive OpenAPI Swagger UI 5.x documentation |
 | **`GET`** | **`/redoc`** | ReDoc responsive API documentation |
 | **`GET`** | **`/openapi.json`** | Machine-readable OpenAPI 3.0.3 specification JSON |
-| **`GET`** | **`/api/status`** | System health status, version `2.5.0`, and active module availability |
+| **`GET`** | **`/docs`** | Interactive OpenAPI Swagger UI 5.x documentation |
+| **`GET`** | **`/redoc`** | ReDoc responsive API documentation |
+| **`GET`** | **`/openapi.json`** | Machine-readable OpenAPI 3.0.3 specification JSON |
+| **`GET`** | **`/api/status`** | System health status, version `3.0.0`, and active module availability |
 | **`GET`** | **`/api/feedstocks`** | Proximate and ultimate analysis catalog (Olive Pomace, Pine, Straw, Husk) |
 | **`POST`** | **`/api/simulate`** | Executes digital twin flowsheet simulation (Deterministic or ML) |
 | **`POST`** | **`/api/autopilot/step`** | Advances closed-loop autonomous autopilot FSM by one step |
@@ -202,17 +206,18 @@ The platform provides a secure zero-dependency multithreaded REST server with bu
 | **`POST`** | **`/api/fleet/dispatch`** | Dispatches remote setpoint targets or executes seasonal harvest scheduling |
 | **`POST`** | **`/api/fleet/corc-arbitrage`** | Calculates optimal reactor temp and gross margins from spot CORC market pricing |
 | **`POST`** | **`/api/fleet/renewable-dispatch`** | Optimizes 24-hour Solar PV generation and TOU grid tariff load-shifting balance |
+| **`POST`** | **`/api/drl/step`** | Continuous Actor-Critic PPO policy inference in Gymnasium BioPlant-v1 |
+| **`POST`** | **`/api/drl/train-episode`** | Simulated PPO training rollout with cumulative reward and error logging |
+| **`GET`** | **`/api/spatial/model`** | 3D equipment spatial bounding tree, anchors, and particle flow conduits |
+| **`POST`** | **`/api/copilot/chat`** | Multi-modal SCADA Operator Copilot with P&ID and SOP root-cause diagnosis |
 
 ### Example API Request (curl)
 ```bash
-curl -X POST http://127.0.0.1:8000/api/simulate \
+curl -X POST http://127.0.0.1:8000/api/copilot/chat \
   -H "Content-Type: application/json" \
   -H "X-API-Key: bioplant-default-dev-key" \
   -d '{
-    "feedstock": "olive_pomace",
-    "reactor_temp_c": 500.0,
-    "feed_rate_kg_h": 100.0,
-    "yield_mode": "ml"
+    "query": "Cyclone DP is spiking to 28 mbar. What is the SOP?"
   }'
 ```
 
@@ -256,24 +261,39 @@ BIOPLANT AI scales from single-facility operations to regional multi-plant fleet
   - Aggregates fleet-wide throughput ($11.76\text{ t/d}$), bio-oil output ($6.45\text{ m}^3\text{/d}$), permanent carbon sinks ($13.52\text{ t CO}_2\text{e/d}$), and fleet OEE ($94.2\%$).
 * **Real-Time CORC Carbon Arbitrage Engine ([`src/fleet/corc_trader.py`](src/fleet/corc_trader.py))**:
   - Monitors voluntary carbon market spot tickers (Puro.earth / Verra CORC $\$40 - \$180\text{/t CO}_2$).
-  - Evaluates gross margin trade-offs between liquid biofuel sales and permanent biochar carbon removal credits, automatically recommending optimal reactor temperature setpoints ($420^\circ\text{C}$ for maximum carbon removal vs. $530^\circ\text{C}$ for maximum bio-oil).
+  - Evaluates gross margin trade-offs between liquid biofuel sales and permanent biochar carbon removal credits.
 * **Hybrid Solar PV & TOU Grid Dispatch ([`src/fleet/renewable_coupling.py`](src/fleet/renewable_coupling.py))**:
-  - 24-hour microgrid power balancer shifting electric biomass drying and auxiliary heater loads to peak solar generation hours ($10:00 - 15:00$), saving up to thousands in annual electricity bills.
+  - 24-hour microgrid power balancer shifting electric biomass drying and auxiliary heater loads to peak solar generation hours ($10:00 - 15:00$).
 
 ---
 
-## 🗺️ 11. Product & Engineering Roadmap
+## 🧠 11. Next-Gen AI: Deep RL, 3D Spatial Twin & GenAI Copilot (Version 3.0)
+
+BIOPLANT AI reaches full cyber-physical autonomy with Deep Reinforcement Learning, WebGL 3D Spatial Twin, and Generative AI Copilot:
+
+* **Deep Reinforcement Learning Non-Linear Gym ([`src/drl/bioplant_env.py`](src/drl/bioplant_env.py) & [`src/drl/ppo_agent.py`](src/drl/ppo_agent.py))**:
+  - Gymnasium-compatible `BioPlant-v1` continuous environment with 8D observation state vector and 3D action vector (`[d_burner_duty, d_feed_rate, pulse_jet]`).
+  - Proximal Policy Optimization (PPO) Actor-Critic policy rejecting extreme non-linear disturbances ($\pm 15\%$ moisture surges and sudden flame losses) with sub-degree temperature precision.
+* **3D WebGL Holographic Spatial Digital Twin ([`src/spatial/model_3d.py`](src/spatial/model_3d.py) + Three.js)**:
+  - Interactive 3D spatial model rendered at 60 FPS in the browser with real-time fluid flow particle streams, internal reactor heat-map shaders, and component telemetry inspection.
+* **Generative AI SCADA Operator Copilot ([`src/copilot/agent.py`](src/copilot/agent.py) & [`src/copilot/knowledge_base.py`](src/copilot/knowledge_base.py))**:
+  - Context-aware engineering Copilot indexed on plant P&ID blueprints, Standard Operating Procedures (SOP-101 to SOP-400), and SIL-2 emergency guides.
+  - Generates instant root-cause diagnostics, actionable recommendations, and executable setpoint adjustments from natural language operator inquiries.
+
+---
+
+## 🗺️ 12. Product & Engineering Roadmap
 
 Detailed milestone planning, architectural specifications, and release timelines are documented in [**ROADMAP.md**](ROADMAP.md):
 
 * **`V2.1` (Completed)**: Dockerization & Compose, Interactive OpenAPI Swagger `/docs`, ReDoc, and 4-Part Jupyter Tutorial Suite.
 * **`V2.2` (Completed)**: Industrial IoT protocol bridges (Modbus TCP, MQTT Sparkplug B, OPC-UA), Hardware-in-the-Loop (HIL), and real-time register monitoring.
 * **`V2.5` (Completed)**: Multi-reactor regional fleet dispatching, dynamic CORC carbon credit arbitrage, and hybrid renewable grid integration.
-* **`V3.0` (Next-Gen AI & Spatial Twin)**: Deep Reinforcement Learning (PPO/SAC Gym), Three.js 3D WebGL Holographic Spatial Twin, and Generative AI SCADA Operator Copilot.
+* **`V3.0` (Completed)**: Deep Reinforcement Learning (PPO/SAC Gym), Three.js 3D WebGL Holographic Spatial Twin, and Generative AI SCADA Operator Copilot.
 
 ---
 
-## 👨‍💻 12. Author & Maintainer
+## 👨‍💻 13. Author & Maintainer
 
 <table align="center">
   <tr>
@@ -298,6 +318,6 @@ Detailed milestone planning, architectural specifications, and release timelines
 
 ---
 
-## 📜 13. License
+## 📜 14. License
 
 This project is licensed under the terms of the **MIT License**. See the [LICENSE](LICENSE) file for complete details.

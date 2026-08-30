@@ -19,7 +19,7 @@ from src.api.openapi import get_openapi_spec, get_swagger_ui_html, get_redoc_htm
 class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
     """Handles REST API calls and serves modern static Web GUI assets."""
 
-    server_version = "DigitalTwinHTTP/2.5"
+    server_version = "DigitalTwinHTTP/3.0"
 
     def _set_cors_headers(self, content_type: str = "application/json") -> None:
         self.send_header("Content-Type", content_type)
@@ -108,6 +108,16 @@ class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
                     self._send_json(200, res)
                     return
 
+                if path == "/api/spatial/model":
+                    res = APIRequestHandler.handle_spatial_model()
+                    self._send_json(200, res)
+                    return
+
+                if path == "/api/drl/step":
+                    res = APIRequestHandler.handle_drl_step({})
+                    self._send_json(200, res)
+                    return
+
                 self._send_json(404, {"error": f"Endpoint not found: {path}", "endpoint": path})
                 return
             except ValueError as val_err:
@@ -193,6 +203,18 @@ class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
                 self._send_json(200, res)
             elif path == "/api/fleet/renewable-dispatch":
                 res = APIRequestHandler.handle_renewable_dispatch(data)
+                self._send_json(200, res)
+            elif path == "/api/drl/step":
+                res = APIRequestHandler.handle_drl_step(data)
+                self._send_json(200, res)
+            elif path == "/api/drl/train-episode":
+                res = APIRequestHandler.handle_drl_train_episode(data)
+                self._send_json(200, res)
+            elif path == "/api/spatial/model":
+                res = APIRequestHandler.handle_spatial_model()
+                self._send_json(200, res)
+            elif path == "/api/copilot/chat":
+                res = APIRequestHandler.handle_copilot_chat(data)
                 self._send_json(200, res)
             else:
                 self._send_json(404, {"error": f"Endpoint not found: {path}", "endpoint": path})

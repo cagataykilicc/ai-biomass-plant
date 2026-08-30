@@ -16,10 +16,10 @@ def test_openapi_spec_structure() -> None:
     spec = get_openapi_spec()
     assert spec["openapi"] == "3.0.3"
     assert "info" in spec
-    assert spec["info"]["version"] == "2.5.0"
+    assert spec["info"]["version"] == "3.0.0"
     assert "paths" in spec
 
-    # Verify all 20 primary, IoT, and fleet endpoints are documented
+    # Verify all 24 primary, IoT, fleet, and next-gen V3 endpoints are documented
     expected_paths = [
         "/api/status",
         "/api/feedstocks",
@@ -41,6 +41,10 @@ def test_openapi_spec_structure() -> None:
         "/api/fleet/dispatch",
         "/api/fleet/corc-arbitrage",
         "/api/fleet/renewable-dispatch",
+        "/api/drl/step",
+        "/api/drl/train-episode",
+        "/api/spatial/model",
+        "/api/copilot/chat",
     ]
     for p in expected_paths:
         assert p in spec["paths"], f"Expected endpoint '{p}' missing from OpenAPI spec"
@@ -79,7 +83,7 @@ def test_live_openapi_and_docs_endpoints() -> None:
             assert "application/json" in res.headers.get("Content-Type", "")
             data = json.loads(res.read().decode())
             assert data["openapi"] == "3.0.3"
-            assert data["info"]["version"] == "2.5.0"
+            assert data["info"]["version"] == "3.0.0"
 
         # 2. Test GET /docs (Swagger UI)
         with urllib.request.urlopen("http://127.0.0.1:8129/docs") as res:

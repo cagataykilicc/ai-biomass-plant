@@ -78,7 +78,7 @@ class APIRequestHandler:
         """System status and module availability."""
         return {
             "status": "ONLINE",
-            "version": "2.5.0",
+            "version": "3.0.0",
             "modules": {
                 "thermodynamic_flowsheet": "ACTIVE",
                 "ml_yield_surrogate": "ACTIVE",
@@ -536,3 +536,70 @@ class APIRequestHandler:
         _, _, rnd = cls._get_fleet_instances()
         shift_loads = bool(data.get("shift_loads", True))
         return rnd.compute_24h_dispatch(shift_loads_to_solar=shift_loads)
+
+    _drl_env = None
+    _drl_agent = None
+    _spatial_model = None
+    _copilot_agent = None
+
+    @classmethod
+    def _get_v3_instances(cls):
+        from src.drl.bioplant_env import BioPlantEnv
+        from src.drl.ppo_agent import PPOAgent
+        from src.spatial.model_3d import PlantSpatialModel
+        from src.copilot.agent import SCADAOperatorCopilot
+
+        if cls._drl_env is None:
+            cls._drl_env = BioPlantEnv()
+            cls._drl_env.reset(seed=42)
+        if cls._drl_agent is None:
+            cls._drl_agent = PPOAgent()
+        if cls._spatial_model is None:
+            cls._spatial_model = PlantSpatialModel()
+        if cls._copilot_agent is None:
+            cls._copilot_agent = SCADAOperatorCopilot()
+
+        return cls._drl_env, cls._drl_agent, cls._spatial_model, cls._copilot_agent
+
+    @classmethod
+    def handle_drl_step(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute one continuous DRL policy inference and environment transition step."""
+        env, agent, _, _ = cls._get_v3_instances()
+        obs = env._get_observation()
+        action, value = agent.select_action(obs, explore=False)
+
+        if "override_action" in data and isinstance(data["override_action"], list):
+            action = [float(x) for x in data["override_action"][:3]]
+
+        next_obs, reward, terminated, truncated, info = env.step(action)
+        if terminated or truncated:
+            env.reset()
+
+        return {
+            "action_executed": [round(a, 2) for a in action],
+            "critic_value_estimate": round(value, 3),
+            "step_reward": round(reward, 3),
+            "environment_state": info,
+            "next_observation": next_obs,
+        }
+
+    @classmethod
+    def handle_drl_train_episode(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Run simulated PPO rollout training episode."""
+        env, agent, _, _ = cls._get_v3_instances()
+        steps = int(data.get("max_steps", 40))
+        return agent.train_episode(env, max_steps=steps)
+
+    @classmethod
+    def handle_spatial_model(cls) -> Dict[str, Any]:
+        """Export 3D Spatial Twin asset coordinates and conduit graph."""
+        _, _, spatial, _ = cls._get_v3_instances()
+        return spatial.export_spatial_graph()
+
+    @classmethod
+    def handle_copilot_chat(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Process operator natural language query with SCADA Copilot."""
+        _, _, _, copilot = cls._get_v3_instances()
+        query = str(data.get("query", "What is the current operating state?"))
+        plant_state = data.get("plant_state", None)
+        return copilot.process_query(query, plant_state=plant_state)

@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAutopilotHandlers();
   initIoTHandlers();
   initFleetHandlers();
+  initV3Handlers();
 
   // Run initial simulation on load
   runSimulation();
@@ -69,6 +70,7 @@ function initNavigation() {
           else if (targetTab === 'autopilot-tab') stepAutopilot();
           else if (targetTab === 'iot-tab') pollModbusRegisters();
           else if (targetTab === 'fleet-tab') loadFleetStatus();
+          else if (targetTab === 'spatial-tab') initThreeScene();
         }, 10);
       }
     });
@@ -1125,5 +1127,351 @@ async function runSolarDispatch() {
     alert(`24h Solar Dispatch Optimized:\n- Solar Generated: ${m.total_solar_generated_kwh} kWh\n- Grid Import: ${m.total_grid_imported_kwh} kWh\n- Daily Savings: $${m.daily_cost_savings_usd}\n- Projected Annual Savings: $${m.projected_annual_power_savings_usd.toLocaleString()}/yr`);
   } catch (err) {
     alert(`Solar dispatch failed: ${err.message}`);
+  }
+}
+
+/* =========================================================================
+ * Tab 11: 3D Spatial Digital Twin & GenAI SCADA Copilot Controller (V3.0)
+ * ========================================================================= */
+let threeInitialized = false;
+let scene, camera, renderer, particleSystem;
+let components3D = [];
+let particlesEnabled = true;
+
+function initV3Handlers() {
+  const btnDrlStep = document.getElementById('btn-drl-step');
+  if (btnDrlStep) btnDrlStep.addEventListener('click', stepDRLPolicy);
+
+  const btnDrlTrain = document.getElementById('btn-drl-train');
+  if (btnDrlTrain) btnDrlTrain.addEventListener('click', trainDRLEpisode);
+
+  const btnCopilotSend = document.getElementById('btn-copilot-send');
+  if (btnCopilotSend) btnCopilotSend.addEventListener('click', sendCopilotMessage);
+
+  const copilotInput = document.getElementById('copilot-input-text');
+  if (copilotInput) {
+    copilotInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendCopilotMessage();
+    });
+  }
+
+  // Quick prompt buttons
+  const qCyclone = document.getElementById('quick-sop-cyclone');
+  if (qCyclone) qCyclone.addEventListener('click', () => sendCopilotQuickQuery('Cyclone DP is spiking to 28 mbar. What is the SOP?'));
+
+  const qMoist = document.getElementById('quick-sop-moisture');
+  if (qMoist) qMoist.addEventListener('click', () => sendCopilotQuickQuery('Feedstock moisture increased to 20%. Adjust burner setpoints.'));
+
+  const qStartup = document.getElementById('quick-sop-startup');
+  if (qStartup) qStartup.addEventListener('click', () => sendCopilotQuickQuery('Give me the thermal preheat and startup procedure.'));
+
+  const qEmergency = document.getElementById('quick-sop-emergency');
+  if (qEmergency) qEmergency.addEventListener('click', () => sendCopilotQuickQuery('Initiate SIL-2 emergency safe park trip.'));
+
+  const btnReset3D = document.getElementById('btn-reset-3d-cam');
+  if (btnReset3D) {
+    btnReset3D.addEventListener('click', () => {
+      if (camera) {
+        camera.position.set(0, 4, 10);
+        camera.lookAt(0.5, 2.0, 0);
+      }
+    });
+  }
+
+  const btnTogglePart = document.getElementById('btn-toggle-particles');
+  if (btnTogglePart) {
+    btnTogglePart.addEventListener('click', () => {
+      particlesEnabled = !particlesEnabled;
+      if (particleSystem) particleSystem.visible = particlesEnabled;
+    });
+  }
+}
+
+function initThreeScene() {
+  if (threeInitialized || typeof THREE === 'undefined') return;
+  const container = document.getElementById('three-canvas-container');
+  if (!container) return;
+
+  threeInitialized = true;
+  const w = container.clientWidth || 600;
+  const h = container.clientHeight || 320;
+
+  scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x030712, 0.04);
+
+  camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+  camera.position.set(0, 4, 10);
+  camera.lookAt(0.5, 2.0, 0);
+
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(w, h);
+  renderer.setPixelRatio(window.devicePixelRatio || 1);
+  container.appendChild(renderer.domElement);
+
+  // Lighting
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+  scene.add(ambientLight);
+
+  const dirLight = new THREE.DirectionalLight(0x00f0ff, 1.2);
+  dirLight.position.set(5, 10, 7);
+  scene.add(dirLight);
+
+  const reactorGlow = new THREE.PointLight(0x00f0ff, 2.0, 8);
+  reactorGlow.position.set(0, 2.6, 0);
+  scene.add(reactorGlow);
+
+  const burnerGlow = new THREE.PointLight(0xff0055, 2.5, 5);
+  burnerGlow.position.set(0, 0.4, 0);
+  scene.add(burnerGlow);
+
+  // Grid Floor
+  const grid = new THREE.GridHelper(20, 20, 0x00f0ff, 0x1e293b);
+  grid.position.y = 0;
+  scene.add(grid);
+
+  // Create 3D Meshes
+  buildPlant3DMeshes();
+
+  // Create Flow Particles
+  buildParticleStream();
+
+  // Mouse Interaction (Orbit / Drag)
+  let isDragging = false;
+  let prevMouse = { x: 0, y: 0 };
+
+  container.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    prevMouse = { x: e.clientX, y: e.clientY };
+  });
+
+  window.addEventListener('mouseup', () => { isDragging = false; });
+
+  container.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const deltaX = e.clientX - prevMouse.x;
+    const deltaY = e.clientY - prevMouse.y;
+
+    camera.position.x -= deltaX * 0.02;
+    camera.position.y += deltaY * 0.02;
+    camera.lookAt(0.5, 2.0, 0);
+
+    prevMouse = { x: e.clientX, y: e.clientY };
+  });
+
+  container.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    camera.position.z = Math.max(4.0, Math.min(18.0, camera.position.z + e.deltaY * 0.01));
+  });
+
+  // Render Loop
+  function animate() {
+    requestAnimationFrame(animate);
+
+    if (particleSystem && particlesEnabled) {
+      const positions = particleSystem.geometry.attributes.position.array;
+      for (let i = 0; i < positions.length; i += 3) {
+        positions[i] += 0.04; // Move along X
+        if (positions[i] > 6.0) positions[i] = -4.0;
+        positions[i + 1] += Math.sin(positions[i] * 2.0) * 0.01;
+      }
+      particleSystem.geometry.attributes.position.needsUpdate = true;
+    }
+
+    renderer.render(scene, camera);
+  }
+  animate();
+}
+
+function buildPlant3DMeshes() {
+  // 1. Infeed Hopper
+  const matHopper = new THREE.MeshStandardMaterial({ color: 0x8b5a2b, roughness: 0.5, metalness: 0.6 });
+  const geomHopper = new THREE.CylinderGeometry(0.7, 0.3, 2.2, 16);
+  const meshHopper = new THREE.Mesh(geomHopper, matHopper);
+  meshHopper.position.set(-4.0, 1.8, 0);
+  scene.add(meshHopper);
+
+  // 2. Fluidized Bed Reactor (Core Vessel)
+  const matReactor = new THREE.MeshStandardMaterial({ color: 0x00f0ff, roughness: 0.2, metalness: 0.8, emissive: 0x002233 });
+  const geomReactor = new THREE.CylinderGeometry(0.8, 0.8, 3.6, 24);
+  const meshReactor = new THREE.Mesh(geomReactor, matReactor);
+  meshReactor.position.set(0, 2.6, 0);
+  scene.add(meshReactor);
+
+  // 3. Combustor / Burner Base
+  const matBurner = new THREE.MeshStandardMaterial({ color: 0xff0055, roughness: 0.3, metalness: 0.7, emissive: 0x330011 });
+  const geomBurner = new THREE.BoxGeometry(1.8, 0.8, 1.8);
+  const meshBurner = new THREE.Mesh(geomBurner, matBurner);
+  meshBurner.position.set(0, 0.4, 0);
+  scene.add(meshBurner);
+
+  // 4. Cyclone
+  const matCyclone = new THREE.MeshStandardMaterial({ color: 0xffb800, roughness: 0.3, metalness: 0.7 });
+  const geomCycloneTop = new THREE.CylinderGeometry(0.5, 0.5, 1.4, 16);
+  const geomCycloneCone = new THREE.ConeGeometry(0.5, 1.2, 16);
+  const meshCycTop = new THREE.Mesh(geomCycloneTop, matCyclone);
+  const meshCycCone = new THREE.Mesh(geomCycloneCone, matCyclone);
+  meshCycTop.position.set(2.8, 3.8, 0);
+  meshCycCone.position.set(2.8, 2.5, 0);
+  meshCycCone.rotation.x = Math.PI;
+  scene.add(meshCycTop);
+  scene.add(meshCycCone);
+
+  // 5. Biochar Quench Silo
+  const matChar = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.8, metalness: 0.2 });
+  const geomChar = new THREE.CylinderGeometry(0.5, 0.5, 1.4, 16);
+  const meshChar = new THREE.Mesh(geomChar, matChar);
+  meshChar.position.set(2.8, 0.7, 0);
+  scene.add(meshChar);
+
+  // 6. Condenser HX
+  const matCond = new THREE.MeshStandardMaterial({ color: 0x00ff88, roughness: 0.2, metalness: 0.8 });
+  const geomCond = new THREE.CylinderGeometry(0.6, 0.6, 3.0, 16);
+  const meshCond = new THREE.Mesh(geomCond, matCond);
+  meshCond.position.set(5.2, 2.0, 0);
+  scene.add(meshCond);
+
+  // Piping Conduits
+  const pipeMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.9, roughness: 0.1 });
+  const pipe1 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 4.0), pipeMat);
+  pipe1.position.set(-2.0, 2.0, 0);
+  pipe1.rotation.z = Math.PI / 2;
+  scene.add(pipe1);
+
+  const pipe2 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 2.8), pipeMat);
+  pipe2.position.set(1.4, 3.8, 0);
+  pipe2.rotation.z = Math.PI / 2;
+  scene.add(pipe2);
+
+  const pipe3 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 2.4), pipeMat);
+  pipe3.position.set(4.0, 3.2, 0);
+  pipe3.rotation.z = Math.PI / 2;
+  scene.add(pipe3);
+}
+
+function buildParticleStream() {
+  const count = 120;
+  const positions = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    positions[i * 3] = -4.0 + (i / count) * 10.0;
+    positions[i * 3 + 1] = 2.0 + Math.random() * 0.4;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 0.4;
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+  const material = new THREE.PointsMaterial({
+    color: 0x00f0ff,
+    size: 0.15,
+    transparent: true,
+    opacity: 0.8,
+  });
+
+  particleSystem = new THREE.Points(geometry, material);
+  scene.add(particleSystem);
+}
+
+async function stepDRLPolicy() {
+  try {
+    const res = await fetch('/api/drl/step', {
+      method: 'POST',
+      headers: apiHeaders(),
+      body: JSON.stringify({}),
+    });
+    const data = await res.json();
+    const act = data.action_executed || [0, 0, 0];
+    const val = data.critic_value_estimate || 0.0;
+
+    const bEl = document.getElementById('drl-burner-act');
+    const fEl = document.getElementById('drl-feed-act');
+    const vEl = document.getElementById('drl-critic-val');
+
+    if (bEl) bEl.textContent = `${act[0] >= 0 ? '+' : ''}${act[0].toFixed(1)}%`;
+    if (fEl) fEl.textContent = `${act[1] >= 0 ? '+' : ''}${act[1].toFixed(1)} kg/h`;
+    if (vEl) vEl.textContent = val.toFixed(1);
+  } catch (err) {
+    console.error('DRL step failed:', err);
+  }
+}
+
+async function trainDRLEpisode() {
+  const btn = document.getElementById('btn-drl-train');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Training PPO...';
+  }
+
+  try {
+    const res = await fetch('/api/drl/train-episode', {
+      method: 'POST',
+      headers: apiHeaders(),
+      body: JSON.stringify({ max_steps: 30 }),
+    });
+    const data = await res.json();
+    alert(`PPO Training Episode ${data.episode} Complete:\n- Reward: ${data.total_episode_reward}\n- Mean Temp Error: ${data.mean_temperature_error_c} °C\n- Status: ${data.convergence_status}`);
+  } catch (err) {
+    alert(`Training failed: ${err.message}`);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Train PPO';
+    }
+  }
+}
+
+async function sendCopilotMessage() {
+  const input = document.getElementById('copilot-input-text');
+  if (!input || !input.value.trim()) return;
+  const q = input.value.trim();
+  input.value = '';
+  await executeCopilotQuery(q);
+}
+
+function sendCopilotQuickQuery(q) {
+  executeCopilotQuery(q);
+}
+
+async function executeCopilotQuery(queryText) {
+  const chatBox = document.getElementById('copilot-chat-box');
+  if (!chatBox) return;
+
+  // Append user bubble
+  const userDiv = document.createElement('div');
+  userDiv.style.cssText = 'background:rgba(255,255,255,0.06); border-right:3px solid var(--accent-amber); padding:8px; border-radius:4px; align-self:flex-end; max-width:85%;';
+  userDiv.innerHTML = `<strong style="color:var(--accent-amber);">Operator:</strong><p style="margin-top:2px;">${queryText}</p>`;
+  chatBox.appendChild(userDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  try {
+    const res = await fetch('/api/copilot/chat', {
+      method: 'POST',
+      headers: apiHeaders(),
+      body: JSON.stringify({
+        query: queryText,
+        plant_state: {
+          reactor_temp_c: parseFloat(document.getElementById('slider-temp')?.value || 500.0),
+          feed_rate_kg_h: parseFloat(document.getElementById('slider-feed')?.value || 100.0),
+          cyclone_dp_mbar: 12.5,
+          moisture_pct: 10.0,
+          fsm_state: 'AUTONOMOUS_CRUISE',
+        },
+      }),
+    });
+    const data = await res.json();
+
+    // Append AI bubble
+    const aiDiv = document.createElement('div');
+    aiDiv.style.cssText = 'background:rgba(0,240,255,0.08); border-left:3px solid var(--primary-cyan); padding:8px; border-radius:4px; max-width:90%;';
+    aiDiv.innerHTML = `
+      <strong style="color:var(--primary-cyan);">Copilot Assistant:</strong>
+      <p style="margin-top:4px; line-height:1.4;">${data.copilot_response}</p>
+      <div style="font-size:0.7rem; color:var(--text-muted); margin-top:6px;">
+        Action: <strong style="color:var(--primary-green);">${data.recommended_action}</strong> | Docs: <em>${(data.matched_engineering_documents || []).join(', ')}</em>
+      </div>
+    `;
+    chatBox.appendChild(aiDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  } catch (err) {
+    console.error('Copilot query failed:', err);
   }
 }

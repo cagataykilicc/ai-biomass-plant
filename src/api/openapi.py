@@ -18,7 +18,7 @@ def get_openapi_spec() -> Dict[str, Any]:
                 "Pareto optimization, tri-layer fault diagnostics, 20-year DCF techno-economics, "
                 "ISO 14040/14044 LCA carbon accounting, and 5-State Autonomous Autopilot supervision."
             ),
-            "version": "2.5.0",
+            "version": "3.0.0",
             "contact": {
                 "name": "Çağatay Kılıç",
                 "url": "https://github.com/cagataykilicc/ai-biomass-plant",
@@ -384,6 +384,46 @@ def get_openapi_spec() -> Dict[str, Any]:
                     "description": "Optimizes 24-hour microgrid power dispatch, shifting drying and auxiliary electric loads to peak solar generation.",
                     "responses": {
                         "200": {"description": "24-Hour hourly power schedule and annual cost savings"},
+                        "401": {"description": "Unauthorized"},
+                    },
+                }
+            },
+            "/api/drl/step": {
+                "post": {
+                    "summary": "Step Deep Reinforcement Learning Policy Inference",
+                    "description": "Executes one continuous Actor-Critic PPO step in the non-linear BioPlant-v1 transient environment.",
+                    "responses": {
+                        "200": {"description": "Action executed and next state observation"},
+                        "401": {"description": "Unauthorized"},
+                    },
+                }
+            },
+            "/api/drl/train-episode": {
+                "post": {
+                    "summary": "Train Deep RL Agent via Simulated PPO Rollouts",
+                    "description": "Performs an interactive PPO training rollout episode and computes cumulative reward and temperature errors.",
+                    "responses": {
+                        "200": {"description": "Episode metrics and convergence status"},
+                        "401": {"description": "Unauthorized"},
+                    },
+                }
+            },
+            "/api/spatial/model": {
+                "get": {
+                    "summary": "Export 3D Spatial Digital Twin Component Hierarchy",
+                    "description": "Returns 3D spatial node coordinates, bounding boxes, and conduit flow graph for Three.js WebGL visualization.",
+                    "responses": {
+                        "200": {"description": "3D spatial topology graph"},
+                        "401": {"description": "Unauthorized"},
+                    },
+                }
+            },
+            "/api/copilot/chat": {
+                "post": {
+                    "summary": "Query Generative AI SCADA Operator Copilot",
+                    "description": "Natural language technical assistant analyzing plant telemetry, SOPs, and P&ID drawings for root-cause diagnosis.",
+                    "responses": {
+                        "200": {"description": "Copilot reasoning response, matched SOPs, and recommended setpoints"},
                         "401": {"description": "Unauthorized"},
                     },
                 }
