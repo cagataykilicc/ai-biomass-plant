@@ -1,9 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BIOPLANT AI - User Manual / Kullanıcı Kılavuzu</title>
+  <title>BIOPLANT AI - Technical Documentation & User Manual</title>
+
+  <!-- SEO Primary Meta Tags -->
+  <meta name="title" content="BIOPLANT AI - Technical Documentation & User Manual">
+  <meta name="description" content="Official technical manual and engineering reference for the BIOPLANT AI Digital Twin platform. Covers thermodynamic models, NSGA-II Pareto optimization, soft sensors, SIL-2 safety, and autonomous autopilot FSM.">
+  <meta name="keywords" content="biomass digital twin docs, pyrolysis engineering manual, SOP, industrial autopilot, NSGA-II, Pareto optimization, soft sensor calibration, ISO 14040 LCA, techno-economic analysis">
+  <meta name="author" content="Çağatay Kılıç">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="http://127.0.0.1:8000/manual.html">
+
+  <!-- GEO Location Metadata -->
+  <meta name="geo.region" content="TR-34">
+  <meta name="geo.placename" content="Istanbul, Turkey">
+  <meta name="geo.position" content="41.0082;28.9784">
+  <meta name="ICBM" content="41.0082, 28.9784">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="http://127.0.0.1:8000/manual.html">
+  <meta property="og:site_name" content="BIOPLANT AI Platform">
+  <meta property="og:title" content="BIOPLANT AI - Technical Documentation & User Manual">
+  <meta property="og:description" content="Official technical manual and engineering reference for the BIOPLANT AI Digital Twin platform.">
+  <meta property="og:image" content="/static/bioplant_hero_banner.jpg">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="http://127.0.0.1:8000/manual.html">
+  <meta name="twitter:title" content="BIOPLANT AI - Technical Documentation & User Manual">
+  <meta name="twitter:description" content="Official technical manual and engineering reference for the BIOPLANT AI Digital Twin platform.">
+  <meta name="twitter:image" content="/static/bioplant_hero_banner.jpg">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -18,8 +49,8 @@
       min-height: 100vh;
     }
     .manual-nav {
-      background: var(--bg-surface);
-      border-right: 1px solid var(--border-color);
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border-glass);
       padding: 24px 16px;
       position: sticky;
       top: 0;
@@ -30,37 +61,13 @@
       padding: 32px 48px;
       max-width: 1000px;
     }
-    .lang-switcher {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-      background: rgba(255,255,255,0.03);
-      padding: 4px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-    }
-    .lang-btn {
-      flex: 1;
-      padding: 8px 12px;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .lang-btn.active {
-      background: var(--primary-cyan);
-      color: #06090e;
-    }
     .manual-section {
       margin-bottom: 48px;
     }
     .manual-section h2 {
       font-size: 1.6rem;
       color: var(--text-main);
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-glass);
       padding-bottom: 8px;
       margin-bottom: 16px;
     }
@@ -96,16 +103,19 @@
     }
     .doc-table th, .doc-table td {
       padding: 10px 14px;
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--border-glass);
       text-align: left;
     }
     .doc-table th {
       background: rgba(255, 255, 255, 0.03);
       color: var(--primary-cyan);
     }
+    [data-theme="light"] .doc-table th {
+      background: rgba(0, 0, 0, 0.04);
+    }
     .code-block {
       background: #0d1117;
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--border-glass);
       border-radius: 8px;
       padding: 14px;
       font-family: var(--font-mono);
@@ -113,6 +123,11 @@
       overflow-x: auto;
       margin: 12px 0;
       color: #79c0ff;
+    }
+    [data-theme="light"] .code-block {
+      background: #f1f5f9;
+      color: #0369a1;
+      border-color: rgba(0, 0, 0, 0.1);
     }
     .nav-link {
       display: block;
@@ -132,9 +147,14 @@
 <body>
   <div class="manual-layout">
     <aside class="manual-nav">
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:20px;">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary-cyan)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        <h3 style="margin:0; font-size:1.1rem; color:var(--text-main);">BIOPLANT DOCS</h3>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary-cyan)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <h3 style="margin:0; font-size:1.1rem; color:var(--text-main);">BIOPLANT DOCS</h3>
+        </div>
+        <button id="manual-theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark and Light Mode" title="Toggle Theme" style="padding:4px 8px; font-size:0.75rem;">
+          <span id="manual-theme-icon">🌙</span>
+        </button>
       </div>
 
       <nav id="sidebar-nav-en">
@@ -256,5 +276,31 @@ Content-Type: application/json
 
     </main>
   </div>
+
+  <script>
+    function applyManualTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('bioplant_theme', theme);
+      const icon = document.getElementById('manual-theme-icon');
+      if (icon) {
+        icon.textContent = theme === 'light' ? '☀️' : '🌙';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('bioplant_theme') || 
+        (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      applyManualTheme(savedTheme);
+
+      const toggleBtn = document.getElementById('manual-theme-toggle');
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+          const current = document.documentElement.getAttribute('data-theme') || 'dark';
+          const next = current === 'dark' ? 'light' : 'dark';
+          applyManualTheme(next);
+        });
+      }
+    });
+  </script>
 </body>
 </html>

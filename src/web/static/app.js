@@ -15,10 +15,65 @@ document.addEventListener('DOMContentLoaded', () => {
   initIoTHandlers();
   initFleetHandlers();
   initV3Handlers();
+  initThemeSwitcher();
 
   // Run initial simulation on load
   runSimulation();
 });
+
+function initThemeSwitcher() {
+  const toggleBtn = document.getElementById('theme-toggle-btn');
+  const sunIcon = document.getElementById('theme-icon-sun');
+  const moonIcon = document.getElementById('theme-icon-moon');
+  const themeText = document.getElementById('theme-text');
+
+  function applyTheme(theme, save = true) {
+    document.documentElement.setAttribute('data-theme', theme);
+    if (save) localStorage.setItem('bioplant_theme', theme);
+
+    if (sunIcon && moonIcon && themeText) {
+      if (theme === 'light') {
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+        themeText.textContent = 'Light Mode';
+      } else {
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+        themeText.textContent = 'Dark Mode';
+      }
+    }
+
+    // Re-draw 2D canvas charts with theme-adaptive styling
+    if (typeof drawParetoChart === 'function') drawParetoChart();
+
+    // Adapt 3D Scene fog if Three.js is loaded
+    if (typeof scene !== 'undefined' && scene && scene.fog) {
+      scene.fog.color.setHex(theme === 'light' ? 0xf8fafc : 0x030712);
+    }
+  }
+
+  const savedTheme = localStorage.getItem('bioplant_theme') ||
+    (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+
+  applyTheme(savedTheme, false);
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      applyTheme(next, true);
+    });
+  }
+
+  // Listen for OS theme preference changes
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+      if (!localStorage.getItem('bioplant_theme')) {
+        applyTheme(e.matches ? 'light' : 'dark', false);
+      }
+    });
+  }
+}
 
 function t(key, fallback) {
   return fallback;
@@ -408,10 +463,12 @@ function drawParetoChart() {
   const mapX = (charVal) => padding.left + ((charVal - minChar) / (maxChar - minChar)) * plotW;
   const mapY = (oilVal) => padding.top + plotH - ((oilVal - minOil) / (maxOil - minOil)) * plotH;
 
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+
   // Draw Grid Lines & Numeric Axis Labels
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+  ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.05)';
   ctx.lineWidth = 1;
-  ctx.fillStyle = '#64748b';
+  ctx.fillStyle = isLight ? '#475569' : '#64748b';
   ctx.font = '10px JetBrains Mono, monospace';
 
   // Vertical Grid (X)
@@ -437,7 +494,7 @@ function drawParetoChart() {
   }
 
   // Draw Axes
-  ctx.strokeStyle = '#475569';
+  ctx.strokeStyle = isLight ? '#94a3b8' : '#475569';
   ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.moveTo(padding.left, padding.top);
@@ -446,21 +503,21 @@ function drawParetoChart() {
   ctx.stroke();
 
   // Axis Titles
-  ctx.fillStyle = '#94a3b8';
+  ctx.fillStyle = isLight ? '#1e293b' : '#94a3b8';
   ctx.font = '11px Inter, sans-serif';
-  const biocharLabel = t('tab3.axis_biochar', 'Biochar Yield (wt%)');
+  const biocharLabel = 'Biochar Yield (wt%)';
   ctx.fillText(biocharLabel, padding.left + plotW / 2 - 60, canvas.height - 10);
 
   ctx.save();
   ctx.translate(16, padding.top + plotH / 2 + 50);
   ctx.rotate(-Math.PI / 2);
-  const biooilLabel = t('tab3.axis_biooil', 'Bio-Oil Yield (wt%)');
+  const biooilLabel = 'Bio-Oil Yield (wt%)';
   ctx.fillText(biooilLabel, 0, 0);
   ctx.restore();
 
   if (paretoData.length === 0) {
     // Empty state message
-    ctx.fillStyle = '#64748b';
+    ctx.fillStyle = isLight ? '#64748b' : '#94a3b8';
     ctx.font = '12px Inter, sans-serif';
     ctx.fillText('Click "Compute Pareto Frontier" to evaluate non-dominated solutions', padding.left + 30, padding.top + plotH / 2);
     return;
@@ -470,7 +527,7 @@ function drawParetoChart() {
   const sorted = [...paretoData].sort((a, b) => getSolutionYields(a).charY - getSolutionYields(b).charY);
 
   // Draw Frontier Curve Line
-  ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
+  ctx.strokeStyle = isLight ? 'rgba(2, 132, 199, 0.6)' : 'rgba(0, 240, 255, 0.4)';
   ctx.setLineDash([4, 4]);
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -498,8 +555,8 @@ function drawParetoChart() {
     const isHovered = hoveredParetoPoint && (pt.solution_id === hoveredParetoPoint.solution_id);
 
     if (!isChampion) {
-      ctx.fillStyle = isHovered ? '#ffffff' : '#00f0ff';
-      ctx.shadowColor = '#00f0ff';
+      ctx.fillStyle = isHovered ? (isLight ? '#0284c7' : '#ffffff') : (isLight ? '#0284c7' : '#00f0ff');
+      ctx.shadowColor = isLight ? 'rgba(2, 132, 199, 0.4)' : '#00f0ff';
       ctx.shadowBlur = isHovered ? 14 : 6;
       ctx.beginPath();
       ctx.arc(px, py, isHovered ? 6.5 : 4.5, 0, Math.PI * 2);
@@ -515,15 +572,15 @@ function drawParetoChart() {
     const py = mapY(oilY);
 
     // Pulsating outer aura
-    ctx.strokeStyle = 'rgba(0, 255, 136, 0.45)';
+    ctx.strokeStyle = isLight ? 'rgba(22, 163, 74, 0.5)' : 'rgba(0, 255, 136, 0.45)';
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.arc(px, py, 12, 0, Math.PI * 2);
     ctx.stroke();
 
     // Solid Champion Core
-    ctx.fillStyle = '#00ff88';
-    ctx.shadowColor = '#00ff88';
+    ctx.fillStyle = isLight ? '#16a34a' : '#00ff88';
+    ctx.shadowColor = isLight ? 'rgba(22, 163, 74, 0.5)' : '#00ff88';
     ctx.shadowBlur = 16;
     ctx.beginPath();
     ctx.arc(px, py, 7.5, 0, Math.PI * 2);
@@ -531,7 +588,7 @@ function drawParetoChart() {
     ctx.shadowBlur = 0;
 
     // Champion Label
-    ctx.fillStyle = '#00ff88';
+    ctx.fillStyle = isLight ? '#15803d' : '#00ff88';
     ctx.font = 'bold 10px Inter, sans-serif';
     ctx.fillText(`★ TOPSIS (#${currentTopSolution.solution_id})`, px + 12, py - 6);
   }
@@ -543,7 +600,7 @@ function drawParetoChart() {
     const hy = hoveredParetoPoint._canvasY;
 
     // Crosshairs
-    ctx.strokeStyle = 'rgba(0, 240, 255, 0.25)';
+    ctx.strokeStyle = isLight ? 'rgba(2, 132, 199, 0.35)' : 'rgba(0, 240, 255, 0.25)';
     ctx.setLineDash([2, 2]);
     ctx.beginPath();
     ctx.moveTo(padding.left, hy); ctx.lineTo(hx, hy);
@@ -559,23 +616,23 @@ function drawParetoChart() {
     if (tipX + tipW > canvas.width - 10) tipX = hx - tipW - 12;
     if (tipY < 10) tipY = hy + 12;
 
-    ctx.fillStyle = 'rgba(10, 15, 30, 0.92)';
-    ctx.strokeStyle = 'rgba(0, 240, 255, 0.6)';
+    ctx.fillStyle = isLight ? 'rgba(255, 255, 255, 0.96)' : 'rgba(10, 15, 30, 0.92)';
+    ctx.strokeStyle = isLight ? 'rgba(2, 132, 199, 0.6)' : 'rgba(0, 240, 255, 0.6)';
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.roundRect(tipX, tipY, tipW, tipH, 6);
     ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = isLight ? '#0f172a' : '#ffffff';
     ctx.font = 'bold 10px Inter, sans-serif';
     ctx.fillText(`Sol #${hoveredParetoPoint.solution_id} (${hoveredParetoPoint.is_self_sufficient ? 'TSI >= 100%' : 'Deficit'})`, tipX + 8, tipY + 16);
 
     ctx.font = '9.5px JetBrains Mono, monospace';
-    ctx.fillStyle = '#94a3b8';
+    ctx.fillStyle = isLight ? '#475569' : '#94a3b8';
     ctx.fillText(`Bio-Oil: ${oilY.toFixed(1)} wt%`, tipX + 8, tipY + 30);
     ctx.fillText(`Biochar: ${charY.toFixed(1)} wt%`, tipX + 8, tipY + 43);
-    ctx.fillStyle = '#00ff88';
+    ctx.fillStyle = isLight ? '#16a34a' : '#00ff88';
     ctx.fillText(`Profit: $${(objs.gross_margin_usd_h || 0).toFixed(2)}/h | ${Math.round(setpoints.reactor_temp_c || 500)}°C`, tipX + 8, tipY + 56);
   }
 }
@@ -861,15 +918,17 @@ function drawControlChart(trajectory) {
   const w = canvas.width - padding * 2;
   const h = canvas.height - padding * 2;
 
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+
   // Grid
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+  ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.05)';
   ctx.lineWidth = 1;
   for (let y = padding; y <= canvas.height - padding; y += 40) {
     ctx.beginPath(); ctx.moveTo(padding, y); ctx.lineTo(canvas.width - padding, y); ctx.stroke();
   }
 
   // Draw Setpoint Line (500°C -> 520°C at 10 min)
-  ctx.strokeStyle = 'rgba(255, 184, 0, 0.6)';
+  ctx.strokeStyle = isLight ? '#d97706' : 'rgba(255, 184, 0, 0.6)';
   ctx.setLineDash([4, 4]);
   ctx.lineWidth = 1.5;
   ctx.beginPath();
@@ -884,9 +943,9 @@ function drawControlChart(trajectory) {
   ctx.setLineDash([]);
 
   // Draw Actual Reactor Temp Curve
-  ctx.strokeStyle = '#00f0ff';
+  ctx.strokeStyle = isLight ? '#0284c7' : '#00f0ff';
   ctx.lineWidth = 2.5;
-  ctx.shadowColor = '#00f0ff';
+  ctx.shadowColor = isLight ? 'rgba(2, 132, 199, 0.35)' : '#00f0ff';
   ctx.shadowBlur = 8;
   ctx.beginPath();
 
@@ -900,7 +959,7 @@ function drawControlChart(trajectory) {
   ctx.shadowBlur = 0;
 
   // Axes and text
-  ctx.strokeStyle = '#64748b';
+  ctx.strokeStyle = isLight ? '#94a3b8' : '#64748b';
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(padding, padding);
@@ -908,9 +967,9 @@ function drawControlChart(trajectory) {
   ctx.lineTo(canvas.width - padding, canvas.height - padding);
   ctx.stroke();
 
-  ctx.fillStyle = '#94a3b8';
+  ctx.fillStyle = isLight ? '#334155' : '#94a3b8';
   ctx.font = '11px Inter';
-  ctx.fillText(t('tab6.axis_time', 'Time (0 - 60 Minutes)'), canvas.width / 2 - 50, canvas.height - 10);
+  ctx.fillText('Time (0 - 60 Minutes)', canvas.width / 2 - 50, canvas.height - 10);
   ctx.fillText('450°C', 10, canvas.height - padding);
   ctx.fillText('600°C', 10, padding + 10);
 }

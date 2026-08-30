@@ -1,0 +1,10 @@
+﻿# Robots.txt for BIOPLANT AI Digital Twin Platform
+User-agent: *
+Allow: /
+Allow: /manual.html
+Allow: /docs
+Allow: /redoc
+Allow: /sitemap.xml
+
+# Sitemaps
+Sitemap: http://127.0.0.1:8000/sitemap.xml

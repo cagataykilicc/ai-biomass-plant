@@ -1,9 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI-Integrated Biomass Conversion Plant - Digital Twin Platform (V1.0)</title>
+  <title>BIOPLANT AI - Industrial Biomass Digital Twin & Autonomous Autopilot</title>
+  
+  <!-- SEO Primary Meta Tags -->
+  <meta name="title" content="BIOPLANT AI - Industrial Biomass Digital Twin & Autonomous Autopilot">
+  <meta name="description" content="Physics-informed AI Digital Twin for industrial biomass thermochemical conversion. Features Bayesian soft sensors, NSGA-II Pareto optimization, automated fault diagnostics, 20-year DCF techno-economics, and closed-loop autonomous autopilot.">
+  <meta name="keywords" content="biomass pyrolysis, digital twin, chemical engineering, physics-informed machine learning, autonomous autopilot, NSGA-II, Pareto optimization, soft sensors, SIL-2 safety, renewable bio-oil, biochar carbon removal, circular bioeconomy">
+  <meta name="author" content="Çağatay Kılıç">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="http://127.0.0.1:8000/">
+
+  <!-- GEO Location Metadata -->
+  <meta name="geo.region" content="TR-34">
+  <meta name="geo.placename" content="Istanbul, Turkey">
+  <meta name="geo.position" content="41.0082;28.9784">
+  <meta name="ICBM" content="41.0082, 28.9784">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="http://127.0.0.1:8000/">
+  <meta property="og:site_name" content="BIOPLANT AI Platform">
+  <meta property="og:title" content="BIOPLANT AI - Industrial Biomass Digital Twin & Autonomous Autopilot">
+  <meta property="og:description" content="Closed-loop industrial digital twin integrating first-principles thermo-kinetics, Bayesian uncertainty quantification, and autonomous supervisory control.">
+  <meta property="og:image" content="/static/bioplant_hero_banner.jpg">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="http://127.0.0.1:8000/">
+  <meta name="twitter:title" content="BIOPLANT AI - Industrial Biomass Digital Twin & Autonomous Autopilot">
+  <meta name="twitter:description" content="Closed-loop industrial digital twin integrating first-principles thermo-kinetics, Bayesian uncertainty quantification, and autonomous supervisory control.">
+  <meta name="twitter:image" content="/static/bioplant_hero_banner.jpg">
+
+  <!-- JSON-LD Structured Data Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "BIOPLANT AI Digital Twin",
+    "operatingSystem": "All (Web-based)",
+    "applicationCategory": "EngineeringApplication",
+    "description": "Industrial digital twin platform combining chemical engineering first-principles and machine learning for autonomous biomass conversion plants.",
+    "author": {
+      "@type": "Person",
+      "name": "Çağatay Kılıç",
+      "url": "https://github.com/cagataykilicc"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -22,63 +75,63 @@
           </svg>
         </div>
         <div class="brand-text">
-          <h2 data-i18n="brand.title">BIOPLANT AI</h2>
-          <span class="version-tag" data-i18n="brand.tag">V3.0 NEXT-GEN AI & SPATIAL</span>
+          <h1 style="font-size:1.1rem; font-weight:800; letter-spacing:0.5px; margin:0; line-height:1.2;">BIOPLANT AI</h1>
+          <span class="version-tag">V3.0 NEXT-GEN AI & SPATIAL</span>
         </div>
       </div>
 
       <nav class="nav-menu">
         <button class="nav-btn active" data-tab="flowsheet-tab" id="btn-tab-flowsheet">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>
-          <span data-i18n="nav.flowsheet">Control Room</span>
+          <span>Control Room</span>
         </button>
         <button class="nav-btn" data-tab="soft-sensors-tab" id="btn-tab-soft-sensors">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          <span data-i18n="nav.soft_sensors">Soft Sensors (95% UQ)</span>
+          <span>Soft Sensors (95% UQ)</span>
         </button>
         <button class="nav-btn" data-tab="optimization-tab" id="btn-tab-optimization">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-          <span data-i18n="nav.optimization">Pareto Optimizer</span>
+          <span>Pareto Optimizer</span>
         </button>
         <button class="nav-btn" data-tab="diagnostics-tab" id="btn-tab-diagnostics">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <span data-i18n="nav.diagnostics">Fault Diagnostics</span>
+          <span>Fault Diagnostics</span>
         </button>
         <button class="nav-btn" data-tab="maintenance-tab" id="btn-tab-maintenance">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-          <span data-i18n="nav.maintenance">Predictive Maintenance</span>
+          <span>Predictive Maintenance</span>
         </button>
         <button class="nav-btn" data-tab="control-tab" id="btn-tab-control">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          <span data-i18n="nav.control">Dynamic Control (MPC)</span>
+          <span>Dynamic Control (MPC)</span>
         </button>
         <button class="nav-btn" data-tab="economics-tab" id="btn-tab-economics">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          <span data-i18n="nav.economics">TEA & LCA Carbon</span>
+          <span>TEA & LCA Carbon</span>
         </button>
         <button class="nav-btn" data-tab="autopilot-tab" id="btn-tab-autopilot">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V18a1 1 0 0 1-2 0v-1.07A6 6 0 0 1 6.07 12H5a1 1 0 0 1 0-2h1.07A6 6 0 0 1 11 4.93V4a1 1 0 0 1 2 0v.93A6 6 0 0 1 17.93 10H19a1 1 0 0 1 0 2h-1.07A6 6 0 0 1 13 16.93z"/><circle cx="12" cy="12" r="2"/></svg>
-          <span data-i18n="nav.autopilot">Autopilot Cockpit</span>
+          <span>Autopilot Cockpit</span>
         </button>
         <button class="nav-btn" data-tab="iot-tab" id="btn-tab-iot">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
-          <span data-i18n="nav.iot">Industrial IoT & Edge</span>
+          <span>Industrial IoT & Edge</span>
         </button>
         <button class="nav-btn" data-tab="fleet-tab" id="btn-tab-fleet">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          <span data-i18n="nav.fleet">Fleet & Carbon Trading</span>
+          <span>Fleet & Carbon Trading</span>
         </button>
         <button class="nav-btn" data-tab="spatial-tab" id="btn-tab-spatial">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-          <span data-i18n="nav.spatial">3D Spatial & Copilot</span>
+          <span>3D Spatial & Copilot</span>
         </button>
       </nav>
 
       <div class="sidebar-status">
         <div class="status-indicator online"></div>
         <div class="status-meta">
-          <span class="status-label" data-i18n="sidebar.status_label">DIGITAL TWIN STATE</span>
-          <span class="status-value" id="twin-status" data-i18n="sidebar.status_val">REAL-TIME ACTIVE</span>
+          <span class="status-label">DIGITAL TWIN STATE</span>
+          <span class="status-value" id="twin-status">REAL-TIME ACTIVE</span>
         </div>
       </div>
     </aside>
@@ -88,20 +141,28 @@
       <!-- Top Live Telemetry Bar -->
       <header class="top-bar">
         <div class="top-telemetry-item">
-          <span class="t-label" data-i18n="top.temp_label">REACTOR CORE (TI-103)</span>
+          <span class="t-label">REACTOR CORE (TI-103)</span>
           <span class="t-val" id="top-temp">500.0 °C</span>
         </div>
         <div class="top-telemetry-item">
-          <span class="t-label" data-i18n="top.feed_label">FEED RATE (FI-101)</span>
+          <span class="t-label">FEED RATE (FI-101)</span>
           <span class="t-val" id="top-feed">100.0 kg/h</span>
         </div>
         <div class="top-telemetry-item">
-          <span class="t-label" data-i18n="top.tsi_label">THERMAL SELF-SUFFICIENCY</span>
+          <span class="t-label">THERMAL SELF-SUFFICIENCY</span>
           <span class="t-val highlight" id="top-tsi">111.3 %</span>
         </div>
         <div class="top-telemetry-item">
-          <span class="t-label" data-i18n="top.mode_label">ENERGY STATUS</span>
+          <span class="t-label">ENERGY STATUS</span>
           <span class="badge badge-success" id="top-energy-status">AUTONOMOUS</span>
+        </div>
+        <!-- Theme Toggle -->
+        <div class="top-telemetry-item">
+          <button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle Dark and Light Mode" title="Toggle Theme (Dark/Light)">
+            <svg class="theme-icon" id="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <svg class="theme-icon" id="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <span id="theme-text">Dark Mode</span>
+          </button>
         </div>
         <div class="top-telemetry-item">
           <a href="/docs" target="_blank" style="text-decoration:none;">

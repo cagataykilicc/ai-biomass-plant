@@ -73,6 +73,48 @@ def test_user_manual_english_documentation() -> None:
     assert "7. Safety & LOTO" in content
     assert "8. Troubleshooting & FAQ" in content
     assert "← Back to Live Dashboard" in content
+    assert "id=\"manual-theme-toggle\"" in content
+
+
+def test_seo_geo_metadata_and_theme_support() -> None:
+    """Verify SEO meta tags, GEO coordinates, sitemap, robots.txt, and theme toggling."""
+    static_dir = Path(__file__).resolve().parent.parent / "src" / "web" / "static"
+    index_path = static_dir / "index.html"
+    robots_path = static_dir / "robots.txt"
+    sitemap_path = static_dir / "sitemap.xml"
+
+    assert robots_path.exists(), "robots.txt is missing"
+    robots_content = robots_path.read_text(encoding="utf-8")
+    assert "Sitemap:" in robots_content
+
+    assert sitemap_path.exists(), "sitemap.xml is missing"
+    sitemap_content = sitemap_path.read_text(encoding="utf-8")
+    assert "<loc>http://127.0.0.1:8000/</loc>" in sitemap_content
+
+    assert index_path.exists(), "index.html is missing"
+    index_content = index_path.read_text(encoding="utf-8")
+
+    # SEO verification
+    assert '<meta name="description"' in index_content
+    assert '<meta name="keywords"' in index_content
+    assert '<meta name="author" content="Çağatay Kılıç">' in index_content
+    assert '<link rel="canonical"' in index_content
+    assert '<meta property="og:title"' in index_content
+    assert '<meta name="twitter:card"' in index_content
+    assert '"@type": "SoftwareApplication"' in index_content
+
+    # GEO verification
+    assert '<meta name="geo.region" content="TR-34">' in index_content
+    assert '<meta name="geo.placename" content="Istanbul, Turkey">' in index_content
+    assert '<meta name="geo.position"' in index_content
+    assert '<meta name="ICBM"' in index_content
+
+    # Theme toggle verification
+    assert 'data-theme="dark"' in index_content
+    assert 'id="theme-toggle-btn"' in index_content
+    assert 'id="theme-icon-sun"' in index_content
+    assert 'id="theme-icon-moon"' in index_content
+
 
 
 
