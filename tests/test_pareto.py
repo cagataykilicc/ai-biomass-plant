@@ -32,3 +32,29 @@ def test_pareto_frontier_generation() -> None:
     assert len(df) == len(non_dom)
     assert "bio_oil_yield_dry_pct" in df.columns
     assert "thermal_self_sufficiency_index_pct" in df.columns
+
+
+def test_api_optimize_pareto_integration() -> None:
+    """Verify REST API handle_optimize returns correct schema for frontend Canvas rendering."""
+    from src.api.handlers import APIRequestHandler
+
+    res = APIRequestHandler.handle_optimize({
+        "feedstock": "olive_pomace",
+        "mode": "pareto",
+        "profile": "bio_oil",
+    })
+
+    assert "frontier" in res
+    assert len(res["frontier"]) > 0
+    assert "top_solution" in res
+    assert "topsis_score" in res
+    assert res["profile_applied"] == "bio_oil_maximizer"
+
+    sample = res["frontier"][0]
+    assert "objectives" in sample
+    assert "bio_oil_yield_dry_pct" in sample["objectives"]
+    assert "biochar_yield_dry_pct" in sample["objectives"]
+    assert "gross_margin_usd_h" in sample["objectives"]
+    assert sample["objectives"]["bio_oil_yield_dry_pct"] > 0
+    assert sample["objectives"]["biochar_yield_dry_pct"] > 0
+

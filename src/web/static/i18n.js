@@ -91,6 +91,7 @@ const i18nData = {
     "tab3.feed": "Feed",
     "tab3.profit": "Profit",
     "tab3.tsi": "TSI",
+    "tab3.computing": "Computing Pareto Frontier...",
 
     // Tab 4: Fault Diagnostics
     "tab4.header_title": "Process Anomaly Detection, Equipment Diagnostics & Alarm Management",
@@ -358,6 +359,7 @@ const i18nData = {
     "tab3.feed": "Besleme",
     "tab3.profit": "Kâr",
     "tab3.tsi": "TSI",
+    "tab3.computing": "Pareto Sınırı Hesaplanıyor...",
 
     // Tab 4: Fault Diagnostics
     "tab4.header_title": "Proses Anomali Tespiti, Ekipman Teşhisi ve Alarm Yönetimi",

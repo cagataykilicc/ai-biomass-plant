@@ -198,11 +198,23 @@ class APIRequestHandler:
         """Solve process optimization."""
         fs_name = data.get("feedstock", "pine_sawdust")
         mode = data.get("mode", "pareto")
+        raw_profile = data.get("profile", "balanced_sustainability")
+        profile_map = {
+            "balanced": "balanced_sustainability",
+            "bio_oil": "bio_oil_maximizer",
+            "biochar": "biochar_carbon_priority",
+            "profit": "economic_profit_priority",
+            "balanced_sustainability": "balanced_sustainability",
+            "bio_oil_maximizer": "bio_oil_maximizer",
+            "biochar_carbon_priority": "biochar_carbon_priority",
+            "economic_profit_priority": "economic_profit_priority",
+        }
+        profile_name = profile_map.get(raw_profile, "balanced_sustainability")
 
         if mode == "pareto":
             opt = ParetoOptimizer(feedstock_name=fs_name)
             frontier = opt.generate_pareto_frontier(n_candidates=30)
-            ranked = TOPSISDecisionMaker.rank_solutions(frontier, profile_name="balanced_sustainability")
+            ranked = TOPSISDecisionMaker.rank_solutions(frontier, profile_name=profile_name)
             top_sol = ranked[0] if ranked else None
             non_dom = frontier.get_non_dominated_solutions()
             return {
@@ -210,6 +222,7 @@ class APIRequestHandler:
                 "frontier": [s.to_dict() for s in non_dom],
                 "top_solution": top_sol,
                 "topsis_score": top_sol["closeness_score"] if top_sol else None,
+                "profile_applied": profile_name,
             }
         else:
             obj_map = {

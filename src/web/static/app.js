@@ -38,6 +38,10 @@ function initLanguageSwitcher() {
     if (activeTab) {
       const tabId = activeTab.id;
       if (tabId === 'soft-sensors-tab' && tabLoaded['soft-sensors-tab']) runSoftSensors();
+      else if (tabId === 'optimization-tab' && tabLoaded['optimization-tab']) {
+        drawParetoChart();
+        renderBestSolution(currentTopSolution, currentTopsisScore);
+      }
       else if (tabId === 'diagnostics-tab' && tabLoaded['diagnostics-tab']) runDiagnostics();
       else if (tabId === 'maintenance-tab' && tabLoaded['maintenance-tab']) runMaintenance();
       else if (tabId === 'economics-tab' && tabLoaded['economics-tab']) runEconomics();
@@ -94,6 +98,7 @@ function initNavigation() {
         tabLoaded[targetTab] = true;
         setTimeout(() => {
           if (targetTab === 'soft-sensors-tab') runSoftSensors();
+          else if (targetTab === 'optimization-tab') runOptimization();
           else if (targetTab === 'diagnostics-tab') runDiagnostics();
           else if (targetTab === 'maintenance-tab') runMaintenance();
           else if (targetTab === 'control-tab') runControlSimulation();
@@ -311,10 +316,15 @@ function renderSoftSensors(sensors) {
 
 /* Tab 3: Optimization & Pareto */
 let paretoData = [];
+let currentTopSolution = null;
+let currentTopsisScore = 0.85;
+let activeOptProfile = 'balanced';
+let hoveredParetoPoint = null;
+
 function initOptimizationHandlers() {
   const btnOpt = document.getElementById('btn-run-opt');
   if (btnOpt) {
-    btnOpt.addEventListener('click', runOptimization);
+    btnOpt.addEventListener('click', () => runOptimization(activeOptProfile));
   }
 
   const pBtns = document.querySelectorAll('.profile-buttons button');
@@ -322,25 +332,62 @@ function initOptimizationHandlers() {
     btn.addEventListener('click', () => {
       pBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      drawParetoChart();
+      activeOptProfile = btn.getAttribute('data-profile') || 'balanced';
+      runOptimization(activeOptProfile);
     });
   });
+
+  const canvas = document.getElementById('paretoCanvas');
+  if (canvas) {
+    canvas.addEventListener('mousemove', handleParetoCanvasHover);
+    canvas.addEventListener('mouseleave', () => {
+      if (hoveredParetoPoint) {
+        hoveredParetoPoint = null;
+        canvas.style.cursor = 'default';
+        drawParetoChart();
+      }
+    });
+    canvas.addEventListener('click', handleParetoCanvasClick);
+  }
 }
 
-async function runOptimization() {
+function getSolutionYields(pt) {
+  const objs = pt.objectives || {};
+  const charY = objs.biochar_yield_dry_pct ?? pt.char_yield_dry_pct ?? 25.0;
+  const oilY = objs.bio_oil_yield_dry_pct ?? pt.liquid_yield_dry_pct ?? 48.0;
+  return { charY, oilY, objs, setpoints: pt.setpoints || {} };
+}
+
+async function runOptimization(profile = activeOptProfile) {
   const feedstock = document.getElementById('feedstock-select').value;
+  const btnOpt = document.getElementById('btn-run-opt');
+  if (btnOpt) {
+    btnOpt.disabled = true;
+    btnOpt.innerHTML = `<span class="spinner-inline"></span> <span>${t('tab3.computing', 'Computing Pareto Frontier...')}</span>`;
+  }
+
   try {
     const res = await fetch('/api/optimize', {
       method: 'POST',
       headers: apiHeaders(),
-      body: JSON.stringify({ feedstock, mode: 'pareto' }),
+      body: JSON.stringify({ feedstock, mode: 'pareto', profile }),
     });
     const data = await res.json();
     paretoData = data.frontier || [];
+    currentTopSolution = data.top_solution || paretoData[0] || null;
+    currentTopsisScore = data.topsis_score || 0.85;
     drawParetoChart();
-    renderBestSolution(data.top_solution, data.topsis_score);
+    renderBestSolution(currentTopSolution, currentTopsisScore);
   } catch (err) {
     console.error('Optimization failed:', err);
+  } finally {
+    if (btnOpt) {
+      btnOpt.disabled = false;
+      btnOpt.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span data-i18n="tab3.btn_opt">${t('tab3.btn_opt', 'Compute Pareto Frontier (30 Solutions)')}</span>
+      `;
+    }
   }
 }
 
@@ -350,50 +397,233 @@ function drawParetoChart() {
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Background grid
+  const padding = { left: 55, right: 30, top: 30, bottom: 45 };
+  const plotW = canvas.width - padding.left - padding.right;
+  const plotH = canvas.height - padding.top - padding.bottom;
+
+  // Determine dynamic axis ranges
+  let minChar = 15.0, maxChar = 35.0;
+  let minOil = 35.0, maxOil = 60.0;
+
+  if (paretoData.length > 0) {
+    const charValues = paretoData.map(p => getSolutionYields(p).charY);
+    const oilValues = paretoData.map(p => getSolutionYields(p).oilY);
+
+    minChar = Math.max(10.0, Math.floor(Math.min(...charValues) - 2));
+    maxChar = Math.ceil(Math.max(...charValues) + 2);
+    minOil = Math.max(25.0, Math.floor(Math.min(...oilValues) - 2));
+    maxOil = Math.ceil(Math.max(...oilValues) + 2);
+  }
+
+  const mapX = (charVal) => padding.left + ((charVal - minChar) / (maxChar - minChar)) * plotW;
+  const mapY = (oilVal) => padding.top + plotH - ((oilVal - minOil) / (maxOil - minOil)) * plotH;
+
+  // Draw Grid Lines & Numeric Axis Labels
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
   ctx.lineWidth = 1;
-  for (let x = 40; x < canvas.width; x += 50) {
-    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height - 30); ctx.stroke();
+  ctx.fillStyle = '#64748b';
+  ctx.font = '10px JetBrains Mono, monospace';
+
+  // Vertical Grid (X)
+  const xStep = Math.max(2, Math.round((maxChar - minChar) / 5));
+  for (let c = minChar; c <= maxChar; c += xStep) {
+    const gx = mapX(c);
+    ctx.beginPath();
+    ctx.moveTo(gx, padding.top);
+    ctx.lineTo(gx, padding.top + plotH);
+    ctx.stroke();
+    ctx.fillText(`${c.toFixed(0)}%`, gx - 10, padding.top + plotH + 16);
   }
-  for (let y = 20; y < canvas.height - 30; y += 40) {
-    ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+
+  // Horizontal Grid (Y)
+  const yStep = Math.max(2, Math.round((maxOil - minOil) / 5));
+  for (let o = minOil; o <= maxOil; o += yStep) {
+    const gy = mapY(o);
+    ctx.beginPath();
+    ctx.moveTo(padding.left, gy);
+    ctx.lineTo(padding.left + plotW, gy);
+    ctx.stroke();
+    ctx.fillText(`${o.toFixed(0)}%`, padding.left - 36, gy + 3);
   }
 
   // Draw Axes
-  ctx.strokeStyle = '#64748b';
+  ctx.strokeStyle = '#475569';
+  ctx.lineWidth = 1.5;
   ctx.beginPath();
-  ctx.moveTo(40, 20);
-  ctx.lineTo(40, canvas.height - 30);
-  ctx.lineTo(canvas.width - 20, canvas.height - 30);
+  ctx.moveTo(padding.left, padding.top);
+  ctx.lineTo(padding.left, padding.top + plotH);
+  ctx.lineTo(padding.left + plotW, padding.top + plotH);
   ctx.stroke();
 
-  // Axis Labels
+  // Axis Titles
   ctx.fillStyle = '#94a3b8';
-  ctx.font = '11px Inter';
-  ctx.fillText(t('tab3.axis_biochar', 'Biochar Yield (wt%)'), canvas.width / 2 - 50, canvas.height - 10);
+  ctx.font = '11px Inter, sans-serif';
+  const biocharLabel = t('tab3.axis_biochar', 'Biochar Yield (wt%)');
+  ctx.fillText(biocharLabel, padding.left + plotW / 2 - 60, canvas.height - 10);
+
   ctx.save();
-  ctx.translate(15, canvas.height / 2 + 40);
+  ctx.translate(16, padding.top + plotH / 2 + 50);
   ctx.rotate(-Math.PI / 2);
-  ctx.fillText(t('tab3.axis_biooil', 'Bio-Oil Yield (wt%)'), 0, 0);
+  const biooilLabel = t('tab3.axis_biooil', 'Bio-Oil Yield (wt%)');
+  ctx.fillText(biooilLabel, 0, 0);
   ctx.restore();
 
-  if (paretoData.length === 0) return;
+  if (paretoData.length === 0) {
+    // Empty state message
+    ctx.fillStyle = '#64748b';
+    ctx.font = '12px Inter, sans-serif';
+    ctx.fillText('Click "Compute Pareto Frontier" to evaluate non-dominated solutions', padding.left + 30, padding.top + plotH / 2);
+    return;
+  }
 
-  // Plot Points
-  paretoData.forEach((pt, idx) => {
-    const x = 40 + (pt.char_yield_dry_pct - 15) * (canvas.width - 70) / 30;
-    const y = (canvas.height - 30) - (pt.liquid_yield_dry_pct - 30) * (canvas.height - 60) / 35;
+  // Sort by Biochar Yield to draw non-dominated trade-off curve
+  const sorted = [...paretoData].sort((a, b) => getSolutionYields(a).charY - getSolutionYields(b).charY);
 
-    ctx.fillStyle = idx === 0 ? '#00ff88' : '#00f0ff';
-    ctx.shadowColor = idx === 0 ? '#00ff88' : '#00f0ff';
-    ctx.shadowBlur = idx === 0 ? 12 : 6;
+  // Draw Frontier Curve Line
+  ctx.strokeStyle = 'rgba(0, 240, 255, 0.4)';
+  ctx.setLineDash([4, 4]);
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  sorted.forEach((pt, i) => {
+    const { charY, oilY } = getSolutionYields(pt);
+    const px = mapX(charY);
+    const py = mapY(oilY);
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  });
+  ctx.stroke();
+  ctx.setLineDash([]);
 
+  // Plot All Candidate Points
+  paretoData.forEach((pt) => {
+    const { charY, oilY } = getSolutionYields(pt);
+    const px = mapX(charY);
+    const py = mapY(oilY);
+
+    // Save canvas coordinates for hover hit-testing
+    pt._canvasX = px;
+    pt._canvasY = py;
+
+    const isChampion = currentTopSolution && (pt.solution_id === currentTopSolution.solution_id);
+    const isHovered = hoveredParetoPoint && (pt.solution_id === hoveredParetoPoint.solution_id);
+
+    if (!isChampion) {
+      ctx.fillStyle = isHovered ? '#ffffff' : '#00f0ff';
+      ctx.shadowColor = '#00f0ff';
+      ctx.shadowBlur = isHovered ? 14 : 6;
+      ctx.beginPath();
+      ctx.arc(px, py, isHovered ? 6.5 : 4.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+  });
+
+  // Plot Champion Solution with Highlight
+  if (currentTopSolution) {
+    const { charY, oilY } = getSolutionYields(currentTopSolution);
+    const px = mapX(charY);
+    const py = mapY(oilY);
+
+    // Pulsating outer aura
+    ctx.strokeStyle = 'rgba(0, 255, 136, 0.45)';
+    ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.arc(x, y, idx === 0 ? 7 : 4.5, 0, Math.PI * 2);
+    ctx.arc(px, py, 12, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Solid Champion Core
+    ctx.fillStyle = '#00ff88';
+    ctx.shadowColor = '#00ff88';
+    ctx.shadowBlur = 16;
+    ctx.beginPath();
+    ctx.arc(px, py, 7.5, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowBlur = 0;
-  });
+
+    // Champion Label
+    ctx.fillStyle = '#00ff88';
+    ctx.font = 'bold 10px Inter, sans-serif';
+    ctx.fillText('★ TOPSIS', px + 12, py - 6);
+  }
+
+  // Draw Interactive Tooltip for Hovered Point
+  if (hoveredParetoPoint) {
+    const { charY, oilY, objs, setpoints } = getSolutionYields(hoveredParetoPoint);
+    const hx = hoveredParetoPoint._canvasX;
+    const hy = hoveredParetoPoint._canvasY;
+
+    // Crosshairs
+    ctx.strokeStyle = 'rgba(0, 240, 255, 0.25)';
+    ctx.setLineDash([2, 2]);
+    ctx.beginPath();
+    ctx.moveTo(padding.left, hy); ctx.lineTo(hx, hy);
+    ctx.moveTo(hx, padding.top + plotH); ctx.lineTo(hx, hy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Tooltip Box
+    const tipW = 160;
+    const tipH = 65;
+    let tipX = hx + 12;
+    let tipY = hy - tipH - 8;
+    if (tipX + tipW > canvas.width - 10) tipX = hx - tipW - 12;
+    if (tipY < 10) tipY = hy + 12;
+
+    ctx.fillStyle = 'rgba(10, 15, 30, 0.92)';
+    ctx.strokeStyle = 'rgba(0, 240, 255, 0.6)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(tipX, tipY, tipW, tipH, 6);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 10px Inter, sans-serif';
+    ctx.fillText(`Sol #${hoveredParetoPoint.solution_id} (${hoveredParetoPoint.is_self_sufficient ? 'TSI >= 100%' : 'Deficit'})`, tipX + 8, tipY + 16);
+
+    ctx.font = '9.5px JetBrains Mono, monospace';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText(`Bio-Oil: ${oilY.toFixed(1)} wt%`, tipX + 8, tipY + 30);
+    ctx.fillText(`Biochar: ${charY.toFixed(1)} wt%`, tipX + 8, tipY + 43);
+    ctx.fillStyle = '#00ff88';
+    ctx.fillText(`Profit: $${(objs.gross_margin_usd_h || 0).toFixed(2)}/h | ${Math.round(setpoints.reactor_temp_c || 500)}°C`, tipX + 8, tipY + 56);
+  }
+}
+
+function handleParetoCanvasHover(e) {
+  const canvas = document.getElementById('paretoCanvas');
+  if (!canvas || paretoData.length === 0) return;
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
+  const mouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+  let closest = null;
+  let minDist = 18;
+
+  for (const pt of paretoData) {
+    if (pt._canvasX !== undefined && pt._canvasY !== undefined) {
+      const dist = Math.hypot(pt._canvasX - mouseX, pt._canvasY - mouseY);
+      if (dist < minDist) {
+        minDist = dist;
+        closest = pt;
+      }
+    }
+  }
+
+  if (closest !== hoveredParetoPoint) {
+    hoveredParetoPoint = closest;
+    canvas.style.cursor = closest ? 'pointer' : 'default';
+    drawParetoChart();
+  }
+}
+
+function handleParetoCanvasClick(e) {
+  if (hoveredParetoPoint) {
+    currentTopSolution = hoveredParetoPoint;
+    currentTopsisScore = hoveredParetoPoint.closeness_score || 0.88;
+    renderBestSolution(currentTopSolution, currentTopsisScore);
+    drawParetoChart();
+  }
 }
 
 function renderBestSolution(sol, topsis) {
@@ -402,19 +632,22 @@ function renderBestSolution(sol, topsis) {
 
   const setpoints = sol.setpoints || {};
   const objs = sol.objectives || {};
+  const charVal = objs.biochar_yield_dry_pct ?? sol.char_yield_dry_pct ?? 27.0;
+  const oilVal = objs.bio_oil_yield_dry_pct ?? sol.liquid_yield_dry_pct ?? 48.0;
+  const profitVal = objs.gross_margin_usd_h ?? 18.0;
 
   container.innerHTML = `
     <div style="margin-top:16px; padding:12px; background:rgba(0,255,136,0.05); border:1px solid rgba(0,255,136,0.2); border-radius:8px;">
       <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-        <span style="font-weight:700; color:var(--accent-green);">${t('tab3.topsis_champion', 'TOPSIS Champion Setpoint')}</span>
+        <span style="font-weight:700; color:var(--accent-green);">${t('tab3.topsis_champion', 'TOPSIS Champion Setpoint')} (Sol #${sol.solution_id || 1})</span>
         <span class="badge badge-success">${t('tab3.score', 'Score')}: ${((topsis || 0.85) * 100).toFixed(1)}%</span>
       </div>
       <div style="font-family:var(--font-mono); font-size:0.85rem; display:grid; grid-template-columns:1fr 1fr; gap:6px;">
         <div>${t('tab3.temp', 'Temp')}: <strong>${(setpoints.reactor_temp_c || 500).toFixed(1)} °C</strong></div>
         <div>${t('tab3.feed', 'Feed')}: <strong>${(setpoints.feed_rate_kg_h || 100).toFixed(1)} kg/h</strong></div>
-        <div>${t('tab1.m_biooil', 'Bio-Oil')}: <strong>${(objs.bio_oil_yield_dry_pct || 48).toFixed(1)} wt%</strong></div>
-        <div>${t('tab1.m_biochar', 'Biochar')}: <strong>${(objs.biochar_yield_dry_pct || 27).toFixed(1)} wt%</strong></div>
-        <div>${t('tab3.profit', 'Profit')}: <strong>$${(objs.gross_margin_usd_h || 18).toFixed(2)}/h</strong></div>
+        <div>${t('tab1.m_biooil', 'Bio-Oil')}: <strong>${oilVal.toFixed(1)} wt%</strong></div>
+        <div>${t('tab1.m_biochar', 'Biochar')}: <strong>${charVal.toFixed(1)} wt%</strong></div>
+        <div>${t('tab3.profit', 'Profit')}: <strong>$${profitVal.toFixed(2)}/h</strong></div>
         <div>${t('tab3.tsi', 'TSI')}: <strong>${sol.is_self_sufficient ? '>= 100%' : '< 100%'}</strong></div>
       </div>
     </div>
