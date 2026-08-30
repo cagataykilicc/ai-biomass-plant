@@ -128,57 +128,57 @@
           <!-- Control Panel -->
           <div class="glass-card control-card">
             <div class="card-header">
-              <h3>Process Setpoint Actuators</h3>
-              <span class="badge badge-cyan">Closed-Loop DCS</span>
+              <h3 data-i18n="tab1.card_title">Process Setpoint Actuators</h3>
+              <span class="badge badge-cyan" data-i18n="tab1.card_badge">Closed-Loop DCS</span>
             </div>
             <div class="control-group">
-              <label for="feedstock-select">Feedstock Profile</label>
+              <label for="feedstock-select" data-i18n="tab1.feedstock_label">Feedstock Profile</label>
               <select id="feedstock-select" class="custom-select">
-                <option value="pine_sawdust" selected>Pine Sawdust (Forestry Residue)</option>
-                <option value="olive_pomace">Olive Pomace (Agri Waste)</option>
-                <option value="wheat_straw">Wheat Straw (Herbaceous)</option>
-                <option value="rice_husk">Rice Husk (Cereal Husk)</option>
+                <option value="pine_sawdust" selected data-i18n="tab1.opt_pine">Pine Sawdust (Forestry Residue)</option>
+                <option value="olive_pomace" data-i18n="tab1.opt_olive">Olive Pomace (Agri Waste)</option>
+                <option value="wheat_straw" data-i18n="tab1.opt_straw">Wheat Straw (Herbaceous)</option>
+                <option value="rice_husk" data-i18n="tab1.opt_husk">Rice Husk (Cereal Husk)</option>
               </select>
             </div>
             <div class="control-group">
               <div class="slider-label">
-                <span>Reactor Temperature</span>
+                <span data-i18n="tab1.temp_slider">Reactor Temperature</span>
                 <span class="val-display" id="disp-temp">500 °C</span>
               </div>
               <input type="range" id="slider-temp" min="400" max="650" step="5" value="500">
             </div>
             <div class="control-group">
               <div class="slider-label">
-                <span>Wet Biomass Feed Rate</span>
+                <span data-i18n="tab1.feed_slider">Wet Biomass Feed Rate</span>
                 <span class="val-display" id="disp-feed">100 kg/h</span>
               </div>
               <input type="range" id="slider-feed" min="20" max="250" step="5" value="100">
             </div>
             <div class="control-group">
               <div class="slider-label">
-                <span>Feed Initial Moisture</span>
+                <span data-i18n="tab1.moist_slider">Feed Initial Moisture</span>
                 <span class="val-display" id="disp-moisture">15.0 %</span>
               </div>
               <input type="range" id="slider-moisture" min="5" max="35" step="0.5" value="15">
             </div>
             <div class="control-group">
-              <label for="yield-engine-select">Yield Prediction Engine</label>
+              <label for="yield-engine-select" data-i18n="tab1.engine_label">Yield Prediction Engine</label>
               <select id="yield-engine-select" class="custom-select">
-                <option value="deterministic" selected>Deterministic (First-Principles Kinetics)</option>
-                <option value="ml">Machine Learning (Gradient Boosting Champion)</option>
+                <option value="deterministic" selected data-i18n="tab1.engine_det">Deterministic (First-Principles Kinetics)</option>
+                <option value="ml" data-i18n="tab1.engine_ml">Machine Learning (Gradient Boosting Champion)</option>
               </select>
             </div>
             <button class="btn btn-primary" id="btn-run-sim">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              <span>Execute Digital Twin Simulation</span>
+              <span data-i18n="tab1.btn_run">Execute Digital Twin Simulation</span>
             </button>
           </div>
 
           <!-- Animated P&ID Flowsheet -->
           <div class="glass-card flowsheet-card">
             <div class="card-header">
-              <h3>Live Flowsheet & Energy Integration</h3>
-              <div class="flow-status"><span class="pulse-dot"></span> MASS CONSERVED 100.0%</div>
+              <h3 data-i18n="tab1.flowsheet_title">Live Flowsheet & Energy Integration</h3>
+              <div class="flow-status"><span class="pulse-dot"></span> <span data-i18n="tab1.mass_conserved">MASS CONSERVED 100.0%</span></div>
             </div>
             <div class="flowsheet-svg-container">
               <svg viewBox="0 0 760 320" class="plant-flowsheet" id="svg-flowsheet">
@@ -234,24 +234,24 @@
             <!-- Flowsheet Key Metrics -->
             <div class="metrics-row">
               <div class="metric-item">
-                <span class="m-title">Liquid Bio-Oil</span>
+                <span class="m-title" data-i18n="tab1.m_biooil">Liquid Bio-Oil</span>
                 <span class="m-val" id="card-biooil-rate">48.1 kg/h</span>
                 <span class="m-sub" id="card-biooil-pct">48.09 wt% dry</span>
               </div>
               <div class="metric-item">
-                <span class="m-title">Solid Biochar</span>
+                <span class="m-title" data-i18n="tab1.m_biochar">Solid Biochar</span>
                 <span class="m-val" id="card-biochar-rate">27.4 kg/h</span>
                 <span class="m-sub" id="card-biochar-pct">27.35 wt% dry</span>
               </div>
               <div class="metric-item">
-                <span class="m-title">Clean Syngas</span>
+                <span class="m-title" data-i18n="tab1.m_syngas">Clean Syngas</span>
                 <span class="m-val" id="card-syngas-rate">24.5 kg/h</span>
                 <span class="m-sub" id="card-syngas-pct">24.56 wt% dry</span>
               </div>
               <div class="metric-item">
-                <span class="m-title">Net Thermal Power</span>
+                <span class="m-title" data-i18n="tab1.m_thermal">Net Thermal Power</span>
                 <span class="m-val text-green" id="card-surplus-heat">+5.3 kW</span>
-                <span class="m-sub">Self-Sufficient</span>
+                <span class="m-sub" data-i18n="tab1.m_self_sufficient">Self-Sufficient</span>
               </div>
             </div>
           </div>
@@ -261,8 +261,8 @@
       <!-- TAB 2: SOFT SENSORS -->
       <section class="tab-pane" id="soft-sensors-tab">
         <div class="tab-header">
-          <h2>Industrial Soft Sensor Suite & 95% Uncertainty Quantification (UQ)</h2>
-          <p>Real-time inferential estimators predicting unmeasured lab properties from online plant telemetry.</p>
+          <h2 data-i18n="tab2.header_title">Industrial Soft Sensor Suite & 95% Uncertainty Quantification (UQ)</h2>
+          <p data-i18n="tab2.header_desc">Real-time inferential estimators predicting unmeasured lab properties from online plant telemetry.</p>
         </div>
         <div class="soft-sensors-grid" id="soft-sensors-container">
           <!-- Rendered via JavaScript -->
@@ -272,28 +272,28 @@
       <!-- TAB 3: OPTIMIZATION -->
       <section class="tab-pane" id="optimization-tab">
         <div class="tab-header">
-          <h2>AI-Driven Multiobjective Optimization & Pareto Frontier</h2>
-          <p>Non-dominated NSGA-II frontiers and TOPSIS multi-criteria decision support.</p>
+          <h2 data-i18n="tab3.header_title">AI-Driven Multiobjective Optimization & Pareto Frontier</h2>
+          <p data-i18n="tab3.header_desc">Non-dominated NSGA-II frontiers and TOPSIS multi-criteria decision support.</p>
         </div>
         <div class="optimization-grid">
           <div class="glass-card opt-controls">
-            <h3>Stakeholder Profile Selection</h3>
+            <h3 data-i18n="tab3.profile_title">Stakeholder Profile Selection</h3>
             <div class="profile-buttons">
-              <button class="btn btn-outline active" data-profile="balanced">Balanced Operator</button>
-              <button class="btn btn-outline" data-profile="bio_oil">Max Bio-Oil Yield</button>
-              <button class="btn btn-outline" data-profile="biochar">Carbon Sequestration</button>
-              <button class="btn btn-outline" data-profile="profit">Max Economic Profit</button>
+              <button class="btn btn-outline active" data-profile="balanced" data-i18n="tab3.prof_balanced">Balanced Operator</button>
+              <button class="btn btn-outline" data-profile="bio_oil" data-i18n="tab3.prof_oil">Max Bio-Oil Yield</button>
+              <button class="btn btn-outline" data-profile="biochar" data-i18n="tab3.prof_char">Carbon Sequestration</button>
+              <button class="btn btn-outline" data-profile="profit" data-i18n="tab3.prof_profit">Max Economic Profit</button>
             </div>
             <button class="btn btn-primary" id="btn-run-opt" style="margin-top: 20px;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              <span>Compute Pareto Frontier (30 Solutions)</span>
+              <span data-i18n="tab3.btn_opt">Compute Pareto Frontier (30 Solutions)</span>
             </button>
             <div class="opt-result-card" id="opt-best-solution">
               <!-- Best solution table -->
             </div>
           </div>
           <div class="glass-card opt-chart-card">
-            <h3>Bio-Oil vs Biochar Pareto Frontier Trade-Off</h3>
+            <h3 data-i18n="tab3.chart_title">Bio-Oil vs Biochar Pareto Frontier Trade-Off</h3>
             <div class="chart-wrapper">
               <canvas id="paretoCanvas" width="540" height="320"></canvas>
             </div>
@@ -304,33 +304,33 @@
       <!-- TAB 4: DIAGNOSTICS & FAULT DETECTION -->
       <section class="tab-pane" id="diagnostics-tab">
         <div class="tab-header">
-          <h2>Process Anomaly Detection, Equipment Diagnostics & Alarm Management</h2>
-          <p>Tri-layer anomaly detection (Physical Balances, Isolation Forest & PCA Reconstruction Error).</p>
+          <h2 data-i18n="tab4.header_title">Process Anomaly Detection, Equipment Diagnostics & Alarm Management</h2>
+          <p data-i18n="tab4.header_desc">Tri-layer anomaly detection (Physical Balances, Isolation Forest & PCA Reconstruction Error).</p>
         </div>
         <div class="diagnostics-grid">
           <div class="glass-card diag-controls">
-            <h3>Simulate Industrial Failure Mode</h3>
+            <h3 data-i18n="tab4.sim_title">Simulate Industrial Failure Mode</h3>
             <div class="control-group">
-              <label for="fault-select">Injected Equipment Failure</label>
+              <label for="fault-select" data-i18n="tab4.fault_label">Injected Equipment Failure</label>
               <select id="fault-select" class="custom-select">
-                <option value="none">Normal Nominal Operations (Healthy)</option>
-                <option value="cyclone_blockage" selected>Cyclone C101 Dipleg Blockage (Ash Bridge)</option>
-                <option value="condenser_fouling">Condenser HX102 Tar/Wax Fouling</option>
-                <option value="thermal_runaway">Pyrolysis Reactor R101 Thermal Runaway</option>
-                <option value="sensor_drift">Thermocouple Sensor Drift (TI-103 Bias)</option>
-                <option value="feed_jam">Biomass Infeed Auger Jamming (Fuel Loss)</option>
+                <option value="none" data-i18n="tab4.fault_none">Normal Nominal Operations (Healthy)</option>
+                <option value="cyclone_blockage" selected data-i18n="tab4.fault_cyclone">Cyclone C101 Dipleg Blockage (Ash Bridge)</option>
+                <option value="condenser_fouling" data-i18n="tab4.fault_fouling">Condenser HX102 Tar/Wax Fouling</option>
+                <option value="thermal_runaway" data-i18n="tab4.fault_runaway">Pyrolysis Reactor R101 Thermal Runaway</option>
+                <option value="sensor_drift" data-i18n="tab4.fault_sensor">Thermocouple Sensor Drift (TI-103 Bias)</option>
+                <option value="feed_jam" data-i18n="tab4.fault_jam">Biomass Infeed Auger Jamming (Fuel Loss)</option>
               </select>
             </div>
             <div class="control-group">
               <div class="slider-label">
-                <span>Fault Severity</span>
+                <span data-i18n="tab4.sev_label">Fault Severity</span>
                 <span class="val-display" id="disp-severity">85 %</span>
               </div>
               <input type="range" id="slider-severity" min="10" max="100" step="5" value="85">
             </div>
             <button class="btn btn-danger" id="btn-run-diag">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
-              <span>Run Tri-Layer Anomaly Diagnostics</span>
+              <span data-i18n="tab4.btn_run_diag">Run Tri-Layer Anomaly Diagnostics</span>
             </button>
           </div>
 
@@ -343,22 +343,22 @@
       <!-- TAB 5: PREDICTIVE MAINTENANCE -->
       <section class="tab-pane" id="maintenance-tab">
         <div class="tab-header">
-          <h2>Predictive Maintenance, 95% RUL Prognostics & Work Order Dispatch</h2>
-          <p>Physics-informed asset wear degradation trajectories and automated safety LOTO work orders.</p>
+          <h2 data-i18n="tab5.header_title">Predictive Maintenance, 95% RUL Prognostics & Work Order Dispatch</h2>
+          <p data-i18n="tab5.header_desc">Physics-informed asset wear degradation trajectories and automated safety LOTO work orders.</p>
         </div>
         <div class="maintenance-grid">
           <div class="glass-card maint-controls">
-            <h3>Plant Operating Timeline</h3>
+            <h3 data-i18n="tab5.timeline_title">Plant Operating Timeline</h3>
             <div class="control-group">
               <div class="slider-label">
-                <span>Cumulative Operating Hours</span>
+                <span data-i18n="tab5.hours_label">Cumulative Operating Hours</span>
                 <span class="val-display" id="disp-hours">4,500 Hours</span>
               </div>
               <input type="range" id="slider-hours" min="500" max="10000" step="250" value="4500">
             </div>
             <button class="btn btn-primary" id="btn-run-maint">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-              <span>Evaluate Fleet RUL & Work Orders</span>
+              <span data-i18n="tab5.btn_eval">Evaluate Fleet RUL & Work Orders</span>
             </button>
           </div>
 
@@ -367,40 +367,41 @@
           </div>
         </div>
       </section>
+
       <!-- TAB 6: DYNAMIC PROCESS CONTROL & MPC -->
       <section class="tab-pane" id="control-tab">
         <div class="tab-header">
-          <h2>Dynamic Closed-Loop Process Control & Model Predictive Control (MPC)</h2>
-          <p>Transient simulation of reactor thermal capacitance, feedback PID stabilization, and receding horizon MPC.</p>
+          <h2 data-i18n="tab6.header_title">Dynamic Closed-Loop Process Control & Model Predictive Control (MPC)</h2>
+          <p data-i18n="tab6.header_desc">Transient simulation of reactor thermal capacitance, feedback PID stabilization, and receding horizon MPC.</p>
         </div>
         <div class="dashboard-grid">
           <div class="glass-card control-card">
-            <h3>Controller Configuration</h3>
+            <h3 data-i18n="tab6.cfg_title">Controller Configuration</h3>
             <div class="control-group">
-              <label for="ctrl-type-select">Active Control Architecture</label>
+              <label for="ctrl-type-select" data-i18n="tab6.ctrl_label">Active Control Architecture</label>
               <select id="ctrl-type-select" class="custom-select">
-                <option value="mpc" selected>Model Predictive Controller (MPC)</option>
-                <option value="pid">Industrial Digital PID Controller</option>
-                <option value="open_loop">Uncontrolled Open-Loop (Constant 55% Duty)</option>
+                <option value="mpc" selected data-i18n="tab6.ctrl_mpc">Model Predictive Controller (MPC)</option>
+                <option value="pid" data-i18n="tab6.ctrl_pid">Industrial Digital PID Controller</option>
+                <option value="open_loop" data-i18n="tab6.ctrl_open">Uncontrolled Open-Loop (Constant 55% Duty)</option>
               </select>
             </div>
             <div class="control-group">
               <div class="slider-label">
-                <span>Target Setpoint (Step at 10 min)</span>
+                <span data-i18n="tab6.sp_label">Target Setpoint (Step at 10 min)</span>
                 <span class="val-display" id="disp-ctrl-sp">520 °C</span>
               </div>
               <input type="range" id="slider-ctrl-sp" min="450" max="600" step="5" value="520">
             </div>
             <div class="control-group">
               <div class="slider-label">
-                <span>Moisture Disturbance (at 30 min)</span>
+                <span data-i18n="tab6.dist_label">Moisture Disturbance (at 30 min)</span>
                 <span class="val-display" id="disp-ctrl-moist">20.0 wt%</span>
               </div>
               <input type="range" id="slider-ctrl-moist" min="10" max="30" step="1" value="20">
             </div>
             <button class="btn btn-primary" id="btn-run-control">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
-              <span>Execute 60-Minute Transient Simulation</span>
+              <span data-i18n="tab6.btn_run_ctrl">Execute 60-Minute Transient Simulation</span>
             </button>
             <div id="control-metrics-box">
               <!-- Metrics rendered via JavaScript -->
@@ -408,37 +409,38 @@
           </div>
 
           <div class="glass-card flowsheet-card">
-            <h3>Live 60-Minute Closed-Loop Response Trajectory</h3>
+            <h3 data-i18n="tab6.chart_title">Live 60-Minute Closed-Loop Response Trajectory</h3>
             <div class="chart-wrapper">
               <canvas id="controlCanvas" width="560" height="320"></canvas>
             </div>
           </div>
         </div>
       </section>
+
       <!-- TAB 7: TECHNO-ECONOMIC & LCA CARBON ACCOUNTING -->
       <section class="tab-pane" id="economics-tab">
         <div class="tab-header">
-          <h2>Techno-Economic Assessment (TEA) & ISO 14040/14044 LCA Carbon Accounting</h2>
-          <p>20-Year Discounted Cash Flow valuation, Guthrie Capex/Opex, Levelized Cost of Bio-Oil, and Scope 1-2-3 carbon removals.</p>
+          <h2 data-i18n="tab7.header_title">Techno-Economic Assessment (TEA) & ISO 14040/14044 LCA Carbon Accounting</h2>
+          <p data-i18n="tab7.header_desc">20-Year Discounted Cash Flow valuation, Guthrie Capex/Opex, Levelized Cost of Bio-Oil, and Scope 1-2-3 carbon removals.</p>
         </div>
         <div class="dashboard-grid">
           <div class="glass-card control-card">
-            <h3>Market & Commercial Valuation Parameters</h3>
+            <h3 data-i18n="tab7.market_title">Market & Commercial Valuation Parameters</h3>
             <div class="control-group">
-              <label for="econ-oil-price">Bio-Oil Market Price ($/kg)</label>
+              <label for="econ-oil-price" data-i18n="tab7.oil_price_label">Bio-Oil Market Price ($/kg)</label>
               <input type="number" id="econ-oil-price" class="custom-select" value="0.65" step="0.05" min="0.2">
             </div>
             <div class="control-group">
-              <label for="econ-char-price">Biochar Market Price ($/kg)</label>
+              <label for="econ-char-price" data-i18n="tab7.char_price_label">Biochar Market Price ($/kg)</label>
               <input type="number" id="econ-char-price" class="custom-select" value="0.45" step="0.05" min="0.1">
             </div>
             <div class="control-group">
-              <label for="econ-corc-price">Carbon Removal Credit Price ($/tonne CO2)</label>
+              <label for="econ-corc-price" data-i18n="tab7.corc_price_label">Carbon Removal Credit Price ($/tonne CO2)</label>
               <input type="number" id="econ-corc-price" class="custom-select" value="65.0" step="5.0" min="0.0">
             </div>
             <button class="btn btn-primary" id="btn-run-economics">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              <span>Evaluate 20-Year TEA & LCA Profile</span>
+              <span data-i18n="tab7.btn_calc_tea">Evaluate 20-Year TEA & LCA Profile</span>
             </button>
           </div>
 
@@ -451,63 +453,63 @@
       <!-- TAB 8: AUTONOMOUS AUTOPILOT COCKPIT -->
       <section class="tab-pane" id="autopilot-tab">
         <div class="tab-header">
-          <h2>Fully Autonomous AI Plant Autopilot & Supervisory Cockpit (V2.0)</h2>
-          <p>Closed-loop autonomous flight operations: Startup preheat, cruise tracking, moisture adaptation, and pulse-jet fault self-healing.</p>
+          <h2 data-i18n="tab8.header_title">Fully Autonomous AI Plant Autopilot & Supervisory Cockpit (V2.0)</h2>
+          <p data-i18n="tab8.header_desc">Closed-loop autonomous flight operations: Startup preheat, cruise tracking, moisture adaptation, and pulse-jet fault self-healing.</p>
         </div>
         <div class="dashboard-grid">
           <div class="glass-card control-card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-              <h3>Flight Director Control</h3>
+              <h3 data-i18n="tab8.flight_title">Flight Director Control</h3>
               <span class="badge badge-cyan" id="ap-fsm-badge">STARTUP_PREHEAT</span>
             </div>
             <div class="control-group">
-              <label>Autopilot Master Switch</label>
+              <label data-i18n="tab8.master_label">Autopilot Master Switch</label>
               <button class="btn btn-primary" id="btn-toggle-ap" style="width:100%;">
-                <span id="ap-toggle-text">ENGAGE AUTONOMOUS AUTOPILOT</span>
+                <span id="ap-toggle-text" data-i18n="tab8.ap_engage">ENGAGE AUTONOMOUS AUTOPILOT</span>
               </button>
             </div>
             <div class="control-group">
               <div class="slider-label">
-                <span>Injected Disturbance (Moisture)</span>
+                <span data-i18n="tab8.dist_moist_label">Injected Disturbance (Moisture)</span>
                 <span class="val-display" id="disp-ap-moist">12.0 %</span>
               </div>
               <input type="range" id="slider-ap-moist" min="10" max="28" step="1" value="12">
             </div>
             <div class="control-group">
-              <label for="ap-fault-select">Inject Flight Anomaly</label>
+              <label for="ap-fault-select" data-i18n="tab8.inject_anomaly_label">Inject Flight Anomaly</label>
               <select id="ap-fault-select" class="custom-select">
-                <option value="none" selected>Nominal (No Injected Fault)</option>
-                <option value="cyclone_blockage">Cyclone Dipleg Blockage</option>
-                <option value="thermal_runaway">Reactor Thermal Runaway (>630°C)</option>
+                <option value="none" selected data-i18n="tab8.anom_none">Nominal (No Injected Fault)</option>
+                <option value="cyclone_blockage" data-i18n="tab8.anom_cyclone">Cyclone Dipleg Blockage</option>
+                <option value="thermal_runaway" data-i18n="tab8.anom_runaway">Reactor Thermal Runaway (>630°C)</option>
               </select>
             </div>
             <div style="margin-top:12px;">
               <button class="btn" id="btn-run-full-mission" style="background:linear-gradient(135deg, rgba(0,255,136,0.15), rgba(0,240,255,0.15)); border:1px solid rgba(0,255,136,0.4); color:var(--accent-green); width:100%;">
-                <span>Execute 4-Hour Stress Test Mission</span>
+                <span data-i18n="tab8.btn_mission">Execute 4-Hour Stress Test Mission</span>
               </button>
             </div>
           </div>
 
           <div class="glass-card flowsheet-card" id="ap-telemetry-container">
             <div class="card-header">
-              <h3>Live Blackbox Telemetry & Event Stream</h3>
-              <span class="badge badge-success" id="ap-loop-status">AUTOPILOT READY</span>
+              <h3 data-i18n="tab8.blackbox_title">Live Blackbox Telemetry & Event Stream</h3>
+              <span class="badge badge-success" id="ap-loop-status" data-i18n="tab8.status_ready">AUTOPILOT READY</span>
             </div>
             <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:8px;">
               <div class="metric-item">
-                <span class="m-title">Reactor Temp (PV)</span>
+                <span class="m-title" data-i18n="tab8.m_temp_pv">Reactor Temp (PV)</span>
                 <span class="m-val" id="ap-pv-temp">120.0 °C</span>
                 <span class="m-sub">Target: <strong id="ap-sp-temp">500.0 °C</strong></span>
               </div>
               <div class="metric-item">
-                <span class="m-title">Feed Auger Rate</span>
+                <span class="m-title" data-i18n="tab8.m_feed_rate">Feed Auger Rate</span>
                 <span class="m-val" id="ap-feed-rate">0.0 kg/h</span>
                 <span class="m-sub">Duty: <strong id="ap-burner-duty">85% Firing</strong></span>
               </div>
               <div class="metric-item">
-                <span class="m-title">Thermal Index (TSI)</span>
+                <span class="m-title" data-i18n="tab8.m_tsi">Thermal Index (TSI)</span>
                 <span class="m-val text-green" id="ap-tsi">112.0 %</span>
-                <span class="m-sub">Self-Sustaining</span>
+                <span class="m-sub" data-i18n="tab1.m_self_sufficient">Self-Sustaining</span>
               </div>
             </div>
             <div class="work-order-card" style="margin-top:12px;">
@@ -524,12 +526,12 @@
           <!-- Protocol Gateways Status & HIL Control -->
           <div class="glass-card control-card">
             <div class="card-header">
-              <h3>Edge Protocol Bridges & HIL</h3>
+              <h3 data-i18n="tab9.gateways_title">Edge Protocol Bridges & HIL</h3>
               <span class="badge badge-cyan" id="iot-overall-status">ONLINE (Port 502/1883/4840)</span>
             </div>
 
             <div class="control-group">
-              <label>Modbus TCP Gateway</label>
+              <label data-i18n="tab9.modbus_label">Modbus TCP Gateway</label>
               <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:6px;">
                 <span style="font-size:0.85rem;">Port 502 • Unit ID 1</span>
                 <span class="badge badge-success">ACTIVE</span>
@@ -537,7 +539,7 @@
             </div>
 
             <div class="control-group">
-              <label>MQTT Sparkplug B Edge Broker</label>
+              <label data-i18n="tab9.mqtt_label">MQTT Sparkplug B Edge Broker</label>
               <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:6px;">
                 <span style="font-size:0.85rem;">spBv1.0/BiomassRecycling</span>
                 <span class="badge badge-success">CONNECTED</span>
@@ -545,7 +547,7 @@
             </div>
 
             <div class="control-group">
-              <label>OPC-UA IEC 62541 Address Space</label>
+              <label data-i18n="tab9.opcua_label">OPC-UA IEC 62541 Address Space</label>
               <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:6px;">
                 <span style="font-size:0.85rem;">opc.tcp://127.0.0.1:4840/</span>
                 <span class="badge badge-success">14 NODES</span>
@@ -553,19 +555,19 @@
             </div>
 
             <div class="control-group">
-              <label>HIL 4-20mA Signal Conditioning</label>
+              <label data-i18n="tab9.hil_sig_label">HIL 4-20mA Signal Conditioning</label>
               <div style="display:flex; gap:8px;">
-                <button class="btn btn-secondary" id="btn-hil-step" style="flex:1;">Step HIL Clock</button>
-                <button class="btn btn-primary" id="btn-modbus-poll" style="flex:1;">Poll Modbus</button>
+                <button class="btn btn-secondary" id="btn-hil-step" style="flex:1;" data-i18n="tab9.btn_hil_step">Step HIL Clock</button>
+                <button class="btn btn-primary" id="btn-modbus-poll" style="flex:1;" data-i18n="tab9.btn_modbus_poll">Poll Modbus</button>
               </div>
             </div>
 
             <div class="control-group">
-              <label>Inject HIL Loop Fault (NAMUR NE 43)</label>
+              <label data-i18n="tab9.hil_fault_label">Inject HIL Loop Fault (NAMUR NE 43)</label>
               <div style="display:flex; gap:6px;">
-                <button class="btn btn-secondary" id="btn-hil-fault-open" style="flex:1; font-size:0.75rem; color:var(--accent-amber);">Open Loop (0mA)</button>
-                <button class="btn btn-secondary" id="btn-hil-fault-short" style="flex:1; font-size:0.75rem; color:var(--accent-coral);">Short Loop (24mA)</button>
-                <button class="btn btn-secondary" id="btn-hil-fault-clear" style="flex:1; font-size:0.75rem; color:var(--primary-green);">Clear</button>
+                <button class="btn btn-secondary" id="btn-hil-fault-open" style="flex:1; font-size:0.75rem; color:var(--accent-amber);" data-i18n="tab9.btn_fault_open">Open Loop (0mA)</button>
+                <button class="btn btn-secondary" id="btn-hil-fault-short" style="flex:1; font-size:0.75rem; color:var(--accent-coral);" data-i18n="tab9.btn_fault_short">Short Loop (24mA)</button>
+                <button class="btn btn-secondary" id="btn-hil-fault-clear" style="flex:1; font-size:0.75rem; color:var(--primary-green);" data-i18n="tab9.btn_fault_clear">Clear</button>
               </div>
             </div>
           </div>
@@ -573,7 +575,7 @@
           <!-- Modbus Register Bank & HIL Scope -->
           <div class="glass-card flowsheet-card">
             <div class="card-header">
-              <h3>Live Modbus Register Table (16-bit) & 4-20mA Current Loops</h3>
+              <h3 data-i18n="tab9.reg_table_title">Live Modbus Register Table (16-bit) & 4-20mA Current Loops</h3>
               <span class="badge badge-cyan" id="iot-hil-clock">TICKS: 0</span>
             </div>
 
@@ -606,15 +608,15 @@
               <table style="width:100%; border-collapse:collapse; font-size:0.8rem; text-align:left;" id="modbus-reg-table">
                 <thead style="background:rgba(255,255,255,0.05); color:var(--text-muted);">
                   <tr>
-                    <th style="padding:6px 10px;">Address</th>
-                    <th style="padding:6px 10px;">Register Tag / Name</th>
-                    <th style="padding:6px 10px;">Raw (16-bit)</th>
-                    <th style="padding:6px 10px;">Scaled Engineering Value</th>
-                    <th style="padding:6px 10px;">Type</th>
+                    <th style="padding:6px 10px;" data-i18n="tab9.th_address">Address</th>
+                    <th style="padding:6px 10px;" data-i18n="tab9.th_tag">Register Tag / Name</th>
+                    <th style="padding:6px 10px;" data-i18n="tab9.th_raw">Raw (16-bit)</th>
+                    <th style="padding:6px 10px;" data-i18n="tab9.th_scaled">Scaled Engineering Value</th>
+                    <th style="padding:6px 10px;" data-i18n="tab9.th_type">Type</th>
                   </tr>
                 </thead>
                 <tbody id="modbus-reg-tbody">
-                  <tr><td colspan="5" style="text-align:center; padding:12px; color:var(--text-muted);">Click 'Poll Modbus' to fetch registers</td></tr>
+                  <tr><td colspan="5" style="text-align:center; padding:12px; color:var(--text-muted);" data-i18n="tab9.poll_hint">Click 'Poll Modbus' to fetch registers</td></tr>
                 </tbody>
               </table>
             </div>
@@ -628,34 +630,34 @@
           <!-- Fleet Allocation & CORC Arbitrage Controls -->
           <div class="glass-card control-card">
             <div class="card-header">
-              <h3>CORC Carbon Market & Fleet Dispatch</h3>
+              <h3 data-i18n="tab10.corc_title">CORC Carbon Market & Fleet Dispatch</h3>
               <span class="badge badge-cyan" id="fleet-active-season">AUTUMN HARVEST PEAK</span>
             </div>
 
             <div class="control-group">
-              <label for="slider-corc-spot">Puro.earth CORC Spot Price: <strong id="disp-corc-spot">$65.0 / t CO2</strong></label>
+              <label for="slider-corc-spot"><span data-i18n="tab10.corc_spot_label">Puro.earth CORC Spot Price</span>: <strong id="disp-corc-spot">$65.0 / t CO2</strong></label>
               <input type="range" id="slider-corc-spot" min="30" max="180" step="5" value="65" class="custom-range">
             </div>
 
             <div class="control-group">
-              <label for="slider-oil-spot">Bio-Oil Market Price: <strong id="disp-oil-spot">$0.65 / kg</strong></label>
+              <label for="slider-oil-spot"><span data-i18n="tab10.oil_spot_label">Bio-Oil Market Price</span>: <strong id="disp-oil-spot">$0.65 / kg</strong></label>
               <input type="range" id="slider-oil-spot" min="0.30" max="1.50" step="0.05" value="0.65" class="custom-range">
             </div>
 
             <div class="control-group">
-              <label>Seasonal Agricultural Dispatch</label>
+              <label data-i18n="tab10.agri_dispatch_label">Seasonal Agricultural Dispatch</label>
               <div style="display:flex; gap:6px;">
-                <button class="btn btn-secondary" id="btn-season-autumn" style="flex:1; font-size:0.75rem;">Autumn (Olive)</button>
-                <button class="btn btn-secondary" id="btn-season-summer" style="flex:1; font-size:0.75rem;">Summer (Straw)</button>
-                <button class="btn btn-secondary" id="btn-season-spring" style="flex:1; font-size:0.75rem;">Spring (Pine)</button>
+                <button class="btn btn-secondary" id="btn-season-autumn" style="flex:1; font-size:0.75rem;" data-i18n="tab10.btn_autumn">Autumn (Olive)</button>
+                <button class="btn btn-secondary" id="btn-season-summer" style="flex:1; font-size:0.75rem;" data-i18n="tab10.btn_summer">Summer (Straw)</button>
+                <button class="btn btn-secondary" id="btn-season-spring" style="flex:1; font-size:0.75rem;" data-i18n="tab10.btn_spring">Spring (Pine)</button>
               </div>
             </div>
 
             <div class="control-group">
-              <label>Execute Arbitrage & Grid Optimization</label>
+              <label data-i18n="tab10.exec_opt_label">Execute Arbitrage & Grid Optimization</label>
               <div style="display:flex; gap:8px;">
-                <button class="btn btn-primary" id="btn-calc-corc" style="flex:1;">Run Arbitrage</button>
-                <button class="btn btn-secondary" id="btn-solar-dispatch" style="flex:1;">Solar 24h Sim</button>
+                <button class="btn btn-primary" id="btn-calc-corc" style="flex:1;" data-i18n="tab10.btn_arbitrage">Run Arbitrage</button>
+                <button class="btn btn-secondary" id="btn-solar-dispatch" style="flex:1;" data-i18n="tab10.btn_solar">Solar 24h Sim</button>
               </div>
             </div>
 
@@ -668,24 +670,24 @@
           <!-- Regional Plant Hubs Cards & Fleet Metrics -->
           <div class="glass-card flowsheet-card">
             <div class="card-header">
-              <h3>Decentralized Regional Plant Nodes (3 Active Hubs)</h3>
+              <h3 data-i18n="tab10.hubs_title">Decentralized Regional Plant Nodes (3 Active Hubs)</h3>
               <span class="badge badge-success" id="fleet-oee-badge">FLEET OEE: 94.2%</span>
             </div>
 
             <!-- Fleet Aggregate KPIs -->
             <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-top:8px;">
               <div class="metric-item">
-                <span class="m-title">Total Fleet Feed</span>
+                <span class="m-title" data-i18n="tab10.m_total_feed">Total Fleet Feed</span>
                 <span class="m-val text-cyan" id="fleet-total-feed">490.0 kg/h</span>
                 <span class="m-sub"><strong id="fleet-daily-feed">11.76 t/day</strong></span>
               </div>
               <div class="metric-item">
-                <span class="m-title">Combined Bio-Oil</span>
+                <span class="m-title" data-i18n="tab10.m_total_oil">Daily Bio-Oil Volume</span>
                 <span class="m-val" id="fleet-total-oil">6.45 m³/d</span>
                 <span class="m-sub">Revenue: <strong id="fleet-daily-rev">$4,250/d</strong></span>
               </div>
               <div class="metric-item">
-                <span class="m-title">Permanent CO2e Sinks</span>
+                <span class="m-title" data-i18n="tab10.m_total_carbon">Daily Carbon Sinks</span>
                 <span class="m-val text-green" id="fleet-total-co2">13.52 t/d</span>
                 <span class="m-sub">CORC: <strong id="fleet-daily-corc">$878/d</strong></span>
               </div>
@@ -736,16 +738,16 @@
           <!-- 3D WebGL Viewport & DRL Controller -->
           <div class="glass-card flowsheet-card">
             <div class="card-header">
-              <h3>3D WebGL Holographic Spatial Twin</h3>
+              <h3 data-i18n="tab11.spatial_title">3D WebGL Holographic Spatial Twin</h3>
               <div style="display:flex; gap:6px;">
-                <button class="btn btn-secondary" id="btn-toggle-particles" style="font-size:0.75rem; padding:4px 8px;">Flow Particles</button>
-                <button class="btn btn-secondary" id="btn-reset-3d-cam" style="font-size:0.75rem; padding:4px 8px;">Reset View</button>
+                <button class="btn btn-secondary" id="btn-toggle-particles" style="font-size:0.75rem; padding:4px 8px;" data-i18n="tab11.btn_particles">Flow Particles</button>
+                <button class="btn btn-secondary" id="btn-reset-3d-cam" style="font-size:0.75rem; padding:4px 8px;" data-i18n="tab11.btn_reset_cam">Reset View</button>
               </div>
             </div>
 
             <!-- 3D Three.js Canvas Container -->
             <div id="three-canvas-container" style="width:100%; height:320px; background:radial-gradient(circle at center, #0f172a 0%, #030712 100%); border-radius:8px; border:1px solid rgba(0,240,255,0.2); position:relative; overflow:hidden;">
-              <div style="position:absolute; bottom:8px; left:12px; font-size:0.7rem; color:rgba(255,255,255,0.4); pointer-events:none;">
+              <div style="position:absolute; bottom:8px; left:12px; font-size:0.7rem; color:rgba(255,255,255,0.4); pointer-events:none;" data-i18n="tab11.spatial_hint">
                 [Drag to Rotate • Scroll to Zoom • Click Component for Telemetry]
               </div>
               <div id="three-hover-badge" style="position:absolute; top:12px; left:12px; background:rgba(0,0,0,0.8); border:1px solid var(--primary-cyan); padding:4px 8px; border-radius:4px; font-size:0.75rem; color:var(--primary-cyan); display:none;">
@@ -756,14 +758,14 @@
             <!-- Deep RL Non-Linear Gym Controller Panel -->
             <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.4); padding:8px 12px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">
               <div>
-                <strong style="color:var(--primary-cyan); font-size:0.85rem;">Deep RL PPO Non-Linear Policy (BioPlant-v1)</strong>
+                <strong style="color:var(--primary-cyan); font-size:0.85rem;" data-i18n="tab11.drl_title">Deep RL PPO Non-Linear Policy (BioPlant-v1)</strong>
                 <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
                   Burner: <strong id="drl-burner-act">+0.0%</strong> | Feed: <strong id="drl-feed-act">+0.0 kg/h</strong> | Value: <strong id="drl-critic-val">88.5</strong>
                 </div>
               </div>
               <div style="display:flex; gap:6px;">
-                <button class="btn btn-secondary" id="btn-drl-step" style="font-size:0.75rem; padding:6px 12px;">Step Policy</button>
-                <button class="btn btn-primary" id="btn-drl-train" style="font-size:0.75rem; padding:6px 12px;">Train PPO</button>
+                <button class="btn btn-secondary" id="btn-drl-step" style="font-size:0.75rem; padding:6px 12px;" data-i18n="tab11.btn_drl_step">Step Policy</button>
+                <button class="btn btn-primary" id="btn-drl-train" style="font-size:0.75rem; padding:6px 12px;" data-i18n="tab11.btn_drl_train">Train PPO</button>
               </div>
             </div>
           </div>
@@ -771,30 +773,30 @@
           <!-- GenAI SCADA Operator Copilot Console -->
           <div class="glass-card control-card" style="display:flex; flex-direction:column; max-height:540px;">
             <div class="card-header">
-              <h3>GenAI SCADA Operator Copilot</h3>
-              <span class="badge badge-success" style="font-size:0.7rem;">SOP & P&ID ACTIVE</span>
+              <h3 data-i18n="tab11.copilot_title">GenAI SCADA Operator Copilot</h3>
+              <span class="badge badge-success" style="font-size:0.7rem;" data-i18n="tab11.copilot_badge">SOP & P&ID ACTIVE</span>
             </div>
 
             <!-- Chat History Console -->
             <div id="copilot-chat-box" style="flex:1; min-height:240px; max-height:300px; overflow-y:auto; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:10px; font-size:0.8rem; display:flex; flex-direction:column; gap:8px;">
               <div style="background:rgba(0,240,255,0.08); border-left:3px solid var(--primary-cyan); padding:8px; border-radius:4px;">
                 <strong style="color:var(--primary-cyan);">Copilot Assistant:</strong>
-                <p style="margin-top:4px; color:var(--text-main);">Welcome operator. I am indexed on all plant P&ID blueprints, SOP manuals, and SIL-2 safety interlocks. Ask any operational question or select a prompt below.</p>
+                <p style="margin-top:4px; color:var(--text-main);" data-i18n="tab11.copilot_welcome">Welcome operator. I am indexed on all plant P&ID blueprints, SOP manuals, and SIL-2 safety interlocks. Ask any operational question or select a prompt below.</p>
               </div>
             </div>
 
             <!-- Quick Suggestions -->
             <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:8px;">
-              <button class="badge badge-cyan" id="quick-sop-cyclone" style="cursor:pointer; border:none;">Cyclone DP Spikes</button>
-              <button class="badge badge-cyan" id="quick-sop-moisture" style="cursor:pointer; border:none;">Moisture Surge</button>
-              <button class="badge badge-cyan" id="quick-sop-startup" style="cursor:pointer; border:none;">Pre-Heat SOP</button>
-              <button class="badge badge-danger" id="quick-sop-emergency" style="cursor:pointer; border:none;">SIL-2 Safe Park</button>
+              <button class="badge badge-cyan" id="quick-sop-cyclone" style="cursor:pointer; border:none;" data-i18n="tab11.quick_cyclone">Cyclone DP Spikes</button>
+              <button class="badge badge-cyan" id="quick-sop-moisture" style="cursor:pointer; border:none;" data-i18n="tab11.quick_moisture">Moisture Surge</button>
+              <button class="badge badge-cyan" id="quick-sop-startup" style="cursor:pointer; border:none;" data-i18n="tab11.quick_startup">Pre-Heat SOP</button>
+              <button class="badge badge-danger" id="quick-sop-emergency" style="cursor:pointer; border:none;" data-i18n="tab11.quick_emergency">SIL-2 Safe Park</button>
             </div>
 
             <!-- Input Bar -->
             <div style="display:flex; gap:6px; margin-top:8px;">
-              <input type="text" id="copilot-input-text" placeholder="Ask SCADA Copilot a question..." class="custom-range" style="flex:1; padding:8px 12px; border-radius:6px; background:rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.15); color:var(--text-main); font-size:0.8rem;">
-              <button class="btn btn-primary" id="btn-copilot-send" style="padding:6px 14px;">Send</button>
+              <input type="text" id="copilot-input-text" placeholder="Ask SCADA Copilot a question..." class="custom-range" style="flex:1; padding:8px 12px; border-radius:6px; background:rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.15); color:var(--text-main); font-size:0.8rem;" data-i18n="tab11.copilot_placeholder">
+              <button class="btn btn-primary" id="btn-copilot-send" style="padding:6px 14px;" data-i18n="tab11.btn_send">Send</button>
             </div>
           </div>
         </div>

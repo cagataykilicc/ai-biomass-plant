@@ -32,6 +32,20 @@ function initLanguageSwitcher() {
     });
   });
 
+  window.addEventListener('languageChanged', (e) => {
+    // Re-render currently active tab data if loaded
+    const activeTab = document.querySelector('.tab-pane.active');
+    if (activeTab) {
+      const tabId = activeTab.id;
+      if (tabId === 'soft-sensors-tab' && tabLoaded['soft-sensors-tab']) runSoftSensors();
+      else if (tabId === 'diagnostics-tab' && tabLoaded['diagnostics-tab']) runDiagnostics();
+      else if (tabId === 'maintenance-tab' && tabLoaded['maintenance-tab']) runMaintenance();
+      else if (tabId === 'economics-tab' && tabLoaded['economics-tab']) runEconomics();
+      else if (tabId === 'iot-tab' && tabLoaded['iot-tab']) pollModbusRegisters();
+      else if (tabId === 'fleet-tab' && tabLoaded['fleet-tab']) loadFleetStatus();
+    }
+  });
+
   if (typeof setLanguage === 'function' && typeof getCurrentLanguage === 'function') {
     setLanguage(getCurrentLanguage());
   }

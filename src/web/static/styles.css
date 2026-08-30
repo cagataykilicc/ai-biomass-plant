@@ -530,3 +530,68 @@ input[type="range"] {
 .work-order-card.critical {
   border-left-color: var(--accent-crimson);
 }
+
+/* =========================================================================
+ * Language Switcher Styling & Smooth Transition Animations
+ * ========================================================================= */
+.lang-switch-group {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 3px;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lang-switch-group:hover {
+  border-color: rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.18);
+}
+
+.btn-lang {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-lang:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-lang.active {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(59, 130, 246, 0.25));
+  color: var(--primary-cyan);
+  border: 1px solid var(--primary-cyan);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+  transform: scale(1.03);
+}
+
+/* Smooth cross-fade transition on language toggle */
+.lang-fade-transition {
+  animation: langSmoothFade 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes langSmoothFade {
+  0% {
+    opacity: 0.65;
+    transform: translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

@@ -75,3 +75,16 @@ def test_api_copilot_turkish_integration() -> None:
     assert res["language"] == "tr"
     assert "Siklon" in res["copilot_response"]
     assert res["recommended_action"] == "EXECUTE_PULSE_JET_BLOWBACK"
+
+
+def test_user_manual_language_synchronization() -> None:
+    """Verify manual.html integrates with localStorage bioplant_lang."""
+    manual_path = Path(__file__).resolve().parent.parent / "src" / "web" / "static" / "manual.html"
+    assert manual_path.exists(), "manual.html is missing"
+
+    content = manual_path.read_text(encoding="utf-8")
+    assert "localStorage.setItem('bioplant_lang', lang)" in content
+    assert "localStorage.getItem('bioplant_lang')" in content
+    assert "id=\"content-tr\"" in content
+    assert "id=\"content-en\"" in content
+

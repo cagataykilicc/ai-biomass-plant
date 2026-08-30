@@ -379,29 +379,45 @@ Content-Type: application/json
 
   <script>
     function setLanguage(lang) {
+      if (lang !== 'tr' && lang !== 'en') lang = 'en';
+      localStorage.setItem('bioplant_lang', lang);
+
       const btnEn = document.getElementById('btn-lang-en');
       const btnTr = document.getElementById('btn-lang-tr');
       const navEn = document.getElementById('sidebar-nav-en');
       const navTr = document.getElementById('sidebar-nav-tr');
       const contentEn = document.getElementById('content-en');
       const contentTr = document.getElementById('content-tr');
+      const manualContent = document.querySelector('.manual-content');
+
+      if (manualContent) {
+        manualContent.style.opacity = '0.6';
+        setTimeout(() => {
+          manualContent.style.opacity = '1';
+        }, 150);
+      }
 
       if (lang === 'tr') {
-        btnEn.classList.remove('active');
-        btnTr.classList.add('active');
-        navEn.style.display = 'none';
-        navTr.style.display = 'block';
-        contentEn.style.display = 'none';
-        contentTr.style.display = 'block';
+        if (btnEn) btnEn.classList.remove('active');
+        if (btnTr) btnTr.classList.add('active');
+        if (navEn) navEn.style.display = 'none';
+        if (navTr) navTr.style.display = 'block';
+        if (contentEn) contentEn.style.display = 'none';
+        if (contentTr) contentTr.style.display = 'block';
       } else {
-        btnTr.classList.remove('active');
-        btnEn.classList.add('active');
-        navTr.style.display = 'none';
-        navEn.style.display = 'block';
-        contentTr.style.display = 'none';
-        contentEn.style.display = 'block';
+        if (btnTr) btnTr.classList.remove('active');
+        if (btnEn) btnEn.classList.add('active');
+        if (navTr) navTr.style.display = 'none';
+        if (navEn) navEn.style.display = 'block';
+        if (contentTr) contentTr.style.display = 'none';
+        if (contentEn) contentEn.style.display = 'block';
       }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedLang = localStorage.getItem('bioplant_lang') || 'en';
+      setLanguage(savedLang);
+    });
   </script>
 </body>
 </html>
