@@ -213,16 +213,34 @@ class APIRequestHandler:
 
         if mode == "pareto":
             opt = ParetoOptimizer(feedstock_name=fs_name)
-            frontier = opt.generate_pareto_frontier(n_candidates=30)
+            frontier = opt.generate_pareto_frontier(n_candidates=60)
             ranked = TOPSISDecisionMaker.rank_solutions(frontier, profile_name=profile_name)
             top_sol = ranked[0] if ranked else None
             non_dom = frontier.get_non_dominated_solutions()
+
+            # Precalculate champion solutions for all standard stakeholder profiles
+            all_profile_champions = {}
+            for p_k, p_alias in [
+                ("balanced_sustainability", "balanced"),
+                ("bio_oil_maximizer", "bio_oil"),
+                ("biochar_carbon_priority", "biochar"),
+                ("economic_profit_priority", "profit"),
+            ]:
+                p_ranked = TOPSISDecisionMaker.rank_solutions(frontier, profile_name=p_k)
+                if p_ranked:
+                    all_profile_champions[p_alias] = {
+                        "top_solution": p_ranked[0],
+                        "topsis_score": p_ranked[0]["closeness_score"],
+                        "profile_name": p_ranked[0]["profile_name"],
+                    }
+
             return {
                 "frontier_size": len(non_dom),
                 "frontier": [s.to_dict() for s in non_dom],
                 "top_solution": top_sol,
                 "topsis_score": top_sol["closeness_score"] if top_sol else None,
                 "profile_applied": profile_name,
+                "profile_champions": all_profile_champions,
             }
         else:
             obj_map = {

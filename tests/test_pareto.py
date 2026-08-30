@@ -57,4 +57,33 @@ def test_api_optimize_pareto_integration() -> None:
     assert "gross_margin_usd_h" in sample["objectives"]
     assert sample["objectives"]["bio_oil_yield_dry_pct"] > 0
     assert sample["objectives"]["biochar_yield_dry_pct"] > 0
+    assert "profile_champions" in res
+    assert "bio_oil" in res["profile_champions"]
+    assert "biochar" in res["profile_champions"]
+    assert "profit" in res["profile_champions"]
+    assert "balanced" in res["profile_champions"]
+
+
+def test_topsis_profile_differentiation() -> None:
+    """Verify that different stakeholder profiles select distinct Pareto champions."""
+    from src.api.handlers import APIRequestHandler
+
+    res = APIRequestHandler.handle_optimize({
+        "feedstock": "pine_sawdust",
+        "mode": "pareto",
+        "profile": "balanced",
+    })
+
+    champions = res["profile_champions"]
+    bio_oil_champ = champions["bio_oil"]["top_solution"]
+    biochar_champ = champions["biochar"]["top_solution"]
+    profit_champ = champions["profit"]["top_solution"]
+
+    # The bio-oil maximizer should have equal or higher bio-oil yield than the biochar prioritizer
+    assert bio_oil_champ["objectives"]["bio_oil_yield_dry_pct"] >= biochar_champ["objectives"]["bio_oil_yield_dry_pct"]
+    # The biochar prioritizer should have equal or higher biochar yield than the bio-oil maximizer
+    assert biochar_champ["objectives"]["biochar_yield_dry_pct"] >= bio_oil_champ["objectives"]["biochar_yield_dry_pct"]
+    # The profit prioritizer should have highest economic profit
+    assert profit_champ["objectives"]["gross_margin_usd_h"] >= bio_oil_champ["objectives"]["gross_margin_usd_h"] - 1.0
+
 

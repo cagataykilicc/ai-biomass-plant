@@ -34,37 +34,37 @@ class TOPSISDecisionMaker:
             name="Bio-Oil Maximizer",
             description="Prioritizes liquid bio-oil yield for chemical/fuel refinery supply.",
             weights={
-                "bio_oil_yield_dry_pct": 0.60,
-                "gross_margin_usd_h": 0.20,
-                "thermal_efficiency_pct": 0.20,
+                "bio_oil_yield_dry_pct": 0.85,
+                "gross_margin_usd_h": 0.10,
+                "thermal_efficiency_pct": 0.05,
             },
         ),
         "biochar_carbon_priority": StakeholderProfile(
             name="Carbon Sequestration Priority",
             description="Prioritizes solid biochar yield for soil amendment and certified carbon removal.",
             weights={
-                "biochar_yield_dry_pct": 0.60,
-                "gross_margin_usd_h": 0.20,
-                "thermal_efficiency_pct": 0.20,
+                "biochar_yield_dry_pct": 0.85,
+                "gross_margin_usd_h": 0.10,
+                "thermal_efficiency_pct": 0.05,
             },
         ),
         "economic_profit_priority": StakeholderProfile(
             name="Economic Profit Maximizer",
             description="Maximizes gross operational profit margin ($/h) with self-sufficiency.",
             weights={
-                "gross_margin_usd_h": 0.50,
-                "bio_oil_yield_dry_pct": 0.25,
-                "thermal_efficiency_pct": 0.25,
+                "gross_margin_usd_h": 0.85,
+                "bio_oil_yield_dry_pct": 0.10,
+                "thermal_efficiency_pct": 0.05,
             },
         ),
         "balanced_sustainability": StakeholderProfile(
             name="Balanced Sustainability",
             description="Harmonizes bio-oil yield, carbon retention, thermal efficiency, and margin.",
             weights={
-                "bio_oil_yield_dry_pct": 0.30,
-                "biochar_yield_dry_pct": 0.25,
-                "gross_margin_usd_h": 0.25,
-                "thermal_efficiency_pct": 0.20,
+                "bio_oil_yield_dry_pct": 0.35,
+                "biochar_yield_dry_pct": 0.35,
+                "gross_margin_usd_h": 0.20,
+                "thermal_efficiency_pct": 0.10,
             },
         ),
     }
@@ -102,16 +102,16 @@ class TOPSISDecisionMaker:
             for j, key in enumerate(criteria_keys):
                 X[i, j] = sol.objectives.get(key, 0.0)
 
-        # 2. Vector Normalization
-        denom = np.sqrt(np.sum(X ** 2, axis=0))
-        denom = np.where(denom == 0, 1.0, denom)
-        R = X / denom
+        # 2. Min-Max Range Normalization (prevents scale bias between % and $)
+        x_min = np.min(X, axis=0)
+        x_max = np.max(X, axis=0)
+        denom = np.where(x_max == x_min, 1.0, x_max - x_min)
+        R = (X - x_min) / denom
 
         # 3. Weighted Normalized Decision Matrix
         V = R * w_vector
 
         # 4. Ideal Best (A+) and Ideal Worst (A-)
-        # All criteria are benefits to maximize
         A_plus = np.max(V, axis=0)
         A_minus = np.min(V, axis=0)
 

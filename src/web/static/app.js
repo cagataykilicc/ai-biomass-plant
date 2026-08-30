@@ -320,11 +320,12 @@ let currentTopSolution = null;
 let currentTopsisScore = 0.85;
 let activeOptProfile = 'balanced';
 let hoveredParetoPoint = null;
+let cachedProfileChampions = {};
 
 function initOptimizationHandlers() {
   const btnOpt = document.getElementById('btn-run-opt');
   if (btnOpt) {
-    btnOpt.addEventListener('click', () => runOptimization(activeOptProfile));
+    btnOpt.addEventListener('click', () => runOptimization(activeOptProfile, true));
   }
 
   const pBtns = document.querySelectorAll('.profile-buttons button');
@@ -333,7 +334,7 @@ function initOptimizationHandlers() {
       pBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activeOptProfile = btn.getAttribute('data-profile') || 'balanced';
-      runOptimization(activeOptProfile);
+      applyStakeholderProfile(activeOptProfile);
     });
   });
 
@@ -351,6 +352,18 @@ function initOptimizationHandlers() {
   }
 }
 
+function applyStakeholderProfile(profile) {
+  if (cachedProfileChampions && cachedProfileChampions[profile]) {
+    const champ = cachedProfileChampions[profile];
+    currentTopSolution = champ.top_solution;
+    currentTopsisScore = champ.topsis_score;
+    drawParetoChart();
+    renderBestSolution(currentTopSolution, currentTopsisScore, profile);
+  } else {
+    runOptimization(profile);
+  }
+}
+
 function getSolutionYields(pt) {
   const objs = pt.objectives || {};
   const charY = objs.biochar_yield_dry_pct ?? pt.char_yield_dry_pct ?? 25.0;
@@ -358,7 +371,7 @@ function getSolutionYields(pt) {
   return { charY, oilY, objs, setpoints: pt.setpoints || {} };
 }
 
-async function runOptimization(profile = activeOptProfile) {
+async function runOptimization(profile = activeOptProfile, forceRefresh = false) {
   const feedstock = document.getElementById('feedstock-select').value;
   const btnOpt = document.getElementById('btn-run-opt');
   if (btnOpt) {
@@ -374,10 +387,18 @@ async function runOptimization(profile = activeOptProfile) {
     });
     const data = await res.json();
     paretoData = data.frontier || [];
-    currentTopSolution = data.top_solution || paretoData[0] || null;
-    currentTopsisScore = data.topsis_score || 0.85;
+    cachedProfileChampions = data.profile_champions || {};
+
+    if (cachedProfileChampions[profile]) {
+      currentTopSolution = cachedProfileChampions[profile].top_solution;
+      currentTopsisScore = cachedProfileChampions[profile].topsis_score;
+    } else {
+      currentTopSolution = data.top_solution || paretoData[0] || null;
+      currentTopsisScore = data.topsis_score || 0.85;
+    }
+
     drawParetoChart();
-    renderBestSolution(currentTopSolution, currentTopsisScore);
+    renderBestSolution(currentTopSolution, currentTopsisScore, profile);
   } catch (err) {
     console.error('Optimization failed:', err);
   } finally {
@@ -543,7 +564,7 @@ function drawParetoChart() {
     // Champion Label
     ctx.fillStyle = '#00ff88';
     ctx.font = 'bold 10px Inter, sans-serif';
-    ctx.fillText('★ TOPSIS', px + 12, py - 6);
+    ctx.fillText(`★ TOPSIS (#${currentTopSolution.solution_id})`, px + 12, py - 6);
   }
 
   // Draw Interactive Tooltip for Hovered Point
@@ -621,14 +642,22 @@ function handleParetoCanvasClick(e) {
   if (hoveredParetoPoint) {
     currentTopSolution = hoveredParetoPoint;
     currentTopsisScore = hoveredParetoPoint.closeness_score || 0.88;
-    renderBestSolution(currentTopSolution, currentTopsisScore);
+    renderBestSolution(currentTopSolution, currentTopsisScore, activeOptProfile);
     drawParetoChart();
   }
 }
 
-function renderBestSolution(sol, topsis) {
+function renderBestSolution(sol, topsis, profileKey = activeOptProfile) {
   const container = document.getElementById('opt-best-solution');
   if (!sol || !container) return;
+
+  const profileNames = {
+    balanced: t('tab3.prof_balanced', 'Balanced Operator'),
+    bio_oil: t('tab3.prof_oil', 'Max Bio-Oil Yield'),
+    biochar: t('tab3.prof_char', 'Carbon Sequestration'),
+    profit: t('tab3.prof_profit', 'Max Economic Profit'),
+  };
+  const activeProfileTitle = profileNames[profileKey] || profileNames['balanced'];
 
   const setpoints = sol.setpoints || {};
   const objs = sol.objectives || {};
@@ -639,7 +668,7 @@ function renderBestSolution(sol, topsis) {
   container.innerHTML = `
     <div style="margin-top:16px; padding:12px; background:rgba(0,255,136,0.05); border:1px solid rgba(0,255,136,0.2); border-radius:8px;">
       <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-        <span style="font-weight:700; color:var(--accent-green);">${t('tab3.topsis_champion', 'TOPSIS Champion Setpoint')} (Sol #${sol.solution_id || 1})</span>
+        <span style="font-weight:700; color:var(--accent-green);">${t('tab3.topsis_champion', 'TOPSIS Champion Setpoint')}: ${activeProfileTitle}</span>
         <span class="badge badge-success">${t('tab3.score', 'Score')}: ${((topsis || 0.85) * 100).toFixed(1)}%</span>
       </div>
       <div style="font-family:var(--font-mono); font-size:0.85rem; display:grid; grid-template-columns:1fr 1fr; gap:6px;">
