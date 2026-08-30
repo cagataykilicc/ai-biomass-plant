@@ -87,4 +87,33 @@ def test_user_manual_language_synchronization() -> None:
     assert "localStorage.getItem('bioplant_lang')" in content
     assert "id=\"content-tr\"" in content
     assert "id=\"content-en\"" in content
+    assert "Canlı Kontrol Odasına Dön" in content
+
+
+def test_i18n_dictionary_complete_key_parity() -> None:
+    """Verify strict 1-to-1 dictionary parity between EN and TR in i18n.js."""
+    import re
+    i18n_path = Path(__file__).resolve().parent.parent / "src" / "web" / "static" / "i18n.js"
+    content = i18n_path.read_text(encoding="utf-8")
+
+    # Extract en block and tr block
+    en_match = re.search(r"en:\s*\{([^}]+)\}", content, re.DOTALL)
+    tr_match = re.search(r"tr:\s*\{([^}]+)\}", content, re.DOTALL)
+
+    assert en_match is not None, "EN dictionary block not found in i18n.js"
+    assert tr_match is not None, "TR dictionary block not found in i18n.js"
+
+    en_keys = set(re.findall(r'"([^"]+)":', en_match.group(1)))
+    tr_keys = set(re.findall(r'"([^"]+)":', tr_match.group(1)))
+
+    assert len(en_keys) > 50, f"Expected >50 keys in EN dictionary, found {len(en_keys)}"
+    assert len(tr_keys) > 50, f"Expected >50 keys in TR dictionary, found {len(tr_keys)}"
+
+    missing_in_tr = en_keys - tr_keys
+    missing_in_en = tr_keys - en_keys
+
+    assert not missing_in_tr, f"Keys in EN missing in TR: {missing_in_tr}"
+    assert not missing_in_en, f"Keys in TR missing in EN: {missing_in_en}"
+    assert "function t(" in content, "Helper function t() missing in i18n.js"
+
 

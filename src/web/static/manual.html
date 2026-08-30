@@ -167,7 +167,7 @@
       </nav>
 
       <div style="margin-top:32px; padding-top:16px; border-top:1px solid var(--border-color);">
-        <a href="/" style="color:var(--primary-cyan); text-decoration:none; font-size:0.85rem; font-weight:600;">← Back to Live Dashboard</a>
+        <a href="/" id="back-link" style="color:var(--primary-cyan); text-decoration:none; font-size:0.85rem; font-weight:600;">← Back to Live Dashboard</a>
       </div>
     </aside>
 
@@ -388,6 +388,7 @@ Content-Type: application/json
       const navTr = document.getElementById('sidebar-nav-tr');
       const contentEn = document.getElementById('content-en');
       const contentTr = document.getElementById('content-tr');
+      const backLink = document.getElementById('back-link');
       const manualContent = document.querySelector('.manual-content');
 
       if (manualContent) {
@@ -398,19 +399,23 @@ Content-Type: application/json
       }
 
       if (lang === 'tr') {
+        document.title = "BIOPLANT AI - Kullanıcı Kılavuzu";
         if (btnEn) btnEn.classList.remove('active');
         if (btnTr) btnTr.classList.add('active');
         if (navEn) navEn.style.display = 'none';
         if (navTr) navTr.style.display = 'block';
         if (contentEn) contentEn.style.display = 'none';
         if (contentTr) contentTr.style.display = 'block';
+        if (backLink) backLink.textContent = "← Canlı Kontrol Odasına Dön";
       } else {
+        document.title = "BIOPLANT AI - User Manual";
         if (btnTr) btnTr.classList.remove('active');
         if (btnEn) btnEn.classList.add('active');
         if (navTr) navTr.style.display = 'none';
         if (navEn) navEn.style.display = 'block';
         if (contentTr) contentTr.style.display = 'none';
         if (contentEn) contentEn.style.display = 'block';
+        if (backLink) backLink.textContent = "← Back to Live Dashboard";
       }
     }
 

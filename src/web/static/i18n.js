@@ -4,6 +4,9 @@
 
 const i18nData = {
   en: {
+    // Page Title
+    "page.title": "AI-Integrated Biomass Conversion Plant - Digital Twin Platform",
+
     // Navigation Tabs
     "nav.flowsheet": "Control Room",
     "nav.soft_sensors": "Soft Sensors (95% UQ)",
@@ -53,10 +56,22 @@ const i18nData = {
     "tab1.m_syngas": "Clean Syngas",
     "tab1.m_thermal": "Net Thermal Power",
     "tab1.m_self_sufficient": "Self-Sufficient",
+    "tab1.status_autonomous": "AUTONOMOUS",
+    "tab1.status_deficit": "DEFICIT",
 
     // Tab 2: Soft Sensors
     "tab2.header_title": "Industrial Soft Sensor Suite & 95% Uncertainty Quantification (UQ)",
     "tab2.header_desc": "Real-time inferential estimators predicting unmeasured lab properties from online plant telemetry.",
+    "tab2.loading": "Loading real-time soft sensor telemetry...",
+    "tab2.ci_label": "95% CI",
+    "tab2.status_normal": "NORMAL",
+    "tab2.status_warning": "WARNING",
+    "sensor.SS_01": "Bio-Oil Water Content",
+    "sensor.SS_02": "Bio-Oil Higher Heating Value (HHV)",
+    "sensor.SS_03": "Bio-Oil Kinematic Viscosity",
+    "sensor.SS_04": "Syngas LHV Energy Density",
+    "sensor.SS_05": "Biochar Fixed Carbon",
+    "sensor.SS_06": "Thermal Self-Sufficiency Index (TSI)",
 
     // Tab 3: Pareto Optimizer
     "tab3.header_title": "AI-Driven Multiobjective Optimization & Pareto Frontier",
@@ -68,6 +83,14 @@ const i18nData = {
     "tab3.prof_profit": "Max Economic Profit",
     "tab3.btn_opt": "Compute Pareto Frontier (30 Solutions)",
     "tab3.chart_title": "Bio-Oil vs Biochar Pareto Frontier Trade-Off",
+    "tab3.axis_biochar": "Biochar Yield (wt%)",
+    "tab3.axis_biooil": "Bio-Oil Yield (wt%)",
+    "tab3.topsis_champion": "TOPSIS Champion Setpoint",
+    "tab3.score": "Score",
+    "tab3.temp": "Temp",
+    "tab3.feed": "Feed",
+    "tab3.profit": "Profit",
+    "tab3.tsi": "TSI",
 
     // Tab 4: Fault Diagnostics
     "tab4.header_title": "Process Anomaly Detection, Equipment Diagnostics & Alarm Management",
@@ -82,6 +105,18 @@ const i18nData = {
     "tab4.fault_jam": "Biomass Infeed Auger Jamming (Fuel Loss)",
     "tab4.sev_label": "Fault Severity",
     "tab4.btn_run_diag": "Run Tri-Layer Anomaly Diagnostics",
+    "tab4.loading": "Evaluating tri-layer anomaly detection models...",
+    "tab4.diag_assessment": "Diagnostic Assessment",
+    "tab4.anomaly_score": "Anomaly Score",
+    "tab4.alert_triggered": "ALERT TRIGGERED",
+    "tab4.alert_normal": "NORMAL",
+    "tab4.pca_spe": "PCA Q-Statistic (SPE)",
+    "tab4.hotelling_t2": "Hotelling's T²",
+    "tab4.limit": "Limit",
+    "tab4.affected_eq": "Affected Equipment",
+    "tab4.standard": "Standard",
+    "tab4.op_action": "Operator Action",
+    "tab4.auto_interlock": "Automated Interlock",
 
     // Tab 5: Maintenance
     "tab5.header_title": "Predictive Maintenance, 95% RUL Prognostics & Work Order Dispatch",
@@ -89,6 +124,17 @@ const i18nData = {
     "tab5.timeline_title": "Plant Operating Timeline",
     "tab5.hours_label": "Cumulative Operating Hours",
     "tab5.btn_eval": "Evaluate Fleet RUL & Work Orders",
+    "tab5.loading": "Evaluating fleet degradation trajectories...",
+    "tab5.reliability_status": "Plant Reliability Status",
+    "tab5.bottleneck": "Bottleneck",
+    "tab5.health": "Health",
+    "tab5.rul": "RUL (Remaining Life)",
+    "tab5.work_orders": "Prescriptive Work Orders",
+    "tab5.all_healthy": "All plant assets operating in HEALTHY nominal window.",
+    "tab5.scope": "Scope",
+    "tab5.labor": "Labor",
+    "tab5.parts_bom": "Parts BOM",
+    "tab5.loto": "LOTO",
 
     // Tab 6: Dynamic Control
     "tab6.header_title": "Dynamic Closed-Loop Process Control & Model Predictive Control (MPC)",
@@ -102,6 +148,11 @@ const i18nData = {
     "tab6.dist_label": "Moisture Disturbance (at 30 min)",
     "tab6.btn_run_ctrl": "Execute 60-Minute Transient Simulation",
     "tab6.chart_title": "Live 60-Minute Closed-Loop Response Trajectory",
+    "tab6.kpi_title": "Performance KPIs",
+    "tab6.settling": "Settling",
+    "tab6.overshoot": "Overshoot",
+    "tab6.offset_error": "Offset Error",
+    "tab6.axis_time": "Time (0 - 60 Minutes)",
 
     // Tab 7: Economics & LCA
     "tab7.header_title": "Techno-Economic Assessment (TEA) & ISO 14040/14044 LCA Carbon Accounting",
@@ -111,6 +162,30 @@ const i18nData = {
     "tab7.char_price_label": "Biochar Market Price ($/kg)",
     "tab7.corc_price_label": "Carbon Removal Credit Price ($/tonne CO2)",
     "tab7.btn_calc_tea": "Evaluate 20-Year TEA & LCA Profile",
+    "tab7.loading": "Evaluating 20-year Discounted Cash Flow and Scope 1-2-3 emissions...",
+    "tab7.overview_title": "Financial Valuation & Carbon Removal Overview",
+    "tab7.status_viable": "COMMERCIALLY VIABLE",
+    "tab7.status_deficit": "DEFICIT",
+    "tab7.npv": "Net Present Value (NPV @ 10%)",
+    "tab7.project_life": "20-Year Project Life",
+    "tab7.irr": "Internal Rate of Return (IRR)",
+    "tab7.payback": "Discounted Payback",
+    "tab7.lcob": "Levelized Cost of Bio-Oil (LCOB)",
+    "tab7.capex_title": "Capital Investment (Guthrie TCI)",
+    "tab7.purchased_eq": "Total Purchased Equipment",
+    "tab7.fci": "Fixed Capital Investment (FCI)",
+    "tab7.tci": "Total Capital Investment (TCI)",
+    "tab7.opex_title": "Annual Operating Cost (OPEX)",
+    "tab7.feedstock_supply": "Feedstock Supply",
+    "tab7.maint_insurance": "Maintenance & Insurance",
+    "tab7.total_opex": "Total OPEX",
+    "tab7.lca_title": "ISO 14040/14044 Carbon Balance",
+    "tab7.carbon_neg": "NET CARBON NEGATIVE",
+    "tab7.carbon_emitter": "NET EMITTER",
+    "tab7.gross_emissions": "Gross Scope 1+2+3 Emissions",
+    "tab7.permanent_seq": "Permanent Biochar Sequestration",
+    "tab7.corc_rev": "Certified CORC Revenue",
+    "tab7.carbon_intensity": "Net Carbon Intensity",
 
     // Tab 8: Autopilot
     "tab8.header_title": "Fully Autonomous AI Plant Autopilot & Supervisory Cockpit (V2.0)",
@@ -119,17 +194,21 @@ const i18nData = {
     "tab8.master_label": "Autopilot Master Switch",
     "tab8.ap_engage": "ENGAGE AUTONOMOUS AUTOPILOT",
     "tab8.ap_disengage": "DISENGAGE AUTOPILOT (MANUAL OVERRIDE)",
+    "tab8.status_standby": "AUTOPILOT STANDBY",
+    "tab8.status_engaged": "AUTOPILOT ENGAGED (2.0s LOOP)",
     "tab8.dist_moist_label": "Injected Disturbance (Moisture)",
     "tab8.inject_anomaly_label": "Inject Flight Anomaly",
     "tab8.anom_none": "Nominal (No Injected Fault)",
     "tab8.anom_cyclone": "Cyclone Dipleg Blockage",
     "tab8.anom_runaway": "Reactor Thermal Runaway (>630°C)",
     "tab8.btn_mission": "Execute 4-Hour Stress Test Mission",
+    "tab8.mission_running": "Executing 4-Hour Autonomous Stress Test...",
     "tab8.blackbox_title": "Live Blackbox Telemetry & Event Stream",
     "tab8.status_ready": "AUTOPILOT READY",
     "tab8.m_temp_pv": "Reactor Temp (PV)",
     "tab8.m_feed_rate": "Feed Auger Rate",
     "tab8.m_tsi": "Thermal Index (TSI)",
+    "tab8.burner_firing": "Firing",
 
     // Tab 9: IoT
     "tab9.gateways_title": "Edge Protocol Bridges & HIL",
@@ -150,6 +229,8 @@ const i18nData = {
     "tab9.th_scaled": "Scaled Engineering Value",
     "tab9.th_type": "Type",
     "tab9.poll_hint": "Click 'Poll Modbus' to fetch registers",
+    "tab9.type_input": "Input Reg (RO)",
+    "tab9.type_holding": "Holding (RW)",
 
     // Tab 10: Fleet
     "tab10.corc_title": "CORC Carbon Market & Fleet Dispatch",
@@ -166,6 +247,7 @@ const i18nData = {
     "tab10.m_total_feed": "Total Fleet Feed",
     "tab10.m_total_oil": "Daily Bio-Oil Volume",
     "tab10.m_total_carbon": "Daily Carbon Sinks",
+    "tab10.fleet_oee": "FLEET OEE",
 
     // Tab 11: 3D Spatial & Copilot
     "tab11.spatial_title": "3D WebGL Holographic Spatial Twin",
@@ -175,6 +257,7 @@ const i18nData = {
     "tab11.drl_title": "Deep RL PPO Non-Linear Policy (BioPlant-v1)",
     "tab11.btn_drl_step": "Step Policy",
     "tab11.btn_drl_train": "Train PPO",
+    "tab11.drl_training": "Training PPO...",
     "tab11.copilot_title": "GenAI SCADA Operator Copilot",
     "tab11.copilot_badge": "SOP & P&ID ACTIVE",
     "tab11.copilot_welcome": "Welcome operator. I am indexed on all plant P&ID blueprints, SOP manuals, and SIL-2 safety interlocks. Ask any operational question or select a prompt below.",
@@ -184,8 +267,13 @@ const i18nData = {
     "tab11.quick_emergency": "SIL-2 Safe Park",
     "tab11.copilot_placeholder": "Ask SCADA Copilot a question...",
     "tab11.btn_send": "Send",
+    "tab11.label_operator": "Operator",
+    "tab11.label_copilot": "Copilot Assistant",
   },
   tr: {
+    // Page Title
+    "page.title": "Yapay Zeka Entegreli Biyokütle Dönüşüm Tesisi - Dijital İkiz Platformu",
+
     // Navigation Tabs
     "nav.flowsheet": "Kontrol Odası",
     "nav.soft_sensors": "Yumuşak Sensörler (%95 Güven)",
@@ -235,10 +323,22 @@ const i18nData = {
     "tab1.m_syngas": "Temiz Sentez Gazı",
     "tab1.m_thermal": "Net Termal Güç",
     "tab1.m_self_sufficient": "Öz-Yeterli",
+    "tab1.status_autonomous": "ÖZ-YETERLİ",
+    "tab1.status_deficit": "AÇIK VERİYOR",
 
     // Tab 2: Soft Sensors
     "tab2.header_title": "Endüstriyel Yumuşak Sensör Paketi & %95 Belirsizlik Analizi (UQ)",
     "tab2.header_desc": "Tesis telemetrisinden laboratuvar analizlerini tahmin eden gerçek zamanlı Bayesyen kestiriciler.",
+    "tab2.loading": "Gerçek zamanlı yumuşak sensör telemetrisi yükleniyor...",
+    "tab2.ci_label": "%95 GA",
+    "tab2.status_normal": "NORMAL",
+    "tab2.status_warning": "UYARI",
+    "sensor.SS_01": "Biyo-Yağ Su İçeriği",
+    "sensor.SS_02": "Biyo-Yağ Üst Isıl Değeri (HHV)",
+    "sensor.SS_03": "Biyo-Yağ Kinematik Viskozitesi",
+    "sensor.SS_04": "Sentez Gazı Alt Isıl Değeri (LHV)",
+    "sensor.SS_05": "Biyokömür Sabit Karbon Oranı",
+    "sensor.SS_06": "Termal Kendi Kendine Yetebilirlik İndeksi (TSI)",
 
     // Tab 3: Pareto Optimizer
     "tab3.header_title": "Yapay Zeka Destekli Çok Amaçlı Optimizasyon & Pareto Sınırı",
@@ -250,6 +350,14 @@ const i18nData = {
     "tab3.prof_profit": "Maksimum Ekonomik Kâr",
     "tab3.btn_opt": "Pareto Sınırını Hesapla (30 Çözüm)",
     "tab3.chart_title": "Biyo-Yağ / Biyokömür Pareto Ödünleşim Eğrisi",
+    "tab3.axis_biochar": "Biyokömür Verimi (ağırlıkça %)",
+    "tab3.axis_biooil": "Biyo-Yağ Verimi (ağırlıkça %)",
+    "tab3.topsis_champion": "TOPSIS Şampiyon Ayar Noktası",
+    "tab3.score": "Skor",
+    "tab3.temp": "Sıcaklık",
+    "tab3.feed": "Besleme",
+    "tab3.profit": "Kâr",
+    "tab3.tsi": "TSI",
 
     // Tab 4: Fault Diagnostics
     "tab4.header_title": "Proses Anomali Tespiti, Ekipman Teşhisi ve Alarm Yönetimi",
@@ -264,6 +372,18 @@ const i18nData = {
     "tab4.fault_jam": "Besleme Helezonu Sıkışması (Yakıt Kaybı)",
     "tab4.sev_label": "Arıza Şiddeti",
     "tab4.btn_run_diag": "3 Katmanlı Anomali Teşhisini Başlat",
+    "tab4.loading": "3 katmanlı anomali tespit modelleri değerlendiriliyor...",
+    "tab4.diag_assessment": "Teşhis Değerlendirmesi",
+    "tab4.anomaly_score": "Anomali Skoru",
+    "tab4.alert_triggered": "ALARM TETİKLENDİ",
+    "tab4.alert_normal": "NORMAL",
+    "tab4.pca_spe": "PCA Q-İstatistiği (SPE)",
+    "tab4.hotelling_t2": "Hotelling T² İstatistiği",
+    "tab4.limit": "Limit",
+    "tab4.affected_eq": "Etkilenen Ekipman",
+    "tab4.standard": "Standart",
+    "tab4.op_action": "Operatör Aksiyonu",
+    "tab4.auto_interlock": "Otomatik Emniyet Kilidi",
 
     // Tab 5: Maintenance
     "tab5.header_title": "Kestirimci Bakım, %95 RUL Ömür Tahmini & İş Emri Sevki",
@@ -271,6 +391,17 @@ const i18nData = {
     "tab5.timeline_title": "Tesis Çalışma Zaman Çizelgesi",
     "tab5.hours_label": "Kümülatif Çalışma Saati",
     "tab5.btn_eval": "Filo RUL ve İş Emirlerini Değerlendir",
+    "tab5.loading": "Filo yıpranma eğrileri hesaplanıyor...",
+    "tab5.reliability_status": "Tesis Güvenilirlik Durumu",
+    "tab5.bottleneck": "Kritik Varlık",
+    "tab5.health": "Sağlık",
+    "tab5.rul": "RUL (Kalan Ömür)",
+    "tab5.work_orders": "Öngörücü İş Emirleri",
+    "tab5.all_healthy": "Tüm tesis varlıkları SAĞLIKLI nominal aralıkta çalışıyor.",
+    "tab5.scope": "Kapsam",
+    "tab5.labor": "İş Gücü",
+    "tab5.parts_bom": "Yedek Parça",
+    "tab5.loto": "LOTO",
 
     // Tab 6: Dynamic Control
     "tab6.header_title": "Dinamik Kapalı Çevrim Proses Kontrolü & Model Öngörülü Kontrol (MPC)",
@@ -284,6 +415,11 @@ const i18nData = {
     "tab6.dist_label": "Nem Bozulması (30. dk)",
     "tab6.btn_run_ctrl": "60 Dakikalık Geçici Rejim Simülasyonu",
     "tab6.chart_title": "Canlı 60 Dakikalık Kapalı Çevrim Yanıt Eğrisi",
+    "tab6.kpi_title": "Performans Göstergeleri (KPI)",
+    "tab6.settling": "Oturma Süresi",
+    "tab6.overshoot": "Aşma",
+    "tab6.offset_error": "Kalıcı Hata",
+    "tab6.axis_time": "Zaman (0 - 60 Dakika)",
 
     // Tab 7: Economics & LCA
     "tab7.header_title": "Tekno-Ekonomik Değerlendirme (TEA) & ISO 14040/14044 LCA Karbon Analizi",
@@ -293,6 +429,30 @@ const i18nData = {
     "tab7.char_price_label": "Biyokömür Piyasa Fiyatı ($/kg)",
     "tab7.corc_price_label": "Karbon Giderme Kredisi Fiyatı ($/ton CO2)",
     "tab7.btn_calc_tea": "20 Yıllık TEA & LCA Profilini Hesapla",
+    "tab7.loading": "20 yıllık İndirgenmiş Nakit Akışı ve Kapsam 1-2-3 emisyonları hesaplanıyor...",
+    "tab7.overview_title": "Finansal Değerleme ve Karbon Giderme Özeti",
+    "tab7.status_viable": "TİCARİ OLARAK UYGUN",
+    "tab7.status_deficit": "ZARARDA",
+    "tab7.npv": "Net Bugünkü Değer (NPV @ %10)",
+    "tab7.project_life": "20 Yıllık Proje Ömrü",
+    "tab7.irr": "İç Verim Oranı (IRR)",
+    "tab7.payback": "İndirgenmiş Geri Ödeme",
+    "tab7.lcob": "Seviyelendirilmiş Biyo-Yağ Maliyeti (LCOB)",
+    "tab7.capex_title": "Sermaye Yatırımı (Guthrie TCI)",
+    "tab7.purchased_eq": "Satın Alınan Toplam Ekipman",
+    "tab7.fci": "Sabit Sermaye Yatırımı (FCI)",
+    "tab7.tci": "Toplam Sermaye Yatırımı (TCI)",
+    "tab7.opex_title": "Yıllık İşletme Maliyeti (OPEX)",
+    "tab7.feedstock_supply": "Hammadde Temini",
+    "tab7.maint_insurance": "Bakım ve Sigorta",
+    "tab7.total_opex": "Toplam OPEX",
+    "tab7.lca_title": "ISO 14040/14044 Karbon Dengesi",
+    "tab7.carbon_neg": "NET KARBON NEGATİF",
+    "tab7.carbon_emitter": "NET SALICI",
+    "tab7.gross_emissions": "Brüt Kapsam 1+2+3 Emisyonları",
+    "tab7.permanent_seq": "Kalıcı Biyokömür Karbon Yutağı",
+    "tab7.corc_rev": "Sertifikalı CORC Geliri",
+    "tab7.carbon_intensity": "Net Karbon Yoğunluğu",
 
     // Tab 8: Autopilot
     "tab8.header_title": "Tam Otonom Yapay Zeka Tesis Otopilotu & Denetim Kokpiti (V2.0)",
@@ -301,17 +461,21 @@ const i18nData = {
     "tab8.master_label": "Otopilot Ana Şalteri",
     "tab8.ap_engage": "OTONOM OTOPİLOTU DEVREYE AL",
     "tab8.ap_disengage": "OTOPİLOTU DEVREDEN ÇIKAR (MANUEL)",
+    "tab8.status_standby": "OTOPİLOT BEKLEMEDE",
+    "tab8.status_engaged": "OTOPİLOT DEVREDE (2.0s DÖNGÜ)",
     "tab8.dist_moist_label": "Enjekte Edilen Bozulma (Nem)",
     "tab8.inject_anomaly_label": "Uçuş Anomalisi Enjekte Et",
     "tab8.anom_none": "Nominal (Arıza Yok)",
     "tab8.anom_cyclone": "Siklon Dip Borusu Tıkanması",
     "tab8.anom_runaway": "Reaktör Termal Kaçak (>630°C)",
     "tab8.btn_mission": "4 Saatlik Stres Testi Görevini Başlat",
+    "tab8.mission_running": "4 Saatlik Otonom Stres Testi Yürütülüyor...",
     "tab8.blackbox_title": "Canlı Karukutu Telemetrisi & Olay Akışı",
     "tab8.status_ready": "OTOPİLOT HAZIR",
     "tab8.m_temp_pv": "Reaktör Sıcaklığı (PV)",
     "tab8.m_feed_rate": "Besleme Helezon Hızı",
     "tab8.m_tsi": "Termal İndeks (TSI)",
+    "tab8.burner_firing": "Yakma Gücü",
 
     // Tab 9: IoT
     "tab9.gateways_title": "Uç Protokol Köprüleri & HIL",
@@ -332,6 +496,8 @@ const i18nData = {
     "tab9.th_scaled": "Ölçeklenmiş Mühendislik Değeri",
     "tab9.th_type": "Tip",
     "tab9.poll_hint": "Kayıtları getirmek için 'Modbus Oku' butonuna tıklayın",
+    "tab9.type_input": "Giriş Kaydı (Salt Okunur)",
+    "tab9.type_holding": "Tutma Kaydı (Yazılabilir)",
 
     // Tab 10: Fleet
     "tab10.corc_title": "CORC Karbon Piyasası & Filo Sevkiyatı",
@@ -348,6 +514,7 @@ const i18nData = {
     "tab10.m_total_feed": "Toplam Filo Beslemesi",
     "tab10.m_total_oil": "Günlük Biyo-Yağ Hacmi",
     "tab10.m_total_carbon": "Günlük Karbon Yutakları",
+    "tab10.fleet_oee": "FİLO OEE",
 
     // Tab 11: 3D Spatial & Copilot
     "tab11.spatial_title": "3B WebGL Holografik Mekansal Dijital İkiz",
@@ -357,6 +524,7 @@ const i18nData = {
     "tab11.drl_title": "Derin RL PPO Doğrusal Olmayan Politika (BioPlant-v1)",
     "tab11.btn_drl_step": "Politikayı Adımla",
     "tab11.btn_drl_train": "PPO Eğitimi Yap",
+    "tab11.drl_training": "PPO Eğitiliyor...",
     "tab11.copilot_title": "Yapay Zeka SCADA Operatör Copilot",
     "tab11.copilot_badge": "SOP & P&ID AKTİF",
     "tab11.copilot_welcome": "Hoş geldiniz operatör. Tüm tesis P&ID şemaları, SOP kılavuzları ve SIL-2 güvenlik kilitleri üzerinde indekslendim. Operasyonel bir soru sorun veya aşağıdaki hazır komutları seçin.",
@@ -366,6 +534,8 @@ const i18nData = {
     "tab11.quick_emergency": "SIL-2 Güvenli Park",
     "tab11.copilot_placeholder": "SCADA Copilot'a bir soru sorun...",
     "tab11.btn_send": "Gönder",
+    "tab11.label_operator": "Operatör",
+    "tab11.label_copilot": "Copilot Asistanı",
   }
 };
 
@@ -375,17 +545,39 @@ function getCurrentLanguage() {
   return currentLang;
 }
 
+function t(key, fallback = '') {
+  const lang = getCurrentLanguage();
+  if (i18nData[lang] && i18nData[lang][key] !== undefined) {
+    return i18nData[lang][key];
+  }
+  if (i18nData['en'] && i18nData['en'][key] !== undefined) {
+    return i18nData['en'][key];
+  }
+  return fallback || key;
+}
+
 function setLanguage(lang) {
   if (!i18nData[lang]) lang = 'en';
   currentLang = lang;
   localStorage.setItem('bioplant_lang', lang);
 
+  // Update Page Title
+  if (i18nData[lang]["page.title"]) {
+    document.title = i18nData[lang]["page.title"];
+  }
+
   // Update active state on language switcher buttons
   document.querySelectorAll('.btn-lang').forEach(btn => {
     if (btn.getAttribute('data-lang') === lang) {
       btn.classList.add('active');
+      btn.style.background = 'rgba(0, 240, 255, 0.25)';
+      btn.style.borderColor = 'var(--primary-cyan)';
+      btn.style.color = 'var(--primary-cyan)';
     } else {
       btn.classList.remove('active');
+      btn.style.background = 'transparent';
+      btn.style.borderColor = 'transparent';
+      btn.style.color = 'var(--text-muted)';
     }
   });
 
@@ -400,7 +592,7 @@ function setLanguage(lang) {
   // Apply translations to all DOM elements with data-i18n attribute
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
-    if (i18nData[lang][key]) {
+    if (i18nData[lang] && i18nData[lang][key] !== undefined) {
       if (el.tagName === 'INPUT' && el.getAttribute('placeholder')) {
         el.setAttribute('placeholder', i18nData[lang][key]);
       } else {
