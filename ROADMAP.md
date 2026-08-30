@@ -61,36 +61,43 @@ timeline
 - [x] **Jupyter Tutorial Suite**: 4 interactive `.ipynb` tutorials covering thermodynamics, ML surrogates, Pareto optimization, and 4-hour autopilot telemetry.
 - [x] **Test Coverage**: 105 automated unit and integration tests passing (`100% pass rate`).
 
+### 🔹 V2.2: Industrial IoT, Edge Protocols & Hardware-in-the-Loop
+- [x] **Modbus TCP Gateway**: 16-bit Input/Holding register mapping with scaled conversions and Discrete Input / Coil control.
+- [x] **MQTT Sparkplug B Bridge**: Edge payload generation (`DBIRTH`, `DDATA`, `NCMD`) over `spBv1.0` topic hierarchy.
+- [x] **OPC-UA Address Space**: IEC 62541 hierarchical information model with 14 process and alarm nodes.
+- [x] **HIL Hardware Simulator**: 4.0 - 20.0 mA transmitter current loop scaling, 12-bit ADC quantization, and NAMUR NE 43 circuit fault injection.
+- [x] **Test Coverage**: 110 automated unit and integration tests passing (`100% pass rate`).
+
 </details>
 
 ---
 
-## 🚀 Future Development Roadmap (V2.2 – V3.0+)
+## 🚀 Future Development Roadmap (V2.5 – V3.0+)
 
 ```
   ┌────────────────────────────────────────────────────────────────────────┐
   │                           PHASED ROADMAP                               │
-  ├───────────────────┬───────────────────┬────────────────────────────────┤
-  │   V2.2 Edge & IoT │   V2.5 Fleet & Grid AI│   V3.0 Next-Gen Twin       │
-  │   - MQTT & OPC-UA │   - Multi-Plant   │   - Deep RL (PPO/SAC)          │
-  │   - WebSocket Bus │   - CORC Arbitrage│   - 3D WebGL (Three.js)        │
-  │   - HIL Hardware  │   - Renewable Grid│   - GenAI SCADA Copilot        │
-  └───────────────────┴───────────────────┴────────────────────────────────┘
+  ├───────────────────────────────────┬────────────────────────────────────┤
+  │   V2.5 Fleet & Grid AI (Q2)       │   V3.0 Next-Gen Twin (Q3-Q4)       │
+  │   - Multi-Plant Dispatch          │   - Deep RL (PPO/SAC Transients)   │
+  │   - Dynamic CORC Market Trading   │   - 3D WebGL Holographic (Three.js)│
+  │   - Hybrid Renewable Grid Storage │   - Generative AI SCADA Copilot    │
+  └───────────────────────────────────┴────────────────────────────────────┘
 ```
 
 ---
 
-### 📡 Phase 2: Industrial IoT, Edge Protocols & Hardware-in-the-Loop (Version 2.2)
-**Goal:** Connect BIOPLANT AI directly to physical plant PLCs, SCADA networks, and high-frequency sensor streams.
+### 🌐 Phase 3: Multi-Plant Fleet & Carbon Market Optimization (Version 2.5)
+**Goal:** Scale from a single plant to regional multi-reactor decentralized fleet management and carbon trading.
 
-- [ ] **Real-Time Bidirectional WebSocket Protocol**:
-  - Replace 2.0s HTTP polling in Autopilot Cockpit with a sub-50ms WebSocket streaming bus (`ws://localhost:8000/ws/telemetry`).
-- [ ] **Industrial IoT Protocol Bridges**:
-  - **OPC-UA Server/Client**: Standard connection to industrial DCS (Yokogawa, ABB, Emerson DeltaV).
-  - **MQTT Broker Client**: Lightweight JSON edge telemetry streaming over Sparkplug B standard.
-  - **Modbus TCP Gateway**: Direct read/write registers for thermocouple arrays and variable frequency drives (VFD).
-- [ ] **Hardware-in-the-Loop (HIL) Simulator Mode**:
-  - Real-time clock synchronization for physical microcontrollers (Arduino / Raspberry Pi / ESP32) actuating physical valves and pulse-jet relays.
+- [ ] **Decentralized Multi-Reactor Fleet Orchestrator**:
+  - Centralized dashboard coordinating multiple distributed pyrolysis plants across different biomass collection hubs.
+  - Load balancing feed rates based on local agricultural harvest seasons (e.g., olive harvest vs. wheat harvesting).
+- [ ] **Real-Time Dynamic Carbon Credit (CORC) Arbitrage**:
+  - Real-time API integration with Puro.earth / Verra voluntary carbon marketplaces.
+  - Autonomous setpoint optimization switching between bio-oil profit maximization and biochar permanent carbon removal maximization based on spot carbon credit pricing.
+- [ ] **Hybrid Renewable Grid Integration**:
+  - Model coupling with on-site Solar PV, wind turbines, and industrial thermal energy storage (TES) to minimize grid power costs during peak electricity tariff hours.
 
 ---
 

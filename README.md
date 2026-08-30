@@ -1,10 +1,11 @@
-# 🌿 AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V2.1)
+# 🌿 AI-Integrated Biomass Recycling & Conversion Plant Digital Twin (V2.2)
 
 <div align="center">
 
 [![CI](https://github.com/cagataykilicc/ai-biomass-plant/actions/workflows/ci.yml/badge.svg)](https://github.com/cagataykilicc/ai-biomass-plant/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Docker Container](https://img.shields.io/badge/Docker-Ready%20(v2.1.0)-2496ED.svg?logo=docker&logoColor=white)](Dockerfile)
+[![Industrial IoT](https://img.shields.io/badge/Industrial%20IoT-Modbus%20%7C%20MQTT%20%7C%20OPC--UA%20%7C%20HIL-9cf.svg)](src/iot/)
+[![Docker Container](https://img.shields.io/badge/Docker-Ready%20(v2.2.0)-2496ED.svg?logo=docker&logoColor=white)](Dockerfile)
 [![Swagger OpenAPI](https://img.shields.io/badge/OpenAPI-3.0%20Swagger%20UI-85EA2D.svg?logo=swagger&logoColor=black)](http://127.0.0.1:8000/docs)
 [![Git LFS](https://img.shields.io/badge/Git%20LFS-Tracked%20Models-orange.svg)](https://git-lfs.com)
 [![Autonomous Platform](https://img.shields.io/badge/Autonomous%20Platform-AI%20Autopilot%20%26%20FSM-gold.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
@@ -13,13 +14,13 @@
 [![LCA Carbon Negative](https://img.shields.io/badge/LCA-ISO%2014040%2F14044%20Carbon%20Negative-darkgreen.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
 [![Process Control](https://img.shields.io/badge/Process%20Control-Dynamic%20MPC%20%26%20PID-blue.svg)](https://github.com/cagataykilicc/ai-biomass-plant)
 [![Web Platform](https://img.shields.io/badge/Web%20Platform-Interactive%20Dark%20Glassmorphism-cyan.svg)](http://127.0.0.1:8000/)
-[![Tests](https://img.shields.io/badge/Tests-105%2F105%20Passed-brightgreen.svg)](https://github.com/cagataykilicc/ai-biomass-plant/actions)
+[![Tests](https://img.shields.io/badge/Tests-110%2F110%20Passed-brightgreen.svg)](https://github.com/cagataykilicc/ai-biomass-plant/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Author](https://img.shields.io/badge/Author-Çağatay%20Kılıç-blue.svg?logo=github)](https://github.com/cagataykilicc)
 
 **An industrial-grade, physics-informed digital twin, autonomous AI autopilot, and real-time operations platform for thermochemical biomass pyrolysis plants.**
 
-[Overview](#-1-system-overview) • [Screenshots](#-2-interactive-web-cockpit--screenshots) • [Architecture](#-3-system-architecture) • [Core Modules](#-4-the-8-operational-modules) • [Quick Start](#-5-quick-start--installation) • [Docker](#-6-docker-deployment) • [REST & Swagger API](#-7-rest-api--swagger-documentation) • [Tutorials](#-8-interactive-jupyter-tutorial-suite) • [Roadmap](ROADMAP.md) • [Author](#-9-author--maintainer)
+[Overview](#-1-system-overview) • [Screenshots](#-2-interactive-web-cockpit--screenshots) • [Architecture](#-3-system-architecture) • [Core Modules](#-4-the-8-operational-modules) • [Quick Start](#-5-quick-start--installation) • [Docker](#-6-docker-deployment) • [REST & Swagger API](#-7-rest-api--swagger-documentation) • [Tutorials](#-8-interactive-jupyter-tutorial-suite) • [Industrial IoT](#-9-industrial-iot--edge-gateways) • [Roadmap](ROADMAP.md) • [Author](#-11-author--maintainer)
 
 </div>
 
@@ -177,7 +178,7 @@ The platform provides a secure zero-dependency multithreaded REST server with bu
 | **`GET`** | **`/docs`** | Interactive OpenAPI Swagger UI 5.x documentation |
 | **`GET`** | **`/redoc`** | ReDoc responsive API documentation |
 | **`GET`** | **`/openapi.json`** | Machine-readable OpenAPI 3.0.3 specification JSON |
-| **`GET`** | **`/api/status`** | System health status, version `2.1.0`, and active module availability |
+| **`GET`** | **`/api/status`** | System health status, version `2.2.0`, and active module availability |
 | **`GET`** | **`/api/feedstocks`** | Proximate and ultimate analysis catalog (Olive Pomace, Pine, Straw, Husk) |
 | **`POST`** | **`/api/simulate`** | Executes digital twin flowsheet simulation (Deterministic or ML) |
 | **`POST`** | **`/api/autopilot/step`** | Advances closed-loop autonomous autopilot FSM by one step |
@@ -188,6 +189,11 @@ The platform provides a secure zero-dependency multithreaded REST server with bu
 | **`POST`** | **`/api/optimize`** | Solves single-objective or multiobjective Pareto optimization |
 | **`POST`** | **`/api/diagnostics`** | Injects equipment faults and returns tri-layer anomaly scores & alarms |
 | **`POST`** | **`/api/maintenance`** | Computes asset wear, 95% RUL, and dispatches prescriptive work orders |
+| **`GET`** | **`/api/iot/status`** | Operational status of Modbus TCP, MQTT Sparkplug B, OPC-UA, and HIL bridges |
+| **`GET/POST`** | **`/api/iot/modbus/read`** | Exports full Modbus register table (Inputs 30001+, Holdings 40001+, Coils 00001+) |
+| **`POST`** | **`/api/iot/modbus/write`** | Writes 16-bit word to Holding Register or boolean state to Coil |
+| **`POST`** | **`/api/iot/mqtt/publish`** | Publishes Sparkplug B payload (`DBIRTH`, `DDATA`) or handles `NCMD` commands |
+| **`POST`** | **`/api/iot/hil/step`** | Simulates 4-20mA current loop ADC conversion with NAMUR NE 43 fault injection |
 
 ### Example API Request (curl)
 ```bash
@@ -215,18 +221,35 @@ Explore step-by-step interactive Jupyter notebooks located in [`notebooks/`](not
 
 ---
 
-## 🗺️ 9. Product & Engineering Roadmap
+## 🌐 9. Industrial IoT & Edge Gateways (Version 2.2)
+
+BIOPLANT AI integrates standard industrial edge communication protocols to interface seamlessly with physical SCADA/DCS systems and PLCs:
+
+* **Modbus TCP Gateway ([`src/iot/modbus_gateway.py`](src/iot/modbus_gateway.py))**:
+  - Exposes 16-bit Input Registers (`30001-30010`) for live temperatures, pressures, feed rates, TSI, and RUL.
+  - Discrete Inputs (`10001-10008`) for alarms and autonomous cruise state.
+  - Holding Registers (`40001-40005`) for supervisory setpoint actuation.
+* **MQTT Sparkplug B Bridge ([`src/iot/mqtt_bridge.py`](src/iot/mqtt_bridge.py))**:
+  - Implements Eclipse Sparkplug B specification (`spBv1.0/BiomassRecycling/DDATA/...`) with timestamped metric arrays and sequence numbering.
+* **OPC-UA Address Space ([`src/iot/opcua_bridge.py`](src/iot/opcua_bridge.py))**:
+  - Hierarchical IEC 62541 information model (`Root -> Objects -> BioPlant -> ProcessData / Alarms / Setpoints / Methods`).
+* **Hardware-in-the-Loop Simulator ([`src/iot/hil_simulator.py`](src/iot/hil_simulator.py))**:
+  - Emulates physical 4.0 - 20.0 mA transmitter current loops with 12-bit ADC quantization, analog noise, and NAMUR NE 43 loop fault diagnostics (Open Loop `< 3.6 mA`, Short Circuit `> 21.0 mA`).
+
+---
+
+## 🗺️ 10. Product & Engineering Roadmap
 
 Detailed milestone planning, architectural specifications, and release timelines are documented in [**ROADMAP.md**](ROADMAP.md):
 
 * **`V2.1` (Completed)**: Dockerization & Compose, Interactive OpenAPI Swagger `/docs`, ReDoc, and 4-Part Jupyter Tutorial Suite.
-* **`V2.2` (Edge & IoT)**: Industrial protocol bridges (MQTT Sparkplug B, OPC-UA, Modbus TCP), Hardware-in-the-Loop (HIL), and sub-50ms WebSocket telemetry streaming.
+* **`V2.2` (Completed)**: Industrial IoT protocol bridges (Modbus TCP, MQTT Sparkplug B, OPC-UA), Hardware-in-the-Loop (HIL), and real-time register monitoring.
 * **`V2.5` (Fleet & Market AI)**: Multi-reactor regional fleet dispatching, dynamic CORC carbon credit arbitrage, and hybrid renewable grid integration.
 * **`V3.0` (Next-Gen AI & Spatial Twin)**: Deep Reinforcement Learning (PPO/SAC Gym), Three.js 3D WebGL Holographic Spatial Twin, and Generative AI SCADA Operator Copilot.
 
 ---
 
-## 👨‍💻 10. Author & Maintainer
+## 👨‍💻 11. Author & Maintainer
 
 <table align="center">
   <tr>
@@ -251,6 +274,6 @@ Detailed milestone planning, architectural specifications, and release timelines
 
 ---
 
-## 📜 11. License
+## 📜 12. License
 
 This project is licensed under the terms of the **MIT License**. See the [LICENSE](LICENSE) file for complete details.

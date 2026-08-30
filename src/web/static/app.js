@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initControlHandlers();
   initEconomicsHandlers();
   initAutopilotHandlers();
+  initIoTHandlers();
 
   // Run initial simulation on load
   runSimulation();
@@ -65,6 +66,7 @@ function initNavigation() {
           else if (targetTab === 'control-tab') runControlSimulation();
           else if (targetTab === 'economics-tab') runEconomics();
           else if (targetTab === 'autopilot-tab') stepAutopilot();
+          else if (targetTab === 'iot-tab') pollModbusRegisters();
         }, 10);
       }
     });
@@ -841,5 +843,163 @@ async function runFullMission() {
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<span>Execute 4-Hour Stress Test Mission</span>';
+  }
+}
+
+/* =========================================================================
+ * Tab 9: Industrial IoT, Modbus & HIL Controller
+ * ========================================================================= */
+function initIoTHandlers() {
+  const btnPoll = document.getElementById('btn-modbus-poll');
+  if (btnPoll) btnPoll.addEventListener('click', pollModbusRegisters);
+
+  const btnHilStep = document.getElementById('btn-hil-step');
+  if (btnHilStep) btnHilStep.addEventListener('click', stepHILSimulator);
+
+  const btnOpen = document.getElementById('btn-hil-fault-open');
+  if (btnOpen) btnOpen.addEventListener('click', () => injectHILFault('AI_1', 'loop_open'));
+
+  const btnShort = document.getElementById('btn-hil-fault-short');
+  if (btnShort) btnShort.addEventListener('click', () => injectHILFault('AI_1', 'loop_short'));
+
+  const btnClear = document.getElementById('btn-hil-fault-clear');
+  if (btnClear) btnClear.addEventListener('click', () => injectHILFault('AI_1', 'clear'));
+}
+
+async function pollModbusRegisters() {
+  try {
+    const res = await fetch('/api/iot/modbus/read', {
+      headers: apiHeaders(),
+    });
+    const data = await res.json();
+    renderModbusTable(data);
+    stepHILSimulator();
+  } catch (err) {
+    console.error('Failed to poll Modbus registers:', err);
+  }
+}
+
+function renderModbusTable(data) {
+  const tbody = document.getElementById('modbus-reg-tbody');
+  if (!tbody) return;
+
+  const irs = data.input_registers_30000 || {};
+  const hrs = data.holding_registers_40000 || {};
+
+  let rowsHtml = '';
+  // Render Input Registers
+  for (const [addr, info] of Object.entries(irs)) {
+    rowsHtml += `
+      <tr>
+        <td style="padding:5px 10px; font-family:var(--font-mono); color:var(--primary-cyan);">${addr}</td>
+        <td style="padding:5px 10px;">${info.name}</td>
+        <td style="padding:5px 10px; font-family:var(--font-mono);">${info.raw}</td>
+        <td style="padding:5px 10px; font-weight:600;">${typeof info.scaled === 'number' ? info.scaled.toFixed(1) : info.scaled} ${info.unit}</td>
+        <td style="padding:5px 10px;"><span class="badge badge-cyan" style="font-size:0.7rem;">Input Reg (RO)</span></td>
+      </tr>
+    `;
+  }
+
+  // Render Holding Registers
+  for (const [addr, info] of Object.entries(hrs)) {
+    rowsHtml += `
+      <tr>
+        <td style="padding:5px 10px; font-family:var(--font-mono); color:var(--accent-amber);">${addr}</td>
+        <td style="padding:5px 10px;">${info.name}</td>
+        <td style="padding:5px 10px; font-family:var(--font-mono);">${info.raw}</td>
+        <td style="padding:5px 10px; font-weight:600;">${typeof info.scaled === 'number' ? info.scaled.toFixed(1) : info.scaled} ${info.unit}</td>
+        <td style="padding:5px 10px;"><span class="badge badge-warning" style="font-size:0.7rem;">Holding (RW)</span></td>
+      </tr>
+    `;
+  }
+
+  tbody.innerHTML = rowsHtml;
+}
+
+async function stepHILSimulator() {
+  try {
+    const res = await fetch('/api/iot/hil/step', {
+      method: 'POST',
+      headers: apiHeaders(),
+      body: JSON.stringify({
+        telemetry: {
+          reactor_temp_c: parseFloat(document.getElementById('slider-temp')?.value || 500.0),
+          feed_rate_kg_h: parseFloat(document.getElementById('slider-feed')?.value || 100.0),
+          dryer_temp_c: 105.0,
+          cyclone_dp_mbar: 12.5,
+          tsi_pct: 114.5,
+        },
+      }),
+    });
+    const data = await res.json();
+    updateHILScope(data);
+  } catch (err) {
+    console.error('HIL step failed:', err);
+  }
+}
+
+async function injectHILFault(channelKey, faultType) {
+  try {
+    const res = await fetch('/api/iot/hil/step', {
+      method: 'POST',
+      headers: apiHeaders(),
+      body: JSON.stringify({
+        fault_channel: channelKey,
+        fault_type: faultType,
+        telemetry: {
+          reactor_temp_c: parseFloat(document.getElementById('slider-temp')?.value || 500.0),
+          feed_rate_kg_h: parseFloat(document.getElementById('slider-feed')?.value || 100.0),
+        },
+      }),
+    });
+    const data = await res.json();
+    updateHILScope(data);
+    alert(`HIL Circuit Fault '${faultType}' applied to ${channelKey}.`);
+  } catch (err) {
+    alert(`Failed to inject HIL fault: ${err.message}`);
+  }
+}
+
+function updateHILScope(data) {
+  const clockEl = document.getElementById('iot-hil-clock');
+  if (clockEl && data.clock_ticks !== undefined) {
+    clockEl.textContent = `TICKS: ${data.clock_ticks} (50 Hz)`;
+  }
+
+  const chs = data.analog_channels || {};
+  if (chs.AI_1) {
+    const el = document.getElementById('hil-ma-ai1');
+    const elAdc = document.getElementById('hil-adc-ai1');
+    if (el) {
+      el.textContent = `${chs.AI_1.current_ma.toFixed(2)} mA`;
+      if (chs.AI_1.namur_ne43_status !== 'NORMAL') {
+        el.className = 'm-val text-coral';
+        el.textContent += ` (${chs.AI_1.namur_ne43_status})`;
+      } else {
+        el.className = 'm-val text-cyan';
+      }
+    }
+    if (elAdc) elAdc.textContent = `${chs.AI_1.adc_12bit} cts (${chs.AI_1.voltage_v.toFixed(2)}V)`;
+  }
+
+  if (chs.AI_3) {
+    const el = document.getElementById('hil-ma-ai3');
+    const elAdc = document.getElementById('hil-adc-ai3');
+    if (el) el.textContent = `${chs.AI_3.current_ma.toFixed(2)} mA`;
+    if (elAdc) elAdc.textContent = `${chs.AI_3.adc_12bit} cts (${chs.AI_3.voltage_v.toFixed(2)}V)`;
+  }
+
+  if (chs.AI_2) {
+    const el = document.getElementById('hil-ma-ai2');
+    const elAdc = document.getElementById('hil-adc-ai2');
+    if (el) el.textContent = `${chs.AI_2.current_ma.toFixed(2)} mA`;
+    if (elAdc) elAdc.textContent = `${chs.AI_2.adc_12bit} cts (${chs.AI_2.voltage_v.toFixed(2)}V)`;
+  }
+
+  if (chs.AI_4) {
+    const el = document.getElementById('hil-ma-ai4');
+    const elAdc = document.getElementById('hil-adc-ai4');
+    if (el) el.textContent = `${chs.AI_4.current_ma.toFixed(2)} mA`;
+    if (elAdc) elAdc.textContent = `${chs.AI_4.adc_12bit} cts (${chs.AI_4.voltage_v.toFixed(2)}V)`;
   }
 }

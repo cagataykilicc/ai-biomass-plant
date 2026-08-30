@@ -19,7 +19,7 @@ from src.api.openapi import get_openapi_spec, get_swagger_ui_html, get_redoc_htm
 class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
     """Handles REST API calls and serves modern static Web GUI assets."""
 
-    server_version = "DigitalTwinHTTP/2.1"
+    server_version = "DigitalTwinHTTP/2.2"
 
     def _set_cors_headers(self, content_type: str = "application/json") -> None:
         self.send_header("Content-Type", content_type)
@@ -83,6 +83,16 @@ class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
                     self._send_json(200, res)
                     return
 
+                if path == "/api/iot/status":
+                    res = APIRequestHandler.handle_iot_status()
+                    self._send_json(200, res)
+                    return
+
+                if path == "/api/iot/modbus/read":
+                    res = APIRequestHandler.handle_modbus_read()
+                    self._send_json(200, res)
+                    return
+
                 self._send_json(404, {"error": f"Endpoint not found: {path}", "endpoint": path})
                 return
             except ValueError as val_err:
@@ -141,6 +151,21 @@ class DigitalTwinHTTPHandler(BaseHTTPRequestHandler):
                 self._send_json(200, res)
             elif path == "/api/autopilot/mission":
                 res = APIRequestHandler.handle_autopilot_mission(data)
+                self._send_json(200, res)
+            elif path == "/api/iot/status":
+                res = APIRequestHandler.handle_iot_status()
+                self._send_json(200, res)
+            elif path == "/api/iot/modbus/read":
+                res = APIRequestHandler.handle_modbus_read(data)
+                self._send_json(200, res)
+            elif path == "/api/iot/modbus/write":
+                res = APIRequestHandler.handle_modbus_write(data)
+                self._send_json(200, res)
+            elif path == "/api/iot/mqtt/publish":
+                res = APIRequestHandler.handle_mqtt_publish(data)
+                self._send_json(200, res)
+            elif path == "/api/iot/hil/step":
+                res = APIRequestHandler.handle_hil_step(data)
                 self._send_json(200, res)
             else:
                 self._send_json(404, {"error": f"Endpoint not found: {path}", "endpoint": path})

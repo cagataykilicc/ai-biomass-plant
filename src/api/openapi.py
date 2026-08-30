@@ -18,7 +18,7 @@ def get_openapi_spec() -> Dict[str, Any]:
                 "Pareto optimization, tri-layer fault diagnostics, 20-year DCF techno-economics, "
                 "ISO 14040/14044 LCA carbon accounting, and 5-State Autonomous Autopilot supervision."
             ),
-            "version": "2.1.0",
+            "version": "2.2.0",
             "contact": {
                 "name": "Çağatay Kılıç",
                 "url": "https://github.com/cagataykilicc/ai-biomass-plant",
@@ -293,6 +293,57 @@ def get_openapi_spec() -> Dict[str, Any]:
                     },
                     "responses": {
                         "200": {"description": "4-Hour mission qualification results and event log"},
+                        "401": {"description": "Unauthorized"},
+                    },
+                }
+            },
+            "/api/iot/status": {
+                "get": {
+                    "summary": "Industrial IoT Protocols Status",
+                    "description": "Returns operational status of Modbus TCP, MQTT Sparkplug B, OPC-UA, and HIL Simulator bridges.",
+                    "responses": {
+                        "200": {"description": "IoT protocols state and statistics"},
+                        "401": {"description": "Unauthorized"},
+                    },
+                }
+            },
+            "/api/iot/modbus/read": {
+                "get": {
+                    "summary": "Read Modbus TCP Register Bank",
+                    "description": "Returns structured JSON of all Input Registers (30001+), Holding Registers (40001+), Discrete Inputs (10001+), and Coils (00001+).",
+                    "responses": {
+                        "200": {"description": "Modbus register map tables"},
+                        "401": {"description": "Unauthorized"},
+                    },
+                }
+            },
+            "/api/iot/modbus/write": {
+                "post": {
+                    "summary": "Write Modbus Holding Register or Coil",
+                    "description": "Writes 16-bit word to Holding Register or boolean state to Coil with industrial validation.",
+                    "responses": {
+                        "200": {"description": "Register write confirmed"},
+                        "400": {"description": "Invalid register address or value out of bounds"},
+                        "401": {"description": "Unauthorized"},
+                    },
+                }
+            },
+            "/api/iot/mqtt/publish": {
+                "post": {
+                    "summary": "Publish MQTT Sparkplug B Payload",
+                    "description": "Generates and publishes Sparkplug B compliant DBIRTH, DDATA, or processes NCMD commands.",
+                    "responses": {
+                        "200": {"description": "Sparkplug B payload generated or command executed"},
+                        "401": {"description": "Unauthorized"},
+                    },
+                }
+            },
+            "/api/iot/hil/step": {
+                "post": {
+                    "summary": "Execute Hardware-in-the-Loop Signal Conditioning Step",
+                    "description": "Converts twin telemetry into 4-20mA current loops and 12-bit ADC quantization counts with fault injection.",
+                    "responses": {
+                        "200": {"description": "HIL analog channels and GPIO pin status"},
                         "401": {"description": "Unauthorized"},
                     },
                 }

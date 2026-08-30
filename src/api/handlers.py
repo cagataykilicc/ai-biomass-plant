@@ -78,7 +78,7 @@ class APIRequestHandler:
         """System status and module availability."""
         return {
             "status": "ONLINE",
-            "version": "2.1.0",
+            "version": "2.2.0",
             "modules": {
                 "thermodynamic_flowsheet": "ACTIVE",
                 "ml_yield_surrogate": "ACTIVE",
@@ -369,3 +369,110 @@ class APIRequestHandler:
         dt = _parse_bounded_float(data, "dt", 2.0, 0.1, 60.0)
         runner = AutonomousStressTestRunner(dt_sec=dt)
         return runner.run_4hour_mission()
+
+    _modbus_gateway = None
+    _mqtt_bridge = None
+    _opcua_space = None
+    _hil_simulator = None
+
+    @classmethod
+    def _get_iot_instances(cls):
+        from src.iot.modbus_gateway import ModbusTCPGateway
+        from src.iot.mqtt_bridge import MQTTOperationalBridge
+        from src.iot.opcua_bridge import OPCUAAddressSpace
+        from src.iot.hil_simulator import HILHardwareSimulator
+
+        if cls._modbus_gateway is None:
+            cls._modbus_gateway = ModbusTCPGateway(unit_id=1)
+        if cls._mqtt_bridge is None:
+            cls._mqtt_bridge = MQTTOperationalBridge()
+        if cls._opcua_space is None:
+            cls._opcua_space = OPCUAAddressSpace()
+        if cls._hil_simulator is None:
+            cls._hil_simulator = HILHardwareSimulator()
+        return cls._modbus_gateway, cls._mqtt_bridge, cls._opcua_space, cls._hil_simulator
+
+    @classmethod
+    def handle_iot_status(cls) -> Dict[str, Any]:
+        """Return overall status of all industrial IoT protocol bridges and gateways."""
+        mb, mqtt, opc, hil = cls._get_iot_instances()
+        return {
+            "status": "ONLINE",
+            "protocols": {
+                "modbus_tcp": {
+                    "status": "RUNNING",
+                    "port": 502,
+                    "unit_id": mb.unit_id,
+                    "active_registers_count": len(mb.registers.input_registers) + len(mb.registers.holding_registers),
+                },
+                "mqtt_sparkplug_b": {
+                    "status": "CONNECTED",
+                    "broker": "mqtt.bioplant-edge.local:1883",
+                    "spec": "spBv1.0",
+                    "topic_root": f"spBv1.0/{mqtt.group_id}",
+                    "current_seq": mqtt._seq,
+                },
+                "opc_ua": {
+                    "status": "ACTIVE",
+                    "endpoint": "opc.tcp://127.0.0.1:4840/bioplant/server/",
+                    "namespace": opc.namespace_uri,
+                    "nodes_count": len(opc.nodes),
+                },
+                "hil_simulator": {
+                    "status": "SYNCHRONIZED",
+                    "clock_ticks": hil.hardware_clock_ticks,
+                    "channels_count": len(hil.channels),
+                    "sampling_hz": 50.0,
+                },
+            },
+        }
+
+    @classmethod
+    def handle_modbus_read(cls, data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """Read all Modbus TCP register tables."""
+        mb, _, _, _ = cls._get_iot_instances()
+        return mb.export_register_table()
+
+    @classmethod
+    def handle_modbus_write(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Write value to Modbus Holding Register (40001-40005) or Coil (1-4)."""
+        mb, _, _, _ = cls._get_iot_instances()
+        reg_type = data.get("register_type", "holding_register")  # "holding_register" or "coil"
+        address = int(data.get("address", 40001))
+
+        if reg_type == "holding_register":
+            val = int(data.get("value", 5000))
+            mb.write_holding_register(address, val)
+            return {"status": "SUCCESS", "written_register": address, "raw_value": val, "scaled_value": val / 10.0}
+        elif reg_type == "coil":
+            val = bool(data.get("value", False))
+            mb.write_coil(address, val)
+            return {"status": "SUCCESS", "written_coil": address, "value": val}
+        else:
+            raise ValueError(f"Invalid register_type '{reg_type}'. Must be 'holding_register' or 'coil'.")
+
+    @classmethod
+    def handle_mqtt_publish(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Publish telemetry payload or handle command via MQTT Sparkplug B bridge."""
+        _, mqtt, _, _ = cls._get_iot_instances()
+        msg_type = data.get("message_type", "DDATA")  # "DBIRTH", "DDATA", "NCMD"
+        telemetry = data.get("telemetry", {})
+
+        if msg_type == "DBIRTH":
+            return mqtt.build_dbirth_payload(telemetry)
+        elif msg_type == "NCMD":
+            return mqtt.handle_ncmd(data.get("command_payload", {}))
+        else:
+            return mqtt.build_ddata_payload(telemetry)
+
+    @classmethod
+    def handle_hil_step(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute physical Hardware-in-the-Loop 4-20mA current loop & ADC step."""
+        _, _, _, hil = cls._get_iot_instances()
+        telemetry = data.get("telemetry", {})
+        pulse_jet = bool(data.get("pulse_jet_command", False))
+
+        if "fault_channel" in data and "fault_type" in data:
+            hil.inject_hardware_fault(str(data["fault_channel"]), str(data["fault_type"]))
+
+        return hil.step_hardware_signals(telemetry, pulse_jet_command=pulse_jet)
